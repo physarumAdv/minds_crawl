@@ -4,18 +4,18 @@ typedef long long ll;
 
 __global__ void init_food(...)
 {
-	if(threadIdx.x || threadIdx.y || threadIdx.z || \
-			blockIdx.x || blockIdx.y || blockIdx.z)
-		return;
-	// <initialization here>
+    if(threadIdx.x || threadIdx.y || threadIdx.z || \
+            blockIdx.x || blockIdx.y || blockIdx.z)
+        return;
+    // <initialization here>
 }
 
 __global__ void init_particles(...)
 {
-	if(threadIdx.x || threadIdx.y || threadIdx.z || \
-			blockIdx.x || blockIdx.y || blockIdx.z)
-		return;
-	// <initialization here>
+    if(threadIdx.x || threadIdx.y || threadIdx.z || \
+            blockIdx.x || blockIdx.y || blockIdx.z)
+        return;
+    // <initialization here>
 }
 
 __global__ void run_iteration(MapPoint *grid, Polyhedron *polyhedron, int *iteration_number)
@@ -43,22 +43,22 @@ __global__ void run_iteration(MapPoint *grid, Polyhedron *polyhedron, int *itera
 
 __host__ int main()
 {
-	Polyhedron *polyhedron;
+    Polyhedron *polyhedron;
     cudaMallocManaged((void**)&polyhedron, sizeof(Polyhedron));
-	// <Create polyhedron here>
+    // <Create polyhedron here>
 
-	MapPoint *grid;
-	cudaMallocManaged((void **)&grid, grid_size * sizeof(MapPoint));
-	
-	// <Precalculations (cos, sin, ...) here>
-	init_food<<<1, 1>>>(...);
-	init_particles<<<1, 1>>>(...);
-	
+    MapPoint *grid;
+    cudaMallocManaged((void **)&grid, grid_size * sizeof(MapPoint));
+    
+    // <Precalculations (cos, sin, ...) here>
+    init_food<<<1, 1>>>(...);
+    init_particles<<<1, 1>>>(...);
+    
     int *iteration_number;
     cudaMallocManaged((void**)&iteration_number, sizeof(int));
-	for(*iteration_number = 0; ; ++*iteration_number)
-	{
-		// <running an iteration here>
-		// <redrawing here>
-	}
+    for(*iteration_number = 0; ; ++*iteration_number)
+    {
+        // <running an iteration here>
+        // <redrawing here>
+    }
 }
