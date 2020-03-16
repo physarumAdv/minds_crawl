@@ -1,5 +1,5 @@
 #include "fucking_shit.h"
-typedef ll long long;
+typedef long long ll;
 
 __device__ ll get_index(ll x, ll y, ll z, ll mx, ll my, ll mz)
 {

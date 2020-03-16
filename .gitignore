@@ -84,9 +84,6 @@ dkms.conf
 # CMake
 cmake-build-*/
 
-# Mongo Explorer plugin
-.idea/**/mongoSettings.xml
-
 # File-based project format
 *.iws
 
@@ -99,20 +96,11 @@ out/
 # JIRA plugin
 atlassian-ide-plugin.xml
 
-# Cursive Clojure plugin
-.idea/replstate.xml
-
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
-
-# Editor-based Rest Client
-.idea/httpRequests
-
-# Android studio 3.1+ serialized cache file
-.idea/caches/build_file_checksums.ser
 
 ### CLion Patch ###
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
@@ -121,16 +109,6 @@ fabric.properties
 # modules.xml
 # .idea/misc.xml
 # *.ipr
-
-# Sonarlint plugin
-.idea/**/sonarlint/
-
-# SonarQube Plugin
-.idea/**/sonarIssues.xml
-
-# Markdown Navigator plugin
-.idea/**/markdown-navigator.xml
-.idea/**/markdown-navigator/
 
 ### CMake ###
 CMakeLists.txt.user
@@ -157,4 +135,4 @@ _deps
 *.cubin
 *.fatbin
 
-# End of https://www.gitignore.io/api/c,c++,cuda,cmake,clion
+# End of https://www.gitignore.io/api/c,c++,cuda,cmake,clion (modified)

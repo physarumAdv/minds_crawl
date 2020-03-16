@@ -1,5 +1,5 @@
 #include "MapPoint.h"
-typedef long long ll;
+#include "grid_processing.h"
 
 __device__ void diffuse_trail(MapPoint *grid, ll x, ll y, ll z, ll mx, ll my, ll mz)
 {

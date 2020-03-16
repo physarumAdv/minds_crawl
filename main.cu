@@ -11,7 +11,7 @@ typedef long long ll;
 const ll block_size_by_dim = 8;
 
 
-__global__ void init_food(...)
+__global__ void init_food(???)
 {
     if(threadIdx.x || threadIdx.y || threadIdx.z || \
             blockIdx.x || blockIdx.y || blockIdx.z)
@@ -19,7 +19,7 @@ __global__ void init_food(...)
     // <initialization here>
 }
 
-__global__ void init_particles(...)
+__global__ void init_particles(???)
 {
     if(threadIdx.x || threadIdx.y || threadIdx.z || \
             blockIdx.x || blockIdx.y || blockIdx.z)
@@ -27,7 +27,7 @@ __global__ void init_particles(...)
     // <initialization here>
 }
 
-__global__ void run_iteration(MapPoint *grid, int mx, int my, int mz, Polyhedron *polyhedron, int *iteration_number)
+__global__ void run_iteration(MapPoint *grid, ll mx, ll my, ll mz, Polyhedron *polyhedron, ll *iteration_number)
 {
     ll x = blockIdx.x * blockDim.x + threadIdx.x;
     ll y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -57,9 +57,10 @@ __host__ int main()
     cudaMallocManaged((void **)&polyhedron, sizeof(Polyhedron));
     // <Create polyhedron here>
 
-    ll grid_size = polyhedron->max_x * polyhedron->max_y * polyhedron->max_z;
     MapPoint *grid;
-    cudaMallocManaged((void **)&grid, grid_size * sizeof(MapPoint));
+    ll mx = polyhedron->get_max_x(), my = polyhedron->get_max_y(),
+            mz = polyhedron->get_max_z();
+    cudaMallocManaged((void **)&grid, mx*my*mz * sizeof(MapPoint));
     
     // <Precalculations (cos, sin, ...) here>
     init_food<<<1, 1>>>(...);
@@ -69,8 +70,6 @@ __host__ int main()
     cudaMallocManaged((void **)&iteration_number, sizeof(int));
 
     dim3 block_size(block_size_by_dim, block_size_by_dim, block_size_by_dim);
-    int mx = polyhedron->get_max_x(), my = polyhedron->get_max_y(),
-             mz = polyhedron->get_max_z();
     dim3 grid_size((mx + block_size_by_dim - 1) / block_size_by_dim,
             (my + block_size_by_dim - 1) / block_size_by_dim,
             (mz + block_size_by_dim - 1) / block_size_by_dim);

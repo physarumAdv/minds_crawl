@@ -1,3 +1,6 @@
+#ifndef MIND_S_CRAWL_MODEL_CONSTANTS_H
+#define MIND_S_CRAWL_MODEL_CONSTANTS_H
+
 namespace jones_constants
 {
     // See https://www.overleaf.com/read/vnwxqhdhzknw for parameters' descriptions
@@ -27,3 +30,5 @@ namespace jones_constants
     const bool projectnutrients = true;
     const int startprojecttime = 0;
 }
+
+#endif //MIND_S_CRAWL_MODEL_CONSTANTS_H
