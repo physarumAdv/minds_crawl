@@ -6,7 +6,7 @@ project(mind_s_crawl CUDA)
 
 set(CMAKE_CUDA_STANDARD 14)
 
-add_executable(mind_s_crawl main.cu)
+add_executable(mind_s_crawl main.cu fucking_shit.cu grid_processing.cu)
 
 set_target_properties(
     mind_s_crawl
