@@ -40,10 +40,14 @@ __global__ void run_iteration(MapPoint *grid, const dim3 grid_size, const Polyhe
     // The grid index of this MapPoint
     ll i = x * my * mz + y * mz + z;
 
-    if(it's time to project food)
-        grid[i].trail += food[i];
-    if(it's time to diffuse trail)
-        diffuse_trail(grid, x, y, z, grid_size); // Diffuses trail in currect point
+    if(jc::projectnutrients && *iteration_number >= jc::startprojecttime)
+        // Projecting food:
+        grid[i].trail += grid[i].food;
+
+    // Diffuses trail in current point
+    diffuse_trail(grid, x, y, z, grid_size);
+    grid[i].trail = grid[i].temp_trail;
+
     if(grid[i].contains_particle)
     {
         do_motor_behaviours(grid, grid_size, mx, my, mz);

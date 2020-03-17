@@ -2,7 +2,6 @@
 #include "model_constants.hpp"
 #include "fucking_shit.cuh"
 namespace jc = jones_constants;
-typedef long long ll;
 
 
 __device__ ll get_index(ll x, ll y, ll z, dim3 grid_size)
@@ -18,16 +17,14 @@ __device__ void diffuse_trail(MapPoint *grid, ll x, ll y, ll z, dim3 grid_size)
     for(int dx = -1; dx <= 1; ++dx)
         for(int dy = -1; dy <= 1; ++dy)
             for(int dz = -1; dz <= 1; ++dz)
-            {
                 if(x + dx > 0 && x + dx < grid_size.x)
                     if(y + dy > 0 && y + dy < grid_size.y)
                         if(z + dz > 0 && z + dz < grid_size.z)
                         {
-                            sum += grid[get_index(x+dx, y+dy, z+dz, grid_size)].trail;
+                            sum += grid[get_index(x + dx, y + dy, z + dz, grid_size)].trail;
                             ++cnt;
                         }
-            }
-    grid[get_index(x, y, z, grid_size)].temp_trail += sum;
+    grid[get_index(x, y, z, grid_size)].temp_trail = sum / cnt;
 }
 
 
@@ -68,7 +65,7 @@ __device__ void death_test(MapPoint *grid, ll x, ll y, ll z, dim3 grid_size)
 {
     ll particle_window = get_particle_window(grid, x, y, z, grid_size, jc::sw);
     if(jc::smin <= particle_window && particle_window <= jc::smax)
-    {/* if in survaval range, then stay alive */}
+    {/* if in survival range, then stay alive */}
     else
         delete_particle(&grid[get_index(x, y, z, grid_size)]);
 }
