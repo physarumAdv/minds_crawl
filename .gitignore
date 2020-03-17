@@ -140,4 +140,4 @@ _deps
 # Project-level:
 
 # Giving the user the ability to link whichever cmakelists he wants
-CMakeLists.txt
+/CMakeLists.txt
