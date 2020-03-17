@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.16)
+
+project(mind_s_crawl CUDA)
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists_common_1.txt)
+
+add_executable(mind_s_crawl main.cpp ${executables_list})
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists_common_2.txt)
+
+add_definitions(-D__host__ -D__device__ -D__global__ -DCOMPILE_FOR_CPU)

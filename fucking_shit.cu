@@ -33,11 +33,15 @@ __device__ void diffuse_trail(MapPoint *grid, ll x, ll y, ll z, dim3 grid_size)
 
 __device__ void delete_particle(MapPoint *p)
 {
-#ifdef CUDA
-    cudaFree(p->particle);
-#else
+/*#ifdef COMPILE_FOR_CPU
     free(p->particle);
-#endif
+#else
+    cudaFree(p->particle);
+#endif*/
+    delete p->particle;
+    /* Please, note that we're using `new` and `delete` operators for allocating and deallocating Particles,
+     * and it doesn't matter if we're running on cpu or gpu */
+
     p->contains_particle = false;
 }
 

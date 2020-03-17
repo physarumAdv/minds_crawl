@@ -4,7 +4,7 @@
 
 __device__ curandState_t state;
 
-__global__ void init_rand(unsigned long long seed)
+__global__ void init_rand(const unsigned long long seed)
 {
     curand_init(seed, 0, 0, &state);
 }

@@ -136,3 +136,8 @@ _deps
 *.fatbin
 
 # End of https://www.gitignore.io/api/c,c++,cuda,cmake,clion (modified)
+
+# Project-level:
+
+# Giving the user the ability to link whichever cmakelists he wants
+CMakeLists.txt

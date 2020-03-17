@@ -1,0 +1,6 @@
+# This part of CMakeLists is included AFTER creating the project target
+
+set_target_properties(
+    mind_s_crawl
+    PROPERTIES
+    CUDA_SEPARABLE_COMPILATION ON)

@@ -1,12 +1,8 @@
-#define CUDA
-
-
 #include <iostream>
 
 #include "MapPoint.h"
 #include "Polyhedron.h"
 #include "Particle.h"
-#include "grid_processing.h"
 #include "fucking_shit.h"
 #include "model_constants.h"
 #include "random_generator.h"
@@ -33,7 +29,7 @@ __global__ void init_particles(...)
     // <initialization here>
 }
 
-__global__ void run_iteration(MapPoint *grid, dim3 grid_size, Polyhedron *polyhedron, ll *iteration_number)
+__global__ void run_iteration(MapPoint *grid, const dim3 grid_size, const Polyhedron *polyhedron, const ll *iteration_number)
 {
     ll x = blockIdx.x * blockDim.x + threadIdx.x;
     ll y = blockIdx.y * blockDim.y + threadIdx.y;
