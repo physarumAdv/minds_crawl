@@ -1,6 +1,6 @@
-#include "random_generator.h"
-#include "model_constants.h"
-#include "fucking_shit.h"
+#include "random_generator.cuh"
+#include "model_constants.hpp"
+#include "fucking_shit.cuh"
 namespace jc = jones_constants;
 typedef long long ll;
 

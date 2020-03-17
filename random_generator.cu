@@ -1,6 +1,6 @@
 #include "curand_kernel.h"
 
-#include "random_generator.h"
+#include "random_generator.cuh"
 
 __device__ curandState_t state;
 

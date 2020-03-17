@@ -1,5 +1,5 @@
-#ifndef MIND_S_CRAWL_POLYHEDRON_H
-#define MIND_S_CRAWL_POLYHEDRON_H
+#ifndef MIND_S_CRAWL_POLYHEDRON_CUH
+#define MIND_S_CRAWL_POLYHEDRON_CUH
 
 class Polyhedron
 {
@@ -16,4 +16,4 @@ private:
     long long max_x, max_y, max_z;
 };
 
-#endif //MIND_S_CRAWL_POLYHEDRON_H
+#endif //MIND_S_CRAWL_POLYHEDRON_CUH

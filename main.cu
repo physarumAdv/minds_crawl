@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "MapPoint.h"
-#include "Polyhedron.h"
-#include "Particle.h"
-#include "fucking_shit.h"
-#include "model_constants.h"
-#include "random_generator.h"
+#include "MapPoint.hpp"
+#include "Polyhedron.cuh"
+#include "Particle.hpp"
+#include "fucking_shit.cuh"
+#include "model_constants.hpp"
+#include "random_generator.cuh"
 namespace jc = jones_constants;
 typedef long long ll;
 

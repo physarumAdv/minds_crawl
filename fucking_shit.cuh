@@ -2,10 +2,10 @@
  * They will be rebased later
  */
 
-#ifndef MIND_S_CRAWL_FUCKING_SHIT_H
-#define MIND_S_CRAWL_FUCKING_SHIT_H
+#ifndef MIND_S_CRAWL_FUCKING_SHIT_CUH
+#define MIND_S_CRAWL_FUCKING_SHIT_CUH
 
-#include "MapPoint.h"
+#include "MapPoint.hpp"
 
 typedef long long ll;
 
@@ -20,4 +20,4 @@ __device__ void random_death_test(MapPoint *p, double death_probability);
 __device__ void death_test(MapPoint *grid, ll x, ll y, ll z, dim3 grid_size);
 __device__ bool division_test(MapPoint *grid, ll x, ll y, ll z, dim3 grid_size);
 
-#endif //MIND_S_CRAWL_FUCKING_SHIT_H
+#endif //MIND_S_CRAWL_FUCKING_SHIT_CUH
