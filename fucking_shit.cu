@@ -1,17 +1,14 @@
 #include "random_generator.cuh"
 #include "model_constants.hpp"
 #include "fucking_shit.cuh"
+
 namespace jc = jones_constants;
 
 
-__device__ ll get_index(ll x, ll y, ll z, dim3 grid_size)
+__device__ void diffuse_trail(Polyhedron *polyhedron, ll i)
 {
-    return x * grid_size.y * grid_size.z + y * grid_size.y + z;
-}
+    to_be_rewritten;
 
-
-__device__ void diffuse_trail(MapPoint *grid, ll x, ll y, ll z, dim3 grid_size)
-{
     ll sum, cnt;
     sum = cnt = 0;
     for(int dx = -1; dx <= 1; ++dx)
@@ -37,22 +34,25 @@ __device__ void delete_particle(MapPoint *p)
 #endif*/
     delete p->particle;
     /* Please, note that we're using `new` and `delete` operators for allocating and deallocating Particles,
-     * and it doesn't matter if we're running on cpu or gpu */
+     * and it doesn't matter if we're running on cpu or gpu
+     */
 
     p->contains_particle = false;
 }
 
 
-__device__ void random_death_test(MapPoint *p, double death_probability)
+__device__ void random_death_test(MapPoint *p)
 {
-    if(rand01() < death_probability)
+    if(rand01() < jc::death_random_probability)
     {
         delete_particle(p);
     }
 }
 
-__device__ ll get_particle_window(MapPoint *grid, ll x, ll y, ll z, dim3 grid_size, ll w)
+__device__ ll get_particle_window(Polyhedron *polyhedron, ll i, int window_size)
 {
+    to_be_rewritten;
+
     ll ans = 0;
     for(ll dx = -(w/2); dx <= w/2; ++dx)
         for(ll dy = -(w/2); dy <= w/2; ++dy)
@@ -61,17 +61,19 @@ __device__ ll get_particle_window(MapPoint *grid, ll x, ll y, ll z, dim3 grid_si
     return ans;
 }
 
-__device__ void death_test(MapPoint *grid, ll x, ll y, ll z, dim3 grid_size)
+__device__ void death_test(Polyhedron *polyhedron, ll i)
 {
-    ll particle_window = get_particle_window(grid, x, y, z, grid_size, jc::sw);
+    ll particle_window = get_particle_window(polyhedron, i, jc::sw);
     if(jc::smin <= particle_window && particle_window <= jc::smax)
     {/* if in survival range, then stay alive */}
     else
-        delete_particle(&grid[get_index(x, y, z, grid_size)]);
+        delete_particle(&polyhedron->points[i]);
 }
 
-__device__ bool division_test(MapPoint *grid, ll x, ll y, ll z, dim3 grid_size)
+__device__ bool division_test(Polyhedron *polyhedron, ll i)
 {
+    to_be_rewritten;
+
     ll particle_window = get_particle_window(grid, x, y, z, grid_size, jc::gw);
     if(jc::gmin <= particle_window && particle_window <= jc::gmax)
         if(rand01() <= jc::division_probability)
@@ -79,7 +81,7 @@ __device__ bool division_test(MapPoint *grid, ll x, ll y, ll z, dim3 grid_size)
                 for(ll dy = -1; dy <= 1; ++dy)
                     for(ll dz = -1; dz <= 1; ++dz)
                     {
-                        ll i = get_index(x + dx, y + dy, z + dz, grid_size);
+                        //ll i = get_index(x + dx, y + dy, z + dz, grid_size);
                         if(!grid[i].contains_particle)
                         {
                             create_particle(&grid[i]);

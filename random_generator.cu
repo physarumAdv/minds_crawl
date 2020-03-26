@@ -2,6 +2,7 @@
 
 #include "random_generator.cuh"
 
+
 __device__ curandState_t state;
 
 __global__ void init_rand(const unsigned long long seed)

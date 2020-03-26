@@ -7,6 +7,6 @@ function(before_target_creation executable_list)
     set(CMAKE_CUDA_STANDARD 14)
 
     # Everything except main.cu/main.cpp:
-    set(executables_list fucking_shit.cu random_generator.cu PARENT_SCOPE)
+    set(executables_list fucking_shit.cu random_generator.cu Polyhedron.cu PARENT_SCOPE)
 
 endfunction(before_target_creation)

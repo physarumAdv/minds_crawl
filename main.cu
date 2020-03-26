@@ -9,62 +9,56 @@
 namespace jc = jones_constants;
 typedef long long ll;
 
+#define force_one_threaded_kernel() if(threadIdx.x || threadIdx.y || threadIdx.z || \
+        blockIdx.x || blockIdx.y || blockIdx.z) return
 
-const ll block_size_by_dim = 8;
+
+const ll cuda_block_size = 256;
 
 
 __global__ void init_food(...)
 {
-    if(threadIdx.x || threadIdx.y || threadIdx.z || \
-            blockIdx.x || blockIdx.y || blockIdx.z)
-        return;
+    force_one_threaded_kernel();
+
     // <initialization here>
 }
 
-__global__ void init_particles(...)
+__global__ void init_polyhedron(Polyhedron *polyhedron, ...)
 {
-    if(threadIdx.x || threadIdx.y || threadIdx.z || \
-            blockIdx.x || blockIdx.y || blockIdx.z)
-        return;
-    // <initialization here>
+    force_one_threaded_kernel();
+
+    /* WARNING!!! As you can see, we're creating a new `Polyhedron` object
+     * and _copying_ it to `*polyhedron`, not assigning the pointer. This
+     * is done in purpose, to make it possible to copy `*polyhedron` back to
+     * host code.
+     */
+    *polyhedron = *(new Polyhedron(...));
 }
 
-__global__ void run_iteration(MapPoint *grid, const dim3 grid_size, const Polyhedron *polyhedron, const ll *iteration_number)
+__global__ void run_iteration(const Polyhedron *polyhedron, const ll *iteration_number)
 {
-    ll x = blockIdx.x * blockDim.x + threadIdx.x;
-    ll y = blockIdx.y * blockDim.y + threadIdx.y;
-    ll z = blockIdx.z * blockDim.z + threadIdx.z;
-
-    ll mx = grid_size.x, my = grid_size.y, mz = grid_size.z;
-
-    // The grid index of this MapPoint
-    ll i = x * my * mz + y * mz + z;
+    ll i = blockIdx.x * blockDim.x + threadIdx.x;
 
     if(jc::projectnutrients && *iteration_number >= jc::startprojecttime)
         // Projecting food:
-        grid[i].trail += grid[i].food;
+        polyhedron->points[i].trail += polyhedron->points[i].food;
 
     // Diffuses trail in current point
-    diffuse_trail(grid, x, y, z, grid_size);
-    grid[i].trail = grid[i].temp_trail;
+    diffuse_trail(polyhedron, i);
+    polyhedron->points[i].trail = polyhedron->points[i].temp_trail;
 
-    if(grid[i].contains_particle)
+    if(polyhedron->points[i].contains_particle)
     {
-        do_motor_behaviours(grid, grid_size, mx, my, mz);
-        do_sensory_behaviours(grid, grid_size, mx, my, mz);
+        do_motor_behaviours(polyhedron->points, i);
+        do_sensory_behaviours(polyhedron->points, i);
 
         if(jc::do_random_death_test && jc::death_random_probability > 0 &&
                 *iteration_number > jc::startprojecttime)
-            random_death_test(&grid[i],
-                    jc::death_random_probability);
-        if(max(x, max(y, z)) > jc::divisionborder &&
-                min(mx - x, min(my - y, mz - z)) > jc::divisionborder)
-        {
-            if(*iteration_number % jc::death_frequency_test == 0)
-                death_test(grid, x, y, z, grid_size);
-            if(*iteration_number % jc::division_frequency_test == 0)
-                division_test(grid, x, y, z, grid_size);
-        }
+            random_death_test(&polyhedron->points[i]);
+        if(*iteration_number % jc::death_frequency_test == 0)
+            death_test(polyhedron, i);
+        if(*iteration_number % jc::division_frequency_test == 0)
+            division_test(polyhedron, i);
     }
 }
 
@@ -75,30 +69,19 @@ __host__ int main()
 
     Polyhedron *polyhedron;
     cudaMallocManaged((void **)&polyhedron, sizeof(Polyhedron));
-    // <Create polyhedron here>
-
-    MapPoint *grid;
-    ll mx = polyhedron->get_max_x(), my = polyhedron->get_max_y(),
-            mz = polyhedron->get_max_z();
-    dim3 grid_size(polyhedron->get_max_x(), polyhedron->get_max_y(),
-                   polyhedron->get_max_z());
-    cudaMallocManaged((void **)&grid, grid_size.x * grid_size.y *
-            grid_size.z * sizeof(MapPoint));
+    init_polyhedron<<<1, 1>>>(polyhedron);
     
     // <Precalculations (cos, sin, ...) here>
     init_food<<<1, 1>>>(...);
-    init_particles<<<1, 1>>>(...);
     
     ll *iteration_number;
-    cudaMallocManaged((void **)&iteration_number, sizeof(int));
+    cudaMallocManaged((void **)&iteration_number, sizeof(ll));
 
-    dim3 cuda_block_size(block_size_by_dim, block_size_by_dim, block_size_by_dim);
-    dim3 cuda_grid_size((mx + block_size_by_dim - 1) / block_size_by_dim,
-            (my + block_size_by_dim - 1) / block_size_by_dim,
-            (mz + block_size_by_dim - 1) / block_size_by_dim);
+    const ll cuda_grid_size = (polyhedron->get_n_of_points() + cuda_block_size - 1) /
+            cuda_block_size;
     for(*iteration_number = 0; ; ++*iteration_number)
     {
-        run_iteration<<<cuda_grid_size, cuda_block_size>>>(grid, grid_size, polyhedron, iteration_number);
+        run_iteration<<<cuda_grid_size, cuda_block_size>>>(polyhedron, iteration_number);
         // <redrawing here>
     }
 }
