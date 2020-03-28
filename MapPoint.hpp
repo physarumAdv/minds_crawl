@@ -12,16 +12,14 @@ public:
         trail = temp_trail = food = x = y = z = 0;
         contains_particle = false;
         particle = nullptr;
-        top_left = top = top_right = left = right =
-                bottom_left = bottom = bottom_right = nullptr;
+        top = left = right = bottom = nullptr;
     }
 
     double trail;
     double temp_trail;
     double food;
     double x, y, z;
-    MapPoint *top_left, *top, *top_right, *left, *right,
-            *bottom_left, *bottom, *bottom_right;
+    MapPoint *top, *left, *right, *bottom;
     bool contains_particle;
     Particle *particle;
 };

@@ -56,9 +56,9 @@ __global__ void run_iteration(const Polyhedron *polyhedron, const ll *iteration_
                 *iteration_number > jc::startprojecttime)
             random_death_test(&polyhedron->points[i]);
         if(*iteration_number % jc::death_frequency_test == 0)
-            death_test(polyhedron, i);
+            death_test(&polyhedron->points[i]);
         if(*iteration_number % jc::division_frequency_test == 0)
-            division_test(polyhedron, i);
+            division_test(&polyhedron->points[i]);
     }
 }
 

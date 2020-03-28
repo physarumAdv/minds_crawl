@@ -5,23 +5,17 @@
 namespace jc = jones_constants;
 
 
-__device__ void diffuse_trail(Polyhedron *polyhedron, ll i)
+__device__ void diffuse_trail(MapPoint *m)
 {
-    to_be_rewritten;
+    auto get_trail = [](MapPoint *m) {return m->trail;};
 
-    ll sum, cnt;
-    sum = cnt = 0;
-    for(int dx = -1; dx <= 1; ++dx)
-        for(int dy = -1; dy <= 1; ++dy)
-            for(int dz = -1; dz <= 1; ++dz)
-                if(x + dx > 0 && x + dx < grid_size.x)
-                    if(y + dy > 0 && y + dy < grid_size.y)
-                        if(z + dz > 0 && z + dz < grid_size.z)
-                        {
-                            sum += grid[get_index(x + dx, y + dy, z + dz, grid_size)].trail;
-                            ++cnt;
-                        }
-    grid[get_index(x, y, z, grid_size)].temp_trail = sum / cnt;
+    ll sum = get_trail(m) + get_trail(m->top->left) +
+            get_trail(m->top) + get_trail(m->top->right) +
+            get_trail(m->left) + get_trail(m->right) +
+            get_trail(m->bottom->left) + get_trail(m->bottom) +
+            get_trail(m->bottom->right);
+
+    m->temp_trail = (double)sum / 9.0;
 }
 
 
@@ -41,6 +35,28 @@ __device__ void delete_particle(MapPoint *p)
 }
 
 
+__device__ ll get_particle_window(MapPoint *m, int window_size)
+{
+    for(int i = 0; i < window_size / 2; ++i)
+        m = m->top->left;
+
+    MapPoint *row = m;
+    ll ans = 0;
+    for(int i = 0; i < window_size; ++i)
+    {
+        MapPoint *cur = row;
+        for(int j = 0; j < window_size; ++j)
+        {
+            ans += cur->contains_particle;
+            cur = cur->right;
+        }
+        row = row->bottom;
+    }
+
+    return ans;
+}
+
+
 __device__ void random_death_test(MapPoint *p)
 {
     if(rand01() < jc::death_random_probability)
@@ -49,44 +65,35 @@ __device__ void random_death_test(MapPoint *p)
     }
 }
 
-__device__ ll get_particle_window(Polyhedron *polyhedron, ll i, int window_size)
+__device__ void death_test(MapPoint *m)
 {
-    to_be_rewritten;
-
-    ll ans = 0;
-    for(ll dx = -(w/2); dx <= w/2; ++dx)
-        for(ll dy = -(w/2); dy <= w/2; ++dy)
-            for(ll dz = -(w/2); dz <= w/2; ++dz)
-                ans += grid[get_index(x, y, z, grid_size)].contains_particle;
-    return ans;
-}
-
-__device__ void death_test(Polyhedron *polyhedron, ll i)
-{
-    ll particle_window = get_particle_window(polyhedron, i, jc::sw);
+    ll particle_window = get_particle_window(m, jc::sw);
     if(jc::smin <= particle_window && particle_window <= jc::smax)
     {/* if in survival range, then stay alive */}
     else
-        delete_particle(&polyhedron->points[i]);
+        delete_particle(m);
 }
 
-__device__ bool division_test(Polyhedron *polyhedron, ll i)
+__device__ void division_test(MapPoint *m)
 {
-    to_be_rewritten;
-
-    ll particle_window = get_particle_window(grid, x, y, z, grid_size, jc::gw);
+    ll particle_window = get_particle_window(m, jc::gw);
     if(jc::gmin <= particle_window && particle_window <= jc::gmax)
         if(rand01() <= jc::division_probability)
-            for(ll dx = -1; dx <= 1; ++dx)
-                for(ll dy = -1; dy <= 1; ++dy)
-                    for(ll dz = -1; dz <= 1; ++dz)
+        {
+            MapPoint *row = m->top->left;
+            for(ll i = 0; i < 3; ++i)
+            {
+                MapPoint *cur = row;
+                for(ll j = 0; j < 3; ++j)
+                {
+                    if(!cur->contains_particle)
                     {
-                        //ll i = get_index(x + dx, y + dy, z + dz, grid_size);
-                        if(!grid[i].contains_particle)
-                        {
-                            create_particle(&grid[i]);
-                            return true;
-                        }
+                        create_particle(cur);
+                        return;
                     }
-    return false;
+                    cur = cur->right;
+                }
+                row = row->bottom;
+            }
+        }
 }
