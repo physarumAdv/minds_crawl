@@ -10,7 +10,7 @@ __global__ void init_rand(unsigned long long seed)
     curand_init(seed, 0, 0, &state);
 }
 
-__device__ double rand01()
+__device__ double rand0to1()
 {
     return curand_uniform_double(&state);
 }

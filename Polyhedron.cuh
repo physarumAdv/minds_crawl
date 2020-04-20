@@ -3,6 +3,7 @@
 
 #include "MapPoint.hpp"
 #include "fucking_shit.cuh"
+
 typedef long long ll;
 
 
