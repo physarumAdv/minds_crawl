@@ -1,7 +1,7 @@
-#ifndef MIND_S_CRAWL_SIMULATION_MAP_CUH
-#define MIND_S_CRAWL_SIMULATION_MAP_CUH
+#ifndef MIND_S_CRAWL_SIMULATIONMAP_CUH
+#define MIND_S_CRAWL_SIMULATIONMAP_CUH
 
-#include "MapPoint.hpp"
+#include "MapNode.hpp"
 #include "fucking_shit.cuh"
 
 typedef long long ll;
@@ -16,15 +16,15 @@ public:
     __host__ __device__ ll get_n_of_points() const;
 
 
-    /* Both of the following arrays contain pointers to `MapPoint`s, which are on
+    /* Both of the following arrays contain pointers to `MapNode`s, which are on
      * the polyhedron's surface. The `points` array is a linear array just with
-     * all the `MapPoint`s on a surface (their order is undefined). The `cube`
-     * array is 3-dimensional, and `cube[x][y][z]` points either to MapPoint
+     * all the `MapNode`s on a surface (their order is undefined). The `cube`
+     * array is 3-dimensional, and `cube[x][y][z]` points either to MapNode
      * with (x, y, z) coordinates (if (x, y, z) is on the polyhedron's surface),
      * or to `nullptr` (if (x, y, z) is not on the polyhedron's surface)
      */
-    //MapPoint *cube; // 3-dimensional array of MapPoint *
-    MapPoint *points; // 1-dimensional of MapPoint *
+    //MapNode *cube; // 3-dimensional array of MapNode *
+    MapNode *points; // 1-dimensional of MapNode *
 
 private:
 
@@ -32,4 +32,4 @@ private:
     ll n_of_points;
 };
 
-#endif //MIND_S_CRAWL_SIMULATION_MAP_CUH
+#endif //MIND_S_CRAWL_SIMULATIONMAP_CUH

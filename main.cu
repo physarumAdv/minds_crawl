@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "MapPoint.hpp"
+#include "MapNode.hpp"
 #include "SimulationMap.cuh"
 #include "Particle.cuh"
 #include "fucking_shit.cuh"
@@ -38,7 +38,7 @@ __global__ void init_polyhedron(SimulationMap *polyhedron, ...)
 
 __global__ void run_iteration(const SimulationMap *polyhedron, ll *iteration_number)
 {
-    MapPoint *self = &polyhedron->points[blockIdx.x * blockDim.x + threadIdx.x];
+    MapNode *self = &polyhedron->points[blockIdx.x * blockDim.x + threadIdx.x];
 
     if(jc::projectnutrients && *iteration_number >= jc::startprojecttime)
         // Projecting food:
@@ -66,7 +66,7 @@ __global__ void run_iteration(const SimulationMap *polyhedron, ll *iteration_num
 
 __global__ void iteration_post_triggers(const SimulationMap *polyhedron)
 {
-    MapPoint *self = &polyhedron->points[blockIdx.x * blockDim.x + threadIdx.x];
+    MapNode *self = &polyhedron->points[blockIdx.x * blockDim.x + threadIdx.x];
 
     self->trail = self->temp_trail;
 }

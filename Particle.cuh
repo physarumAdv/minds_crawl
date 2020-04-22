@@ -10,9 +10,9 @@ struct SpacePoint {
 class Particle
 {
 public:
-    Particle(SpacePoint me, double angle, Polyhedron *polyhedron, int polyhedron_face);
+    Particle(SpacePoint self_coordinates, double angle, Polyhedron *polyhedron, int polyhedron_face);
 
-    SpacePoint me;
+    SpacePoint self_coordinates;
     SpacePoint left_sensor, middle_sensor, right_sensor;
     SpacePoint polyhedron_face_normal;
 };
