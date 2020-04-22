@@ -1,8 +1,8 @@
 #include <iostream>
 
 #include "MapPoint.hpp"
-#include "Polyhedron.cuh"
-#include "Particle.hpp"
+#include "SimulationMap.cuh"
+#include "Particle.cuh"
 #include "fucking_shit.cuh"
 #include "model_constants.hpp"
 #include "random_generator.cuh"
@@ -24,46 +24,51 @@ __global__ void init_food(...)
     // <initialization here>
 }
 
-__global__ void init_polyhedron(Polyhedron *polyhedron, ...)
+__global__ void init_polyhedron(SimulationMap *polyhedron, ...)
 {
     force_one_threaded_kernel();
 
-    /* WARNING!!! As you can see, we're creating a new `Polyhedron` object
+    /* WARNING!!! As you can see, we're creating a new `SimulationMap` object
      * and _copying_ it to `*polyhedron`, not assigning the pointer. This
      * is done in purpose, to make it possible to copy `*polyhedron` back to
      * host code.
      */
-    *polyhedron = *(new Polyhedron(...));
+    *polyhedron = *(new SimulationMap(...));
 }
 
-__global__ void run_iteration(const Polyhedron *polyhedron, ll *iteration_number)
+__global__ void run_iteration(const SimulationMap *polyhedron, ll *iteration_number)
 {
-    ll i = blockIdx.x * blockDim.x + threadIdx.x;
-    MapPoint *self = &polyhedron->points[i];
+    MapPoint *self = &polyhedron->points[blockIdx.x * blockDim.x + threadIdx.x];
 
     if(jc::projectnutrients && *iteration_number >= jc::startprojecttime)
         // Projecting food:
-        polyhedron->points[i].trail += polyhedron->points[i].food;
+        self->trail += self->food;
 
     // Diffuses trail in current point
     diffuse_trail(self);
-    self->trail = self->temp_trail; to_be_rewritten; // TODO: Must be called independently from run_iteration
 
     if(self->contains_particle)
     {
-        do_motor_behaviours(polyhedron, i);
-        do_sensory_behaviours(polyhedron, i);
+        do_motor_behaviours(polyhedron, self);
+        do_sensory_behaviours(polyhedron, self);
 
         if(jc::do_random_death_test && jc::death_random_probability > 0 &&
            *iteration_number > jc::startprojecttime)
-            random_death_test(&polyhedron->points[i]);
+            random_death_test(self);
         if(*iteration_number % jc::death_frequency_test == 0)
             death_test(self);
         if(*iteration_number % jc::division_frequency_test == 0)
             division_test(self);
     }
 
-    ++*iteration_number
+    ++*iteration_number;
+}
+
+__global__ void iteration_post_triggers(const SimulationMap *polyhedron)
+{
+    MapPoint *self = &polyhedron->points[blockIdx.x * blockDim.x + threadIdx.x];
+
+    self->trail = self->temp_trail;
 }
 
 __host__ int main()
@@ -71,8 +76,8 @@ __host__ int main()
     // Initializing cuRAND:
     init_rand<<<1, 1>>>(time(nullptr));
 
-    Polyhedron *polyhedron;
-    cudaMallocManaged((void **) &polyhedron, sizeof(Polyhedron));
+    SimulationMap *polyhedron;
+    cudaMallocManaged((void **) &polyhedron, sizeof(SimulationMap));
     init_polyhedron<<<1, 1>>>(polyhedron);
 
     // <Precalculations (like cos, sin, ...) here>
@@ -88,6 +93,7 @@ __host__ int main()
                                   * and don't want cpu to do anything between runs within a group */)
     {
         run_iteration<<<cuda_grid_size, cuda_block_size>>>(polyhedron, iteration_number);
+        iteration_post_triggers<<<cuda_grid_size, cuda_block_size>>>(polyhedron);
         // <redrawing here>
     }
 }

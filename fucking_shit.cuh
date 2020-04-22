@@ -6,7 +6,7 @@
 #define MIND_S_CRAWL_FUCKING_SHIT_CUH
 
 #include "MapPoint.hpp"
-#include "Polyhedron.cuh"
+#include "SimulationMap.cuh"
 
 typedef long long ll;
 

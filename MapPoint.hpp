@@ -1,7 +1,7 @@
 #ifndef MIND_S_CRAWL_MAP_POINT_HPP
 #define MIND_S_CRAWL_MAP_POINT_HPP
 
-#include "Particle.hpp"
+#include "Particle.cuh"
 
 
 class MapPoint
