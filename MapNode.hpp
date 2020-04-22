@@ -24,8 +24,8 @@ public:
     bool contains_particle;
     Particle *particle;
 
-    /** The `polyhedron_face_number` is either a number of the polyhedron's face it
-     * is stored on, or -1 if all the node's neighbours are on the same face
+    /** The `polyhedron_face_number` is either a number of the polyhedron's face
+     * it is placed on, or -1 if all the node's neighbours are on the same face
      */
     int polyhedron_face_number;
 };
