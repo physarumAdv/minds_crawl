@@ -1,7 +1,7 @@
 #ifndef MIND_S_CRAWL_SIMULATIONMAP_CUH
 #define MIND_S_CRAWL_SIMULATIONMAP_CUH
 
-#include "MapNode.hpp"
+#include "MapNode.cuh"
 #include "fucking_shit.cuh"
 
 typedef long long ll;

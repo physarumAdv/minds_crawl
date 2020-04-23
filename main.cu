@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "MapNode.hpp"
+#include "MapNode.cuh"
 #include "SimulationMap.cuh"
 #include "Particle.cuh"
 #include "fucking_shit.cuh"
@@ -10,7 +10,7 @@
 namespace jc = jones_constants;
 typedef long long ll;
 
-#define force_one_threaded_kernel() if(threadIdx.x || threadIdx.y || threadIdx.z || \
+#define stop_all_threads_except_first if(threadIdx.x || threadIdx.y || threadIdx.z || \
         blockIdx.x || blockIdx.y || blockIdx.z) return
 
 
@@ -19,14 +19,14 @@ const ll cuda_block_size = 256;
 
 __global__ void init_food(...)
 {
-    force_one_threaded_kernel();
+    stop_all_threads_except_first;
 
     // <initialization here>
 }
 
 __global__ void init_simulation_objects(SimulationMap *simulation_map, Polyhedron *polyhedron, ...)
 {
-    force_one_threaded_kernel();
+    stop_all_threads_except_first;
 
     /* WARNING!!! As you can see, we're creating a new `SimulationMap` object
      * and _copying_ it to `*simulation_map`, not assigning the pointer. This
@@ -44,7 +44,7 @@ __global__ void run_iteration(const SimulationMap *simulation_map, ll *iteration
         // Projecting food:
         self->trail += self->food;
 
-    // Diffuses trail in current point
+    // Diffuses trail in the current node
     diffuse_trail(self);
 
     if(self->contains_particle)
@@ -60,15 +60,22 @@ __global__ void run_iteration(const SimulationMap *simulation_map, ll *iteration
         if(*iteration_number % jc::division_frequency_test == 0)
             division_test(self);
     }
+}
 
+__global__ void iteration_post_triggers(const SimulationMap *simulation_map, int *iteration_number)
+{
+    MapNode *self = &simulation_map->points[blockIdx.x * blockDim.x + threadIdx.x];
+    self->trail = self->temp_trail;
+
+    stop_all_threads_except_first;
     ++*iteration_number;
 }
 
-__global__ void iteration_post_triggers(const SimulationMap *simulation_map)
+template<class T>
+__global__ inline void set_variable_to_value(T *variable, T value)
 {
-    MapNode *self = &simulation_map->points[blockIdx.x * blockDim.x + threadIdx.x];
-
-    self->trail = self->temp_trail;
+    stop_all_threads_except_first;
+    *variable = value;
 }
 
 __host__ int main()
@@ -82,17 +89,17 @@ __host__ int main()
     cudaMallocManaged((void **) &polyhedron, sizeof(Polyhedron));
     init_simulation_objects<<<1, 1>>>(simulation_map, polyhedron);
 
-    // <Precalculations (like cos, sin, ...) here>
     init_food<<<1, 1>>>(...);
 
     ll *iteration_number;
-    cudaMallocManaged((void **) &iteration_number, sizeof(ll));
+    cudaMalloc((void **) &iteration_number, sizeof(ll));
+    set_variable_to_value<<<1, 1>>>(iteration_number, 0LL);
 
     const ll cuda_grid_size = (simulation_map->get_n_of_points() + cuda_block_size - 1) /
                               cuda_block_size;
-    for(*iteration_number = 0;; /* iteration_number is updated inside run_iteration,
-                                  * because we're going to run this as a stream/graph later
-                                  * and don't want cpu to do anything between runs within a group */)
+    for(;; /* iteration_number is updated inside `run_iteration`,
+            * because we're going to run this all as a cuda stream/graph later
+            * and don't want cpu to do anything between runs within a group */)
     {
         run_iteration<<<cuda_grid_size, cuda_block_size>>>(simulation_map, iteration_number);
         iteration_post_triggers<<<cuda_grid_size, cuda_block_size>>>(simulation_map);

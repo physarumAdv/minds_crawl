@@ -5,13 +5,13 @@
 #ifndef MIND_S_CRAWL_FUCKING_SHIT_CUH
 #define MIND_S_CRAWL_FUCKING_SHIT_CUH
 
-#include "MapNode.hpp"
+#include "MapNode.cuh"
 #include "SimulationMap.cuh"
 
 typedef long long ll;
 
 
-__device__ void create_particle(MapNode *p);
+__device__ void create_particle(MapNode *p, Polyhedron *polyhedron, int polyhedron_face)
 
 __device__ void delete_particle(MapNode *p);
 

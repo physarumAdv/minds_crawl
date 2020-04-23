@@ -16,14 +16,13 @@ __device__ void diffuse_trail(MapNode *m)
              get_trail(m->bottom->left) + get_trail(m->bottom) +
              get_trail(m->bottom->right);
 
-    // 9.0 is the count of `MapNode`s in a window (implementation-level constant)
-    m->temp_trail = (double) sum / 9.0;
+    m->temp_trail = (double) sum / (1 - jc::diffdamp);
 }
 
-void create_particle(MapNode *p)
+__device__ void create_particle(MapNode *p, Polyhedron *polyhedron, int polyhedron_face)
 {
     // TODO: this may cause a memoery leak, if it containts a particle already. Think about it and probably add a check
-    p->particle = new Particle;
+    p->particle = new Particle(p->coordinates, polyhedron, polyhedron_face);
     /* Please, note that we're using `new` and `delete` operators for allocating and deallocating Particles,
      * and it doesn't matter if we're running on cpu or gpu
      */
@@ -98,7 +97,7 @@ __device__ void division_test(MapNode *m)
                 {
                     if(!cur->contains_particle)
                     {
-                        create_particle(cur);
+                        create_particle(cur, cur->polyhedron, cur->polyhedron_face);
                         return;
                     }
                     cur = cur->right;
