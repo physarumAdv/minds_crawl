@@ -5,10 +5,13 @@
  * THIS IS EXTREMELY FUCKING IMPORTANT
  */
 
+/**
+ * A namespace containing model-level constants for simulation
+ *
+ * @note Constants themselves are not documented yet, see https://www.overleaf.com/read/vnwxqhdhzknw for details
+ */
 namespace jones_constants
 {
-    // See https://www.overleaf.com/read/vnwxqhdhzknw for parameters' descriptions
-
     const bool osc = false;
     const double pcd = 0;
     const double oscresetprob = 0.01;

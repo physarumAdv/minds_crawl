@@ -7,29 +7,42 @@
 typedef long long ll;
 
 
+/// Object describing a simulation's map
 class SimulationMap
 {
 public:
-    __device__ SimulationMap(...);
-
-    //__host__ __device__ dim3 get_upper_bound_size() const;
-    __host__ __device__ ll get_n_of_points() const;
-
-
-    /* Both of the following arrays contain pointers to `MapNode`s, which are on
-     * the polyhedron's surface. The `points` array is a linear array just with
-     * all the `MapNode`s on a surface (their order is undefined). The `cube`
-     * array is 3-dimensional, and `cube[x][y][z]` points either to MapNode
-     * with (x, y, z) coordinates (if (x, y, z) is on the polyhedron's surface),
-     * or to `nullptr` (if (x, y, z) is not on the polyhedron's surface)
+    /**
+     * Creates a `SimulationMap` object
+     *
+     * This function isn't implemented yet, neither it's ready to be implemented, so the description stays
+     * empty for now
      */
-    //MapNode *cube; // 3-dimensional array of MapNode *
-    MapNode *points; // 1-dimensional of MapNode *
+    __device__ SimulationMap(...);
+    // TODO: add a destructor
+
+    /**
+     * Returns the number of nodes in the simulation
+     *
+     * @return The number of nodes on the map
+     *
+     * @note This number is never ever changed since creation of the object
+     */
+    __device__ ll get_n_of_nodes() const;
+
+    /**
+     * Returns the number of nodes in the simulation
+     *
+     * @overload
+     */
+    __global__ void get_n_of_nodes(ll *return_value) const;
+
+
+    /// The array of nodes on the map
+    MapNode *nodes;
 
 private:
-
-    //dim3 cube_max;
-    ll n_of_points;
+    /// The number of nodes on the map
+    ll n_of_nodes;
 };
 
 #endif //MIND_S_CRAWL_SIMULATIONMAP_CUH
