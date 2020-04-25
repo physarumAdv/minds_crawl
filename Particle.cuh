@@ -12,11 +12,11 @@ public:
     /**
      * Creates a `Particle` object
      *
-     * @param coordinates The coordinates to create particle at
      * @param polyhedron The polyhedron to create particle on
      * @param polyhedron_face The polyhedron's face to create particle on
+     * @param coordinates The coordinates to create particle at
      */
-    __device__ Particle(SpacePoint coordinates, Polyhedron *polyhedron, int polyhedron_face);
+    __device__ Particle(const Polyhedron *const polyhedron, int polyhedron_face, SpacePoint coordinates);
 
     /// The particle's location
     SpacePoint coordinates;

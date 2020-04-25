@@ -1,4 +1,5 @@
 #include "SimulationMap.cuh"
+#include "common.cuh"
 
 
 __device__ ll SimulationMap::get_n_of_nodes() const
@@ -6,7 +7,9 @@ __device__ ll SimulationMap::get_n_of_nodes() const
     return this->n_of_nodes;
 }
 
-__host__ void SimulationMap::get_n_of_nodes(ll *return_value) const
+__global__ void get_n_of_nodes(const SimulationMap *const simulation_map, ll *return_value)
 {
-    *return_value = this->n_of_nodes;
+    stop_all_threads_except_first;
+
+    *return_value = simulation_map->get_n_of_nodes();
 }

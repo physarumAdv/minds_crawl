@@ -3,8 +3,7 @@
 
 #include "MapNode.cuh"
 #include "fucking_shit.cuh"
-
-typedef long long ll;
+#include "common.cuh"
 
 
 /// Object describing a simulation's map
@@ -32,9 +31,9 @@ public:
     /**
      * Returns the number of nodes in the simulation
      *
-     * @overload
+     * @overload SimulationMap::get_n_of_nodes
      */
-    __global__ void get_n_of_nodes(ll *return_value) const;
+    friend __global__ void get_n_of_nodes(const SimulationMap *simulation_map, ll *return_value);
 
 
     /// The array of nodes on the map

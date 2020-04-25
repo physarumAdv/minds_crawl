@@ -22,20 +22,20 @@ __device__ void diffuse_trail(MapNode *node)
 
 __device__ void create_particle(MapNode *node)
 {
-    node->particle = new Particle(node->coordinates, node->polyhedron, node->polyhedron_face);
     /* Please, note that we're using `new` and `delete` operators for allocating and deallocating Particles,
      * and it doesn't matter if we're running on cpu or gpu
      */
+    node->particle = new Particle(node->polyhedron, node->polyhedron_face, node->coordinates);
 
     node->contains_particle = true;
 }
 
 __device__ void delete_particle(MapNode *node)
 {
-    delete node->particle;
     /* Please, note that we're using `new` and `delete` operators for allocating and deallocating Particles,
      * and it doesn't matter if we're running on cpu or gpu
      */
+    delete node->particle;
 
     node->contains_particle = false;
 }

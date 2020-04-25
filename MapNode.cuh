@@ -23,11 +23,11 @@ public:
      * @param polyhedron_face The polyhedron's face to create node on
      * @param coordinates The coordinates of node to create node at
      */
-    __device__ MapNode(Polyhedron *polyhedron, int polyhedron_face, SpacePoint coordinates);
+    __device__ MapNode(const Polyhedron *polyhedron, int polyhedron_face, SpacePoint coordinates);
     // TODO: add a destructor
 
     /// Polyhedron containing the node
-    Polyhedron *const polyhedron;
+    const Polyhedron *const polyhedron;
 
     /// Polyhedron's face the node is located on
     const int polyhedron_face;
@@ -50,7 +50,7 @@ public:
 
 
     /// The node's coordinates
-    SpacePoint coordinates;
+    const SpacePoint coordinates;
 
 
     /// Pointer to a neighbor from the corresponding side
@@ -60,7 +60,7 @@ public:
     /// Whether there is a particle attached to the node
     bool contains_particle;
 
-    /// Pointer to a particle attached to the node if it exists or `nullptr` otherwise
+    /// Pointer to a particle attached to the node if it exists or TO WHATEVER otherwise
     Particle *particle;
 };
 

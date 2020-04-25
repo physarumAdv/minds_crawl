@@ -7,8 +7,7 @@
 
 #include "MapNode.cuh"
 #include "SimulationMap.cuh"
-
-typedef long long ll;
+#include "common.cuh"
 
 
 /**

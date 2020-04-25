@@ -6,28 +6,13 @@
 #include "fucking_shit.cuh"
 #include "model_constants.hpp"
 #include "random_generator.cuh"
+#include "common.cuh"
 
 namespace jc = jones_constants;
-typedef long long ll;
-
-#define stop_all_threads_except_first if(threadIdx.x || threadIdx.y || threadIdx.z || \
-        blockIdx.x || blockIdx.y || blockIdx.z) return
 
 
 const ll cuda_block_size = 256;
 
-
-/**
- * Initializes food on the Polyhedron's surface
- *
- * This function isn't implemented yet, neither it's ready to be implemented, so the description stays empty for now
- */
-__global__ void init_food(...)
-{
-    stop_all_threads_except_first;
-
-    // <initialization here>
-}
 
 /**
  * Initializes the simulation's objects (simulation map, polyhedron, probably something else)
@@ -42,19 +27,33 @@ __global__ void init_simulation_objects(SimulationMap *simulation_map, Polyhedro
 }
 
 /**
+ * Initializes food on the `SimulationMap`
+ *
+ * This function isn't implemented yet, neither it's ready to be implemented, so the description stays empty for now
+ */
+__global__ void init_food(...)
+{
+    stop_all_threads_except_first;
+
+    // <initialization here>
+}
+
+/**
  * Runs an iteration of the simulation (not self-sufficient, see the warning)
  *
  * Runs an iteration of the simulation on cuda device if compiled for gpu. Projects food, diffuses trail,
  * moves particles, runs division/death tests and so on
  *
  * @param simulation_map The simulation map to run iteration on
- * @param iteration_number The number of current iteration, used to run division/death tests with needed frequencies
+ * @param iteration_number The current iteration number, used to run division/death tests with needed frequencies
  *      (recent are declared in the `jones_constants` namespace)
  *
  * @note Run the function with `<<<gridDim, blockDim>>>` such that total number of runned threads
- *      is greater or equal to `simulation_map->get_n_of_nodes()`
+ *      is greater or equal to `simulation_map->get_n_of_nodes()` and all of four `gridDim.y`, `gridDim.z`,
+ *      `blockDim.y`, `blockDim.z` are equal to 1
  *
  * @warning This function is not self-sufficient. After running it you also need to run `iteration_post_triggers`
+ *      with the same arguments
  */
 __global__ void run_iteration(const SimulationMap *simulation_map, const ll *const iteration_number)
 {
@@ -72,8 +71,8 @@ __global__ void run_iteration(const SimulationMap *simulation_map, const ll *con
 
     if(self->contains_particle)
     {
-        do_motor_behaviours(simulation_map, self);
-        do_sensory_behaviours(simulation_map, self);
+        do_motor_behaviours(self);
+        do_sensory_behaviours(self);
 
         if(jc::do_random_death_test && jc::death_random_probability > 0 &&
            *iteration_number > jc::startprojecttime)
@@ -135,7 +134,7 @@ __host__ inline void set_cuda_variable_value(T *destination, T value)
  *
  * @tparam T Type of a value being copied
  *
- * @param source Device-allocated pointer to copy from
+ * @param source Device memory pointer to copy from
  *
  * @returns The value from device memory
  *
@@ -170,7 +169,7 @@ __host__ int main()
     // Obtaining `n_of_nodes`:
     ll *_temporary;
     cudaMalloc((void **) &_temporary, sizeof(ll));
-    simulation_map->get_n_of_nodes(_temporary);
+    get_n_of_nodes<<<1, 1>>>(simulation_map, _temporary);
     const ll n_of_nodes = get_cuda_variable_value(_temporary);
     cudaFree(_temporary);
 
