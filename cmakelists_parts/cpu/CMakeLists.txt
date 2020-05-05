@@ -5,7 +5,7 @@ project(mind_s_crawl CUDA)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmakelists_parts/common/1/CMakeLists.txt)
 before_target_creation(executables_list)
 
-add_executable(mind_s_crawl main.cpp ${executables_list})
+add_executable(mind_s_crawl src/main.cpp ${executables_list})
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmakelists_parts/common/2/CMakeLists.txt)
 after_target_creation()
