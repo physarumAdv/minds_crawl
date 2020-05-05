@@ -22,7 +22,7 @@ public:
     /**
      * Returns the number of nodes in the simulation
      *
-     * @return The number of nodes on the map
+     * @returns The number of nodes on the map
      *
      * @note This number is never ever changed since creation of the object
      */
