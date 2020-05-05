@@ -7,3 +7,8 @@ __device__ MapNode::MapNode(const Polyhedron *const polyhedron, int polyhedron_f
 {
 
 }
+
+__device__ MapNode::~MapNode()
+{
+    delete particle;
+}

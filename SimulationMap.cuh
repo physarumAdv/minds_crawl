@@ -17,7 +17,7 @@ public:
      * empty for now
      */
     __device__ SimulationMap(...);
-    // TODO: add a destructor
+    __device__ ~SimulationMap();
 
     /**
      * Returns the number of nodes in the simulation

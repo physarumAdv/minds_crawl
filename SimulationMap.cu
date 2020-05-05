@@ -13,3 +13,10 @@ __global__ void get_n_of_nodes(const SimulationMap *const simulation_map, ll *re
 
     *return_value = simulation_map->get_n_of_nodes();
 }
+
+// Implement SimulationMap::SimulationMap(...) here
+
+__device__ SimulationMap::~SimulationMap()
+{
+    delete[] nodes;
+}

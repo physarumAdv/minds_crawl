@@ -24,7 +24,7 @@ public:
      * @param coordinates The coordinates of node to create node at
      */
     __device__ MapNode(const Polyhedron *polyhedron, int polyhedron_face, SpacePoint coordinates);
-    // TODO: add a destructor
+    __device__ ~MapNode();
 
     /// Polyhedron containing the node
     const Polyhedron *const polyhedron;
