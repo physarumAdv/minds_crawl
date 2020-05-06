@@ -45,8 +45,8 @@ public:
     /// Temporary trail value in the node (implementation-level field)
     double temp_trail;
 
-    /// Food value in the node
-    double food;
+    /// Whether there is food in the current node
+    bool contains_food;
 
 
     /// The node's coordinates

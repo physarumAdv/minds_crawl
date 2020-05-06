@@ -57,15 +57,37 @@ __global__ void init_food(...)
  */
 __global__ void run_iteration(const SimulationMap *simulation_map, const ll *const iteration_number)
 {
-    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if(i >= simulation_map->get_n_of_nodes())
-        return;
-    MapNode *self = &simulation_map->nodes[i];
+    /// Pointer to the `MapNode` being processed by current thread
+    MapNode *self;
+    {
+        unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if(i >= simulation_map->get_n_of_nodes())
+            return;
+        self = &simulation_map->nodes[i];
+    }
 
     if(jc::projectnutrients && *iteration_number >= jc::startprojecttime)
-        // TODO: trail projection needs to be rewritten
-        // Projecting food:
-        self->trail += self->food;
+    {
+        if(self->contains_food)
+        {
+            double trail_value;
+            if(count_particles_in_node_window(self, 3) > 0)
+                trail_value = jc::suppressvalue;
+            else
+                trail_value = jc::projectvalue;
+
+            // Add trail to 3x3 node window
+            MapNode *left = self->left;
+            for(MapNode *node : {left->top, left, left->bottom}) // for each leading node of rows of 3x3 square
+            {
+                for(int i = 0; i < 3; ++i)
+                {
+                    node->trail += trail_value; // add trail
+                    node = node->right; // move to next node in row
+                }
+            }
+        }
+    }
 
     // Diffuses trail in the current node
     diffuse_trail(self);
@@ -99,10 +121,14 @@ __global__ void run_iteration(const SimulationMap *simulation_map, const ll *con
  */
 __global__ void iteration_post_triggers(const SimulationMap *simulation_map, ll *const iteration_number)
 {
-    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if(i >= simulation_map->get_n_of_nodes())
-        return;
-    MapNode *self = &simulation_map->nodes[i];
+    /// Pointer to the `MapNode` being processed by current thread
+    MapNode *self;
+    {
+        unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+        if(i >= simulation_map->get_n_of_nodes())
+            return;
+        self = &simulation_map->nodes[i];
+    }
 
     self->trail = self->temp_trail;
 
