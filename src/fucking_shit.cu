@@ -44,8 +44,6 @@ __device__ void diffuse_trail(MapNode *node)
 
 __device__ ll count_particles_in_node_window(MapNode *node, int window_size)
 {
-    to_be_rewritten; // TODO: Rewrite this function in a more efficient way
-
     for(int i = 0; i < window_size / 2; ++i)
         node = node->top->left;
 
