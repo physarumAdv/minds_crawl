@@ -68,7 +68,7 @@ __device__ ll count_particles_in_node_window(MapNode *node, int window_size);
 /**
  * Runs a random death test in the given node
  *
- * Removes a particle in the given node with the `jones_constants::death_random_probability` probability
+ * Removes a particle in the given node with the `jones_constants::random_death_probability` probability
  *
  * @param node The node to run random death test in
  *

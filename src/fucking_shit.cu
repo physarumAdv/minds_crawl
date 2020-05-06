@@ -1,7 +1,7 @@
 #include "random_generator.cuh"
-#include "model_constants.hpp"
+#include "jones_constants.hpp"
 #include "fucking_shit.cuh"
-#include "model_constants.hpp"
+#include "jones_constants.hpp"
 
 namespace jc = jones_constants;
 
@@ -68,7 +68,7 @@ __device__ ll count_particles_in_node_window(MapNode *node, int window_size)
 
 __device__ void random_death_test(MapNode *node)
 {
-    if(rand0to1() < jc::death_random_probability)
+    if(rand0to1() < jc::random_death_probability)
     {
         delete_particle(node);
     }

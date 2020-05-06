@@ -4,7 +4,7 @@
 #include "SimulationMap.cuh"
 #include "Particle.cuh"
 #include "fucking_shit.cuh"
-#include "model_constants.hpp"
+#include "jones_constants.hpp"
 #include "random_generator.cuh"
 #include "common.cuh"
 
@@ -63,6 +63,7 @@ __global__ void run_iteration(const SimulationMap *simulation_map, const ll *con
     MapNode *self = &simulation_map->nodes[i];
 
     if(jc::projectnutrients && *iteration_number >= jc::startprojecttime)
+        // TODO: trail projection needs to be rewritten
         // Projecting food:
         self->trail += self->food;
 
@@ -74,12 +75,12 @@ __global__ void run_iteration(const SimulationMap *simulation_map, const ll *con
         do_motor_behaviours(self);
         do_sensory_behaviours(self);
 
-        if(jc::do_random_death_test && jc::death_random_probability > 0 &&
+        if(jc::do_random_death_test && jc::random_death_probability > 0 &&
            *iteration_number > jc::startprojecttime)
             random_death_test(self);
-        if(*iteration_number % jc::death_frequency_test == 0)
+        if(*iteration_number % jc::death_test_frequency == 0)
             death_test(self);
-        if(*iteration_number % jc::division_frequency_test == 0)
+        if(*iteration_number % jc::division_test_frequency == 0)
             division_test(self);
     }
 }
