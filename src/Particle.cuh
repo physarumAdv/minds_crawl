@@ -5,7 +5,7 @@
 #include "SpacePoint.hpp"
 
 
-/// Object describing a particle in the model (also called "agent" - from the original Jones' book)
+/// Object describing a particle in the model
 class Particle
 {
 public:

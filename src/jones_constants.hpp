@@ -1,9 +1,7 @@
+#include <cmath>
+
 #ifndef MIND_S_CRAWL_JONES_CONSTANTS_HPP
 #define MIND_S_CRAWL_JONES_CONSTANTS_HPP
-
-/* PLEASE REMEMBER TO UPDATE THESE VALUES BEFORE RUNNING IN 3D
- * THIS IS EXTREMELY FUCKING IMPORTANT
- */
 
 /**
  * A namespace containing model-level constants for simulation
@@ -12,6 +10,16 @@
  */
 namespace jones_constants
 {
+    /// How far do particle sensors stay from an agent (`so` stays for sensor offset)
+    const double so = 7;
+
+    /// The angle between left and middle, middle and right particle sensors (`sa` stays for sensor angle)
+    const double sa = M_PI * 45 / 180;
+
+    /// The angle at which particle rotates when needs it (rotation based on sensor values or random rotation)
+    const double ra = M_PI * 45 / 100;
+
+
     /**
      * Oscillatory mode (on/off)
      *
@@ -34,6 +42,13 @@ namespace jones_constants
      * reattach to a node which has a particle attached already
      */
     const double dept = 5;
+
+    /**
+     * Step size of a particle. How far does particle move on each step
+     *
+     * @warning The `speed` value <b>MUST</b> be <b>AT MOST</b> half of <b>minimal</b> distance between two `MapNode`s
+     */
+    const double speed = 0.5;
 
 
     /// Whether we have to run random death test
