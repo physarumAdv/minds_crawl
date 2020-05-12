@@ -6,12 +6,12 @@ __device__ Polyhedron::Polyhedron(SpacePoint *vertices, Face *faces)
     this->faces = faces;
 }
 
-__device__ SpacePoint Polyhedron::get_vertice(int number)
+__device__ SpacePoint Polyhedron::get_vertex(int number)
 {
-    return this->vertices[i];
+    return this->vertices[number];
 }
 
 __device__ Face Polyhedron::get_face(int number)
 {
-    return this->faces[i];
+    return this->faces[number];
 }

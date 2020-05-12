@@ -1,15 +1,15 @@
 #ifndef MIND_S_CRAWL_POLYHEDRON_CUH
 #define MIND_S_CRAWL_POLYHEDRON_CUH
 
-#include "SpacePoint.hpp"
+#include "SpacePoint.cuh"
 
 /// Object describing a polyhedron face
 struct Face
 {
-    /// Array of vertice's numbers that belong to the face
-    int *vectices;
+    /// Array of vertices' numbers that belong to a face
+    int *vertices;
 
-    /// Normal to face
+    /// Normal to a face
     SpacePoint normal;
 };
 
@@ -22,25 +22,25 @@ public:
      * Creates a `Polyhedron` object
      *
      * @param vertices Array of polyhedron vertices' coordinates
-     * @param faces Array of `Face` objects describing each face of polyhedron
+     * @param faces Array of `Face` objects describing each face of a polyhedron
      */
     __device__ Polyhedron(SpacePoint *vertices, Face *faces);
 
     /**
-     * Returns coordinates of vertice with the number
+     * Returns coordinates of a vertex by number
      *
-     * @param number Number of vertice
+     * @param number Number of a vertex
      *
-     * @returns vertice coordinates
+     * @returns Vertex coordinates
      */
-    __device__ SpacePoint get_vertice(int number);
+    __device__ SpacePoint get_vertex(int number);
 
     /**
-     * Returns face with the number
+     * Returns a face by number
      *
-     * @param number Number of face
+     * @param number Number of a face
      *
-     * @returns face of polyhedron
+     * @returns Face of a polyhedron
      */
     __device__ Face get_face(int number);
 
