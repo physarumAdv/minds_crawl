@@ -3,7 +3,7 @@
 
 
 #include "Polyhedron.cuh"
-#include "SpacePoint.hpp"
+#include "SpacePoint.cuh"
 #include "Particle.cuh"
 
 

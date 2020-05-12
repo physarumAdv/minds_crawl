@@ -8,6 +8,6 @@ function(before_target_creation executable_list)
 
     # Everything except main.cu/main.cpp:
     set(executables_list src/fucking_shit.cu src/random_generator.cu src/SimulationMap.cu
-            src/Polyhedron.cu src/Particle.cu src/MapNode.cu src/SpacePoint.hpp src/common.cuh PARENT_SCOPE)
+            src/Polyhedron.cu src/Particle.cu src/MapNode.cu src/SpacePoint.cuh src/common.cuh PARENT_SCOPE)
 
 endfunction(before_target_creation)
