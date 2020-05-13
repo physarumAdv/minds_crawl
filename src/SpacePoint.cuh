@@ -55,4 +55,14 @@ __host__ __device__ double operator*(SpacePoint a, SpacePoint b);
 __host__ __device__ SpacePoint operator%(SpacePoint a, SpacePoint b);
 
 
+/**
+ * Returns the distance between two points
+ *
+ * @param a Point in 3D
+ * @param b Point in 3D
+ * @returns Distance between two points
+ */
+__device__ double get_distance(SpacePoint a, SpacePoint b);
+
+
 #endif //MIND_S_CRAWL_SPACEPOINT_CUH
