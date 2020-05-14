@@ -13,10 +13,9 @@ which file you choose
 
 ## Authors
 > [Pavel Artushkov](http://t.me/pavtiger), <pavTiger@gmail.com>
-
+>
 > [Tatiana Kadykova](http://vk.com/ricopin), <tanya-kta@bk.ru>
-
+>
 > [Nikolay Nechaev](http://t.me/kolayne), <nikolay_nechaev@mail.ru>
-
+>
 > [Olga Starunova](http://vk.com/id2051067), <bogadelenka@mail.ru>
-
