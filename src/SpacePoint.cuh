@@ -14,6 +14,7 @@ struct SpacePoint
  *
  * @param a Point in space, vector
  * @param b Point in space, vector
+ *
  * @returns Sum of two vectors in 3D
  */
 __host__ __device__ SpacePoint operator-(SpacePoint a, SpacePoint b);
@@ -23,24 +24,44 @@ __host__ __device__ SpacePoint operator-(SpacePoint a, SpacePoint b);
  *
  * @param a Point in space, mathematical vector
  * @param b Point in space, mathematical vector
+ *
  * @returns Difference of two vectors in 3D
  */
 __host__ __device__ SpacePoint operator+(SpacePoint a, SpacePoint b);
 
 /**
- * Returns the product of 3D vector and a number
+ * Returns the product of 3D vector by a number
  *
  * @param a Point in space, vector
  * @param b Number to multiply
+ *
  * @returns Product of 3D vectors and a number
  */
 __host__ __device__ SpacePoint operator*(SpacePoint a, double b);
+
+/**
+ * Returns the product of 3D vector by a number
+ *
+ * @overload
+ */
+__host__ __device__ SpacePoint operator*(double a, SpacePoint b);
+
+/**
+ * Returns the division of 3D vector by a number
+ *
+ * @param a Point in space, vector
+ * @param b Number to multiply
+ *
+ * @returns Product of 3D vectors and a number
+ */
+__host__ __device__ SpacePoint operator/(SpacePoint a, double b);
 
 /**
  * Returns the scalar product of two vectors
  *
  * @param a Point in space, vector
  * @param b Point in space, vector
+ *
  * @returns Scalar product of two vectors in 3D
  */
 __host__ __device__ double operator*(SpacePoint a, SpacePoint b);
@@ -50,6 +71,7 @@ __host__ __device__ double operator*(SpacePoint a, SpacePoint b);
  *
  * @param a Point in space, vector
  * @param b Point in space, vector
+ *
  * @returns Cross product of two vectors in 3D
  */
 __host__ __device__ SpacePoint operator%(SpacePoint a, SpacePoint b);
@@ -60,6 +82,7 @@ __host__ __device__ SpacePoint operator%(SpacePoint a, SpacePoint b);
  *
  * @param a Point in 3D
  * @param b Point in 3D
+ *
  * @returns Distance between two points
  */
 __device__ double get_distance(SpacePoint a, SpacePoint b);
