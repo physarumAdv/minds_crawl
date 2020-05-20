@@ -1,17 +1,17 @@
 #include "Polyhedron.cuh"
 
-__device__ Polyhedron::Polyhedron(SpacePoint *vertices, Face *faces)
+
+template<class T>
+__device__ T *allocate_and_copy(T *source, int count)
 {
-    this->vertices = vertices;
-    this->faces = faces;
+    T *p = new T[count];
+    memcpy(p, source, count * sizeof(T));
+    return p;
 }
 
-__device__ SpacePoint Polyhedron::get_vertex(int number)
+__device__ Polyhedron::Polyhedron(SpacePoint *vertices, Face *faces, ll n_of_faces, ll n_of_vertices) :
+        vertices(allocate_and_copy(vertices, n_of_vertices)), faces(allocate_and_copy(faces, n_of_faces)),
+        n_of_faces(n_of_faces), n_of_vertices(n_of_vertices)
 {
-    return this->vertices[number];
-}
 
-__device__ Face Polyhedron::get_face(int number)
-{
-    return this->faces[number];
 }
