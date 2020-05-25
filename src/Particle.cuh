@@ -17,7 +17,7 @@ public:
      * @param coordinates The coordinates to create particle at
      * @param angle Initial direction of the particle
      */
-    __device__ Particle(const Polyhedron *const polyhedron, int polyhedron_face, SpacePoint coordinates, int angle);
+    __device__ Particle(const Polyhedron *polyhedron, int polyhedron_face, SpacePoint coordinates, double angle);
 
     /// The particle's location
     SpacePoint coordinates;
@@ -40,7 +40,7 @@ private:
      *
      * @returns New coordinates of the point
      */
-    __device__ SpacePoint rotate_point_angle(SpacePoint radius, int angle);
+    __device__ SpacePoint rotate_point_angle(SpacePoint radius, double angle) const;
 
     /// Initializes left and right sensors relative to the middle sensor
     __device__ void init_left_right_sensors();
