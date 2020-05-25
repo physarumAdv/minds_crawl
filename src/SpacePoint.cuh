@@ -8,6 +8,9 @@ struct SpacePoint
     double x, y, z;
 };
 
+/// The origin of space
+__device__ SpacePoint origin = {0, 0, 0};
+
 
 /**
  * Returns the sum of two vectors in space
@@ -86,6 +89,27 @@ __host__ __device__ SpacePoint operator%(SpacePoint a, SpacePoint b);
  * @returns Distance between two points
  */
 __device__ double get_distance(SpacePoint a, SpacePoint b);
+
+/**
+ * Returns the point of lines AB and CD intersection or origin if they are parallel
+ *
+ * @param pointA Point belongs to the line AB
+ * @param pointB Point belongs to the line AB
+ * @param pointC Point belongs to the line CD
+ * @param pointD Point belongs to the line CD
+ *
+ * @returns The point of two lines intersection or origin if they are parallel
+ */
+__device__ SpacePoint line_intersection(SpacePoint pointA, SpacePoint pointB, SpacePoint pointC, SpacePoint pointD);
+
+/**
+ * Checks if the point C is in segment AB
+ * @param pointA Point A of segment AB
+ * @param pointB Point B of segment AB
+ * @param pointC Point C to check
+ * @returns `true` if point C belongs to segment AB, `false` otherwise
+ */
+__device__ bool is_in_segment(SpacePoint pointA, SpacePoint pointB, SpacePoint pointC);
 
 
 #endif //MIND_S_CRAWL_SPACEPOINT_CUH
