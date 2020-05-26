@@ -4,7 +4,7 @@
 #include "jones_constants.hpp"
 
 namespace jc = jones_constants;
-SpacePoint origin = {0, 0, 0};
+__device__ SpacePoint origin = {0, 0, 0};
 
 __device__ Particle::Particle(const Polyhedron *const polyhedron, int polyhedron_face_id,
                               SpacePoint coordinates, double angle)

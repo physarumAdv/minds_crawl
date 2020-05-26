@@ -37,7 +37,7 @@ public:
      * Whether the node has foreign neighbors or not
      * (foreign neighbors are neighbors with different `polyhedron_face_id` value)
      */
-    bool is_on_edge;
+    bool is_near_edge;
 
 
     /// Trail value in the node
