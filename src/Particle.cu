@@ -1,16 +1,18 @@
 #include "Particle.cuh"
+#include "Polyhedron.cuh"
+#include "Face.cuh"
 #include "jones_constants.hpp"
 
 namespace jc = jones_constants;
 SpacePoint origin = {0, 0, 0};
 
-__device__ Particle::Particle(const Polyhedron *const polyhedron, int polyhedron_face,
-                              SpacePoint coordinates, int angle)
+__device__ Particle::Particle(const Polyhedron *const polyhedron, int polyhedron_face_id,
+                              SpacePoint coordinates, double angle)
 {
     this->coordinates = coordinates;
-    this->polyhedron_face = polyhedron_face;
+    this->polyhedron_face_id = polyhedron_face_id;
 
-    Face current_face = polyhedron->faces[polyhedron_face];
+    Face current_face = polyhedron->faces[polyhedron_face_id];
     this->normal = current_face.normal;
 
     SpacePoint radius = polyhedron->vertices[current_face.vertices[0]] - coordinates;
@@ -18,7 +20,7 @@ __device__ Particle::Particle(const Polyhedron *const polyhedron, int polyhedron
     this->middle_sensor = this->rotate_point_angle(radius, angle);
 }
 
-__device__ SpacePoint Particle::rotate_point_angle(SpacePoint radius, int angle)
+__device__ SpacePoint Particle::rotate_point_angle(SpacePoint radius, double angle)
 {
     double angle_cos = cos(angle);
     return (1 - angle_cos) * (this->normal * radius) * this->normal + angle_cos * radius +

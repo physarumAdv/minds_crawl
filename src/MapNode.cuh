@@ -2,10 +2,11 @@
 #define MIND_S_CRAWL_MAPNODE_CUH
 
 
-#include "Polyhedron.cuh"
 #include "SpacePoint.cuh"
 #include "Particle.cuh"
 
+
+class Polyhedron;
 
 // TODO: add @see to the modified model description to the following docstring
 /**
@@ -20,21 +21,21 @@ public:
      * Creates a `MapNode` object
      *
      * @param polyhedron The polyhedron to create node on
-     * @param polyhedron_face The polyhedron's face to create node on
+     * @param polyhedron_face_id The polyhedron's face to create node on
      * @param coordinates The coordinates of node to create node at
      */
-    __device__ MapNode(const Polyhedron *polyhedron, int polyhedron_face, SpacePoint coordinates);
+    __device__ MapNode(const Polyhedron *polyhedron, int polyhedron_face_id, SpacePoint coordinates);
     __device__ ~MapNode();
 
     /// Polyhedron containing the node
     const Polyhedron *const polyhedron;
 
     /// Polyhedron's face the node is located on
-    const int polyhedron_face;
+    const int polyhedron_face_id;
 
     /**
      * Whether the node has foreign neighbors or not
-     * (foreign neighbors are neighbors with different `polyhedron_face` value)
+     * (foreign neighbors are neighbors with different `polyhedron_face_id` value)
      */
     bool is_on_edge;
 

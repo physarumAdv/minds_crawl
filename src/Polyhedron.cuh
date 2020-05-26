@@ -2,30 +2,8 @@
 #define MIND_S_CRAWL_POLYHEDRON_CUH
 
 #include "SpacePoint.cuh"
+#include "Face.cuh"
 #include "common.cuh"
-
-/**
- * Returns pointer to a copied array
- *
- * @tparam T Type of an array
- *
- * @param source Pointer to an array to copy
- * @param count Number of elements to copy
- *
- * @returns Pointer to a copied array
- */
-template<class T>
-__device__ T *allocate_and_copy(T *source, int count);
-
-/// Object describing a polyhedron face
-struct Face
-{
-    /// Array of vertices' numbers that belong to a face
-    int *vertices;
-
-    /// Normal to a face
-    SpacePoint normal;
-};
 
 
 /// Object describing a geometric polyhedron for the simulation
@@ -40,7 +18,12 @@ public:
      * @param n_of_faces Number of polyhedron faces
      * @param n_of_vertices Number of polyhedron vertices
      */
-    __device__ Polyhedron(SpacePoint *vertices, Face *faces, ll n_of_faces, ll n_of_vertices;
+    __device__ Polyhedron(SpacePoint *vertices, Face *faces, ll n_of_faces, ll n_of_vertices);
+    __device__ ~Polyhedron();
+
+
+    __device__ int find_face_id_by_point(SpacePoint point);
+
 
     /// Array of coordinates of polyhedron vertices
     const SpacePoint *const vertices;

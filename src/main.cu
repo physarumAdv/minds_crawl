@@ -6,6 +6,7 @@
 #include "fucking_shit.cuh"
 #include "jones_constants.hpp"
 #include "random_generator.cuh"
+#include "Polyhedron.cuh"
 #include "common.cuh"
 
 namespace jc = jones_constants;
