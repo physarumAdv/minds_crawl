@@ -8,8 +8,12 @@ struct SpacePoint
     double x, y, z;
 };
 
+
 /// The origin of space
-__device__ SpacePoint origin = {0, 0, 0};
+__device__ const SpacePoint origin = {0, 0, 0};
+
+/// Observational error constant
+__device__ const double eps = 1. / (1000 * 100 * 100);
 
 
 /**

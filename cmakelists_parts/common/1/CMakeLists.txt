@@ -7,7 +7,7 @@ function(before_target_creation executable_list)
     set(CMAKE_CUDA_STANDARD 14)
 
     # Everything except main.cu/main.cpp:
-    set(executables_list src/fucking_shit.cu src/random_generator.cu src/SimulationMap.cu
-            src/Polyhedron.cu src/Particle.cu src/MapNode.cu src/SpacePoint.cuh src/common.cuh PARENT_SCOPE)
+    set(executables_list src/fucking_shit.cu src/random_generator.cu src/SimulationMap.cu src/Polyhedron.cu
+            src/Particle.cu src/MapNode.cu src/SpacePoint.cu src/common.cuh src/Face.cu PARENT_SCOPE)
 
 endfunction(before_target_creation)

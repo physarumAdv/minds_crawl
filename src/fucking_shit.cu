@@ -12,7 +12,8 @@ __device__ void create_particle(MapNode *node)
     /* Please, note that we're using `new` and `delete` operators for allocating and deallocating Particles,
      * and it doesn't matter if we're running on cpu or gpu
      */
-    node->particle = new Particle(node->polyhedron, node->polyhedron_face, node->coordinates);
+    node->particle = new Particle(node->polyhedron, node->polyhedron_face_id, node->coordinates,
+            rand0to1() * 360);
 
     node->contains_particle = true;
 }

@@ -5,6 +5,7 @@
 #ifndef MIND_S_CRAWL_FUCKING_SHIT_CUH
 #define MIND_S_CRAWL_FUCKING_SHIT_CUH
 
+
 #include "MapNode.cuh"
 #include "SimulationMap.cuh"
 #include "common.cuh"
