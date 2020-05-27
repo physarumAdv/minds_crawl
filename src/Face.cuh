@@ -2,9 +2,16 @@
 #define MIND_S_CRAWL_FACE_CUH
 
 #include "SpacePoint.cuh"
+#include "common.cuh"
 
-
-__device__ SpacePoint get_normal(const int *vertices, int n_of_vertices);
+/**
+ * Returns the normal to faces defined by vertices
+ *
+ * @param vertices Array of vertices' numbers that belong to the same face
+ *
+ * @returns Normal to face
+ */
+__device__ SpacePoint get_normal(const SpacePoint *vertices);
 
 
 class MapNode;
@@ -13,19 +20,28 @@ class MapNode;
 class Face
 {
 public:
-    __device__ Face(int id, const int *vertices, int n_of_vertices, MapNode *node);
+    /**
+     * Creates a `Face` object
+     *
+     * @param id Identifier of the polyhedron face
+     * @param vertices Array of polyhedron vertices that belong to the face
+     * @param n_of_vertices Number of vertices on the face
+     * @param node Some node laying on the face
+     */
+    __device__ Face(int id, const SpacePoint *vertices, ll n_of_vertices, MapNode *node);
+
+    /// Destructs a `Face` object
     __device__ ~Face();
 
 
     /// An identifier of the face of a `Polyhedron`
     const int id;
 
-
-    /// Array of vertices' numbers that belong to the face
-    const int *vertices;
+    /// Array of vertices that belong to the face
+    const SpacePoint *vertices;
 
     /// Number of vertices on the face
-    const int n_of_vertices;
+    const ll n_of_vertices;
 
     /// Normal to the face
     const SpacePoint normal;

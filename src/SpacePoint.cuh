@@ -8,6 +8,8 @@ struct SpacePoint
     double x, y, z;
 };
 
+__device__ SpacePoint origin = {0, 0, 0};
+__device__ double eps = 1 / (1000 * 100 * 100);
 
 /**
  * Returns the sum of two vectors in space

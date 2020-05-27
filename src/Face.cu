@@ -1,11 +1,16 @@
 #include "Face.cuh"
 #include "MapNode.cuh"
-#include "common.cuh"
 
 
-__device__ Face::Face(int id, const int *vertices, int n_of_vertices, MapNode *node) :
+__device__ SpacePoint get_normal(const SpacePoint *vertices)
+{
+    SpacePoint normal = (vertices[2] - vertices[0]) % (vertices[1] - vertices[0]);
+    return normal / get_distance(normal, origin);
+}
+
+__device__ Face::Face(int id, const SpacePoint *vertices, ll n_of_vertices, MapNode *node) :
         id(id), vertices(malloc_and_copy(vertices, n_of_vertices)), n_of_vertices(n_of_vertices),
-        normal(get_normal(vertices, n_of_vertices)), node(node)
+        normal(get_normal(vertices)), node(node)
 {
 
 }
