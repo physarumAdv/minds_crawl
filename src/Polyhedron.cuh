@@ -40,7 +40,7 @@ public:
      * @param n_of_faces Number of polyhedron faces
      * @param n_of_vertices Number of polyhedron vertices
      */
-    __device__ Polyhedron(SpacePoint *vertices, Face *faces, ll n_of_faces, ll n_of_vertices;
+    __device__ Polyhedron(SpacePoint *vertices, Face *faces, ll n_of_faces, ll n_of_vertices);
 
     /// Array of coordinates of polyhedron vertices
     const SpacePoint *const vertices;

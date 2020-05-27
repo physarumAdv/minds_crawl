@@ -1,4 +1,5 @@
 #include "MapNode.cuh"
+#include "Particle.cuh"
 
 
 __device__ MapNode::MapNode(const Polyhedron *const polyhedron, int polyhedron_face, SpacePoint coordinates) :

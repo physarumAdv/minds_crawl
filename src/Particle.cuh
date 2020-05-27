@@ -4,6 +4,11 @@
 #include "Polyhedron.cuh"
 #include "SpacePoint.cuh"
 
+class MapNode;
+
+
+__device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, Face *current_face, Polyhedron polyhedron);
+
 
 /// Object describing a particle in the model (also called "agent" - from the original Jones' book)
 class Particle
@@ -19,6 +24,25 @@ public:
      */
     __device__ Particle(const Polyhedron *polyhedron, int polyhedron_face, SpacePoint coordinates, double angle);
 
+    /**
+     * Rotates particle in the current plane based on amount of trail under sensors
+     *
+     * If the maximum amount of trail is on the left sensor, particle rotates to the left on `jc::ra` radians;
+     * if the maximum amount of trail is on the right sensor, particle rotates to the right on `jc::ra` radians;
+     * if the maximum amount of trail is on the middle sensor, particle does not rotate
+     *
+     * @see Particle::rotate
+     */
+    __device__ void do_sensory_behaviours();
+
+    /**
+     * Rotates the particle by angle in the current plane
+     *
+     * @param angle The angle (in radians) to be rotated by
+     */
+    __device__ void rotate(double angle);
+
+
     /// The particle's location
     SpacePoint coordinates;
 
@@ -27,6 +51,10 @@ public:
 
     /// A number of the current face
     int polyhedron_face;
+
+    /// A map node the particle belongs to
+    MapNode *map_node;
+
 
     /// A normal to the current face
     SpacePoint normal;
@@ -41,6 +69,7 @@ private:
      * @returns New coordinates of the point
      */
     __device__ SpacePoint rotate_point_angle(SpacePoint radius, double angle) const;
+
 
     /// Initializes left and right sensors relative to the middle sensor
     __device__ void init_left_right_sensors();

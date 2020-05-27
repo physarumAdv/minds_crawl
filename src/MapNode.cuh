@@ -4,7 +4,8 @@
 
 #include "Polyhedron.cuh"
 #include "SpacePoint.cuh"
-#include "Particle.cuh"
+
+class Particle;
 
 
 // TODO: add @see to the modified model description to the following docstring
@@ -24,6 +25,8 @@ public:
      * @param coordinates The coordinates of node to create node at
      */
     __device__ MapNode(const Polyhedron *polyhedron, int polyhedron_face, SpacePoint coordinates);
+
+    /// Destructs a `MapNode` object
     __device__ ~MapNode();
 
     /// Polyhedron containing the node

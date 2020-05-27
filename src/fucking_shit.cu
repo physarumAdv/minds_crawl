@@ -1,6 +1,7 @@
+#include "fucking_shit.cuh"
 #include "random_generator.cuh"
 #include "jones_constants.hpp"
-#include "fucking_shit.cuh"
+#include "Particle.cuh"
 #include "jones_constants.hpp"
 
 namespace jc = jones_constants;

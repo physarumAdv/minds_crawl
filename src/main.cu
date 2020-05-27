@@ -95,7 +95,7 @@ __global__ void run_iteration(const SimulationMap *simulation_map, const ll *con
     if(self->contains_particle)
     {
         do_motor_behaviours(self);
-        do_sensory_behaviours(self);
+        self->particle->do_sensory_behaviours();
 
         if(jc::do_random_death_test && jc::random_death_probability > 0 &&
            *iteration_number > jc::startprojecttime)

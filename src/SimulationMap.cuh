@@ -17,6 +17,8 @@ public:
      * empty for now
      */
     __device__ SimulationMap(...);
+
+    /// Destructs a `SimulationMap` object
     __device__ ~SimulationMap();
 
     /**
