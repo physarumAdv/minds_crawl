@@ -3,6 +3,7 @@
 #include "Particle.cuh"
 #include "Polyhedron.cuh"
 #include "Face.cuh"
+#include "fucking_shit.cuh"
 #include "jones_constants.hpp"
 
 namespace jc = jones_constants;
@@ -46,9 +47,9 @@ __device__ void Particle::init_left_right_sensors()
 
 __device__ void Particle::do_sensory_behaviours()
 {
-    double trail_l = find_nearest_mapnode(left_sensor, map_node)->trail;
-    double trail_m = find_nearest_mapnode(middle_sensor, map_node)->trail;
-    double trail_r = find_nearest_mapnode(right_sensor, map_node)->trail;
+    double trail_l = find_nearest_mapnode(map_node->polyhedron, left_sensor, map_node)->trail;
+    double trail_m = find_nearest_mapnode(map_node->polyhedron, middle_sensor, map_node)->trail;
+    double trail_r = find_nearest_mapnode(map_node->polyhedron, right_sensor, map_node)->trail;
 
     if((trail_m > trail_l) && (trail_m > trail_r)) // m > l, r
         return;

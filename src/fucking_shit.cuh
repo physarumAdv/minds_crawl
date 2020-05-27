@@ -1,5 +1,5 @@
 /* This file contains all the functions I couldn't place anywhere else.
- * They will be rebased later
+ * They will be moved somewhere else later
  */
 
 #ifndef MIND_S_CRAWL_FUCKING_SHIT_CUH
@@ -107,5 +107,47 @@ __device__ void death_test(MapNode *node);
  * not containing a particle causes undefined behaviour
  */
 __device__ void division_test(MapNode *node);
+
+
+/**
+     * Greedily looks for a `MapNode` nearest to a given `dest` point
+     *
+     * A "current" `MapNode` is initialized with `start` value. On each iteration looks a current node's
+     * neighbor, which is nearer to `dest`, than the current node. If found it, it's the new value of current node.
+     * If current node is nearer than all the neighbors, it is the answer
+     *
+     * @param dest Destination space point we are trying to find
+     * @param start `MapNode` to start going from
+     *
+     * @returns `MapNode` found by the algorithm
+     *
+     * @note It's not guaranteed, that a node found with this function is actually the nearest one. Please, see:
+     *
+     * @see find_nearest_mapnode
+     */
+__device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint dest, MapNode *const start);
+
+/**
+ * Finds a `MapNode` which is nearest to a given destination `SpacePoint`. Tries to find it next to `start`, if
+ * it's provided
+ *
+ * Calls `find_nearest_mapnode_greedy` from the same arguments, if `start` is provided. If the face returned node
+ * is located on and the face `dest` is located on are same, the returned node is the answer. Otherwise (or if
+ * `start` is not provided) finds a `Face` of `this->polyhedron` to which `dest` is closest, and calls
+ * `find_nearest_mapnode_greedy` from dest and some `MapNode` located on the found face
+ *
+ * @param polyhedron
+ * @param dest `SpacePoint` to find nearest `MapNode` to
+ * @param start (optional) `MapNode` to start searching from
+ *
+ * @returns Pointer to a `MapNode` which is considered to be nearest to the given destination
+ *
+ * @note If the given destination is not located on the simulation's polyhedron, any `MapNode` of the simulation
+ * can be returned
+ *
+ * @see find_nearest_mapnode_greedy
+ */
+__device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, const SpacePoint dest, MapNode *start=nullptr);
+
 
 #endif //MIND_S_CRAWL_FUCKING_SHIT_CUH

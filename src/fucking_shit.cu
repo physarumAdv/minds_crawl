@@ -1,3 +1,5 @@
+#include <initializer_list>
+
 #include "fucking_shit.cuh"
 #include "random_generator.cuh"
 #include "jones_constants.hpp"
@@ -107,4 +109,43 @@ __device__ void division_test(MapNode *node)
             }
         }
     }
+}
+
+
+__device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint dest, MapNode *const start)
+{
+    MapNode *current = start;
+    double current_dist = get_distance(dest, current->coordinates);
+    while(true)
+    {
+        bool found_better = false;
+        for(auto next : {current->left, current->top, current->right, current->bottom})
+        {
+            double next_dist = get_distance(dest, next->coordinates);
+            if(next_dist < current_dist)
+            {
+                current = next;
+                current_dist = next_dist;
+                found_better = true;
+                break;
+            }
+        }
+        if(!found_better)
+            break;
+    }
+    return current;
+}
+
+__device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, SpacePoint dest, MapNode *start)
+{
+    int dest_face = polyhedron->find_face_id_by_point(dest);
+
+    if(start != nullptr)
+    {
+        MapNode *ans = find_nearest_mapnode_greedy(dest, start);
+        if(ans->polyhedron_face_id == dest_face)
+            return ans;
+    }
+
+    return find_nearest_mapnode_greedy(dest, polyhedron->faces[polyhedron->find_face_id_by_point(dest)].node);
 }
