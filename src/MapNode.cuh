@@ -27,6 +27,9 @@ public:
      */
     __device__ MapNode(Polyhedron *polyhedron, int polyhedron_face_id, SpacePoint coordinates);
 
+    /// Forbids copying `MapNode` objects
+    __host__ __device__ MapNode(const MapNode &) = delete;
+
     /// Destructs a `MapNode` object
     __device__ ~MapNode();
 

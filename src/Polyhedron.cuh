@@ -1,6 +1,7 @@
 #ifndef MIND_S_CRAWL_POLYHEDRON_CUH
 #define MIND_S_CRAWL_POLYHEDRON_CUH
 
+
 #include "SpacePoint.cuh"
 #include "Face.cuh"
 #include "common.cuh"
@@ -17,6 +18,9 @@ public:
      * @param n_of_faces Number of polyhedron faces
      */
     __device__ Polyhedron(Face *faces, ll n_of_faces);
+
+    /// Forbids copying `Polyhedron` objects
+    __host__ __device__ Polyhedron(const Polyhedron &) = delete;
 
     /// Destructs a `Polyhedron` object
     __device__ ~Polyhedron();

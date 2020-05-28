@@ -19,6 +19,9 @@ public:
      */
     __device__ SimulationMap(...);
 
+    /// Forbids copying `SimulationMap` objects
+    __host__ __device__ SimulationMap(const SimulationMap &) = delete;
+
     /// Destructs a `SimulationMap` object
     __device__ ~SimulationMap();
 

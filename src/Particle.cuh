@@ -26,6 +26,9 @@ public:
      */
     __device__ Particle(MapNode *map_node, SpacePoint coordinates, double angle);
 
+    /// Forbids copying `Particle` objects
+    __host__ __device__ Particle(const Particle &) = delete;
+
     /**
      * Rotates particle in the current plane based on amount of trail under sensors
      *
