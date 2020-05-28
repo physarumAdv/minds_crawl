@@ -17,7 +17,7 @@ public:
      * @param faces Array of `Face` objects describing each face of a
      * @param n_of_faces Number of polyhedron faces
      */
-    __device__ Polyhedron(Face *faces, ll n_of_faces);
+    __device__ Polyhedron(Face *faces, int n_of_faces);
 
     /// Forbids copying `Polyhedron` objects
     __host__ __device__ Polyhedron(const Polyhedron &) = delete;
@@ -39,7 +39,7 @@ public:
     Face *const faces;
 
     /// Number of polyhedron faces
-    const ll n_of_faces;
+    const int n_of_faces;
 
 };
 

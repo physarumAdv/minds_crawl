@@ -64,7 +64,7 @@ __device__ void diffuse_trail(MapNode *node);
  *
  * @returns The number of particles in the node window
  */
-__device__ ll count_particles_in_node_window(MapNode *node, int window_size);
+__device__ int count_particles_in_node_window(MapNode *node, int window_size);
 
 /**
  * Runs a random death test in the given node

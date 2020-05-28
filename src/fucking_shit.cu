@@ -45,13 +45,13 @@ __device__ void diffuse_trail(MapNode *node)
 }
 
 
-__device__ ll count_particles_in_node_window(MapNode *node, int window_size)
+__device__ int count_particles_in_node_window(MapNode *node, int window_size)
 {
     for(int i = 0; i < window_size / 2; ++i)
         node = node->top->left;
 
     MapNode *row = node;
-    ll ans = 0;
+    int ans = 0;
     for(int i = 0; i < window_size; ++i)
     {
         MapNode *cur = row;
@@ -77,7 +77,7 @@ __device__ void random_death_test(MapNode *node)
 
 __device__ void death_test(MapNode *node)
 {
-    ll particles_in_window = count_particles_in_node_window(node, jc::sw);
+    int particles_in_window = count_particles_in_node_window(node, jc::sw);
     if(jc::smin <= particles_in_window && particles_in_window <= jc::smax)
     {/* if in survival range, then stay alive */}
     else
@@ -86,16 +86,16 @@ __device__ void death_test(MapNode *node)
 
 __device__ void division_test(MapNode *node)
 {
-    ll particle_window = count_particles_in_node_window(node, jc::gw);
+    int particle_window = count_particles_in_node_window(node, jc::gw);
     if(jc::gmin <= particle_window && particle_window <= jc::gmax)
     {
         if(rand0to1() <= jc::division_probability)
         {
             MapNode *row = node->top->left;
-            for(ll i = 0; i < 3; ++i)
+            for(int i = 0; i < 3; ++i)
             {
                 MapNode *cur = row;
-                for(ll j = 0; j < 3; ++j)
+                for(int j = 0; j < 3; ++j)
                 {
                     if(!cur->contains_particle)
                     {

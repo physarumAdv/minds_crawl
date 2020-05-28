@@ -11,12 +11,12 @@ __device__ SimulationMap::~SimulationMap()
 }
 
 
-__device__ ll SimulationMap::get_n_of_nodes() const
+__device__ int SimulationMap::get_n_of_nodes() const
 {
     return this->n_of_nodes;
 }
 
-__global__ void get_n_of_nodes(const SimulationMap *const simulation_map, ll *return_value)
+__global__ void get_n_of_nodes(const SimulationMap *const simulation_map, int *return_value)
 {
     stop_all_threads_except_first;
 

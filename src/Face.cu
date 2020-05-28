@@ -8,7 +8,7 @@ __device__ SpacePoint get_normal(const SpacePoint *vertices)
     return normal / get_distance(normal, origin);
 }
 
-__device__ Face::Face(int id, const SpacePoint *vertices, ll n_of_vertices, MapNode *node) :
+__device__ Face::Face(int id, const SpacePoint *vertices, int n_of_vertices, MapNode *node) :
         id(id), vertices(malloc_and_copy(vertices, n_of_vertices)), n_of_vertices(n_of_vertices),
         normal(get_normal(vertices)), node(node)
 {

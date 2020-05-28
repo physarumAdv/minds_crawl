@@ -35,7 +35,7 @@ public:
      * vertices[1] and so on. Assuming there are N vertices in total, A's neighbors are B clockwise and
      * X counterclock-wise, X must be saved to vertices[N - 2], and A must be saved <b>again</b> to vertices[N - 1]
      */
-    __device__ Face(int id, const SpacePoint *vertices, ll n_of_vertices, MapNode *node);
+    __device__ Face(int id, const SpacePoint *vertices, int n_of_vertices, MapNode *node);
 
     /// Forbids copying `Face` objects
     __host__ __device__ Face(const Face &) = delete;
@@ -53,7 +53,7 @@ public:
     const SpacePoint *const vertices;
 
     /// Number of vertices on the face
-    const ll n_of_vertices;
+    const int n_of_vertices;
 
     /// Normal to the face
     const SpacePoint normal;

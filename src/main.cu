@@ -12,7 +12,7 @@
 namespace jc = jones_constants;
 
 
-const ll cuda_block_size = 256;
+const int cuda_block_size = 256;
 
 
 /**
@@ -56,7 +56,7 @@ __global__ void init_food(...)
  * @warning This function is not self-sufficient. After running it you also need to run `iteration_post_triggers`
  *      with the same arguments
  */
-__global__ void run_iteration(const SimulationMap *simulation_map, const ll *const iteration_number)
+__global__ void run_iteration(const SimulationMap *simulation_map, const int *const iteration_number)
 {
     /// Pointer to the `MapNode` being processed by current thread
     MapNode *self;
@@ -120,7 +120,7 @@ __global__ void run_iteration(const SimulationMap *simulation_map, const ll *con
  * @note Run the function with `<<<gridDim, blockDim>>>` such that total number of runned threads
  *      is greater or equal to `simulation_map->get_n_of_nodes()`
  */
-__global__ void iteration_post_triggers(const SimulationMap *simulation_map, ll *const iteration_number)
+__global__ void iteration_post_triggers(const SimulationMap *simulation_map, int *const iteration_number)
 {
     /// Pointer to the `MapNode` being processed by current thread
     MapNode *self;
@@ -190,18 +190,18 @@ __host__ int main()
 
     init_food<<<1, 1>>>(...);
 
-    ll *iteration_number;
-    cudaMalloc((void **) &iteration_number, sizeof(ll));
-    set_cuda_variable_value(iteration_number, 0LL);
+    int *iteration_number;
+    cudaMalloc((void **) &iteration_number, sizeof(int));
+    set_cuda_variable_value(iteration_number, 0);
 
     // Obtaining `n_of_nodes`:
-    ll *_temporary;
-    cudaMalloc((void **) &_temporary, sizeof(ll));
+    int *_temporary;
+    cudaMalloc((void **) &_temporary, sizeof(int));
     get_n_of_nodes<<<1, 1>>>(simulation_map, _temporary);
-    const ll n_of_nodes = get_cuda_variable_value(_temporary);
+    const int n_of_nodes = get_cuda_variable_value(_temporary);
     cudaFree(_temporary);
 
-    const ll cuda_grid_size = (n_of_nodes + cuda_block_size - 1) / cuda_block_size;
+    const int cuda_grid_size = (n_of_nodes + cuda_block_size - 1) / cuda_block_size;
     for(;;)
     {
         run_iteration<<<cuda_grid_size, cuda_block_size>>>(simulation_map, iteration_number);

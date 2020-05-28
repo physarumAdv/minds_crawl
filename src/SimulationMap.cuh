@@ -32,14 +32,14 @@ public:
      *
      * @note This number is never ever changed since creation of the object
      */
-    __device__ ll get_n_of_nodes() const;
+    __device__ int get_n_of_nodes() const;
 
     /**
      * Returns the number of nodes in the simulation
      *
      * @overload SimulationMap::get_n_of_nodes
      */
-    __global__ friend void get_n_of_nodes(const SimulationMap *simulation_map, ll *return_value);
+    __global__ friend void get_n_of_nodes(const SimulationMap *simulation_map, int *return_value);
 
 
     /// The array of nodes on the map
@@ -50,7 +50,7 @@ public:
 
 private:
     /// The number of nodes on the map
-    ll n_of_nodes;
+    int n_of_nodes;
 };
 
 #endif //MIND_S_CRAWL_SIMULATIONMAP_CUH
