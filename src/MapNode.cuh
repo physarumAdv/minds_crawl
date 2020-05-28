@@ -25,13 +25,13 @@ public:
      * @param polyhedron_face_id The polyhedron's face to create node on
      * @param coordinates The coordinates of node to create node at
      */
-    __device__ MapNode(const Polyhedron *polyhedron, int polyhedron_face_id, SpacePoint coordinates);
+    __device__ MapNode(Polyhedron *polyhedron, int polyhedron_face_id, SpacePoint coordinates);
 
     /// Destructs a `MapNode` object
     __device__ ~MapNode();
 
     /// Polyhedron containing the node
-    const Polyhedron *const polyhedron;
+    Polyhedron *const polyhedron;
 
     /// Polyhedron's face the node is located on
     const int polyhedron_face_id;

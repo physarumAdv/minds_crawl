@@ -32,7 +32,7 @@ public:
 
 
     /// Array of polyhedron faces
-    const Face *const faces;
+    Face *const faces;
 
     /// Number of polyhedron faces
     const ll n_of_faces;

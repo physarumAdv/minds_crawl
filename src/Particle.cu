@@ -1,7 +1,4 @@
-#include <initializer_list>
-
 #include "Particle.cuh"
-#include "Polyhedron.cuh"
 #include "Face.cuh"
 #include "fucking_shit.cuh"
 #include "jones_constants.hpp"
@@ -9,13 +6,10 @@
 namespace jc = jones_constants;
 
 
-__device__ Particle::Particle(const Polyhedron *polyhedron, int polyhedron_face_id,
-                              SpacePoint coordinates, double angle)
+__device__ Particle::Particle(MapNode *map_node, SpacePoint coordinates, double angle) :
+    coordinates(coordinates), map_node(map_node)
 {
-    this->coordinates = coordinates;
-    this->polyhedron_face_id = polyhedron_face_id;
-
-    Face current_face = polyhedron->faces[polyhedron_face_id];
+    Face current_face = map_node->polyhedron->faces[map_node->polyhedron_face_id];
     this->normal = current_face.normal;
 
     SpacePoint radius = current_face.vertices[0] - coordinates;
@@ -70,7 +64,11 @@ __device__ void Particle::do_sensory_behaviours()
 
 __device__ void Particle::rotate(double angle)
 {
-    left_sensor = rotate_point_angle(left_sensor, angle);
-    middle_sensor = rotate_point_angle(middle_sensor, angle);
-    right_sensor = rotate_point_angle(right_sensor, angle);
+    SpacePoint c = coordinates;
+    Polyhedron *p = map_node->polyhedron;
+    int f = map_node->polyhedron_face_id;
+
+    left_sensor = get_projected_vector_end(c, rotate_point_angle(left_sensor, angle), f, p);
+    middle_sensor = get_projected_vector_end(c, rotate_point_angle(middle_sensor, angle), f, p);
+    right_sensor = get_projected_vector_end(c, rotate_point_angle(right_sensor, angle), f, p);
 }

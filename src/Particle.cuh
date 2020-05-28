@@ -9,10 +9,8 @@
 class MapNode;
 
 
-__device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, Face *current_face, Polyhedron polyhedron);
+__device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron);
 
-
-class Polyhedron;
 
 /// Object describing a particle in the model (also called "agent" - from the original Jones' book)
 class Particle
@@ -22,11 +20,11 @@ public:
      * Creates a `Particle` object
      *
      * @param polyhedron The polyhedron to create particle on
-     * @param polyhedron_face_id The polyhedron's face to create particle on
+     * @param map_node The polyhedron's face to create particle on
      * @param coordinates The coordinates to create particle at
      * @param angle Initial direction of the particle
      */
-    __device__ Particle(const Polyhedron *polyhedron, int polyhedron_face_id, SpacePoint coordinates, double angle);
+    __device__ Particle(MapNode *map_node, SpacePoint coordinates, double angle);
 
     /**
      * Rotates particle in the current plane based on amount of trail under sensors
@@ -51,9 +49,6 @@ public:
 
     /// The corresponding sensor's location
     SpacePoint left_sensor, middle_sensor, right_sensor;
-
-    /// A number of the current face
-    int polyhedron_face_id;
 
     /// A map node the particle belongs to
     MapNode *map_node;
