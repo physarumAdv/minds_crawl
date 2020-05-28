@@ -13,8 +13,27 @@ struct SpacePoint
 __device__ const SpacePoint origin = {0, 0, 0};
 
 /// Observational error constant
-__device__ const double eps = 1. / (1000 * 100 * 100);
+__device__ const double eps = 1. / (100 * 100 * 100);
 
+/**
+ * Returns the result of comparison of two `SpacePoint`s
+ *
+ * @param a Point A in space
+ * @param b Point B in space
+ *
+ * @returns `true` if point A coincides with point B, `false` otherwise
+ */
+__host__ __device__ bool operator==(SpacePoint a, SpacePoint b);
+
+/**
+ * Returns the result of comparison of two `SpacePoint`s
+ *
+ * @param a Point in space
+ * @param b Point in space
+ *
+ * @returns `true` if point A does not coincide with point B, `false` otherwise
+ */
+__host__ __device__ bool operator!=(SpacePoint a, SpacePoint b);
 
 /**
  * Returns the sum of two vectors in space
@@ -97,23 +116,23 @@ __device__ double get_distance(SpacePoint a, SpacePoint b);
 /**
  * Returns the point of lines AB and CD intersection or origin if they are parallel
  *
- * @param pointA Point belongs to the line AB
- * @param pointB Point belongs to the line AB
- * @param pointC Point belongs to the line CD
- * @param pointD Point belongs to the line CD
+ * @param a Point A belongs to the line AB
+ * @param b Point B belongs to the line AB
+ * @param c Point C belongs to the line CD
+ * @param d Point D belongs to the line CD
  *
  * @returns The point of two lines intersection or origin if they are parallel
  */
-__device__ SpacePoint line_intersection(SpacePoint pointA, SpacePoint pointB, SpacePoint pointC, SpacePoint pointD);
+__device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d);
 
 /**
  * Checks if the point C is in segment AB
- * @param pointA Point A of segment AB
- * @param pointB Point B of segment AB
- * @param pointC Point C to check
+ * @param a Point A of segment AB
+ * @param b Point B of segment AB
+ * @param c Point C to check
  * @returns `true` if point C belongs to segment AB, `false` otherwise
  */
-__device__ bool is_in_segment(SpacePoint pointA, SpacePoint pointB, SpacePoint pointC);
+__device__ bool is_in_segment(SpacePoint a, SpacePoint b, SpacePoint c);
 
 
 #endif //MIND_S_CRAWL_SPACEPOINT_CUH

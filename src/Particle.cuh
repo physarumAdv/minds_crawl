@@ -8,8 +8,43 @@
 
 class MapNode;
 
-
+/**
+ * Returns the coordinates of the end of AB vector's overlay on the polyhedron's surface
+ *
+ * If vector AB completely lies on the current face of polyhedron, coordinates of point B are returned
+ * If vector AB crosses the edge of current face, the end of overlay on the next face to edge is returned
+ *
+ * @param a The beginning of vector AB, point A
+ * @param b The end of vector AB, point B
+ * @param current_face_id Identifier of the face point A belongs to
+ * @param polyhedron The polyhedron in simulation
+ *
+ * @returns Coordinates of the end of AB vector's overlay
+ */
 __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron);
+
+/**
+ * Finds a face adjacent to the given face along the edge AB
+ *
+ * @param a Point A of edge AB
+ * @param b Point B of edge AB
+ * @param current_face_id Identifier of given face
+ * @param polyhedron The polyhedron in simulation
+ *
+ * @returns Identifier of the found face or `first_face_id` if nothing was found
+ */
+__device__ int find_face_next_to_edge(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron);
+
+/**
+ * Returns whether the edge's vertices belong to face
+ *
+ * @param a Point A of edge AB
+ * @param b Point B of edge AB
+ * @param face `Face`
+ *
+ * @returns `true` if edge AB belongs to face, `false` otherwise
+ */
+__device__ bool is_edge_belongs_face(SpacePoint a, SpacePoint b, const Face *face);
 
 
 /// Object describing a particle in the model (also called "agent" - from the original Jones' book)
@@ -47,18 +82,9 @@ public:
      */
     __device__ void rotate(double angle);
 
+
     /// The particle's location
     SpacePoint coordinates;
-
-    /// The corresponding sensor's location
-    SpacePoint left_sensor, middle_sensor, right_sensor;
-
-    /// A map node the particle belongs to
-    MapNode *map_node;
-
-
-    /// A normal to the current face
-    SpacePoint normal;
 
 private:
     /**
@@ -71,8 +97,16 @@ private:
      */
     __device__ SpacePoint rotate_point_angle(SpacePoint radius, double angle) const;
 
-    /// Initializes left and right sensors relative to the middle sensor
-    __device__ void init_left_right_sensors();
+
+    /// The direction vector of the particle's agent
+    SpacePoint direction_vector;
+
+    /// A map node the particle belongs to
+    MapNode *map_node;
+
+
+    /// A normal to the current face
+    SpacePoint normal;
 
 
 };
