@@ -12,14 +12,26 @@ struct SpacePoint
 /// The origin of space
 __device__ const SpacePoint origin = {0, 0, 0};
 
+/// Observational error constant
+__device__ const double eps = 1. / (100 * 100 * 100);
 
 /**
  * Returns the result of comparison of two `SpacePoint`s
  *
- * @param a Point in space, vector
- * @param b Point in space, vector
+ * @param a Point A in space
+ * @param b Point B in space
  *
- * @returns Result of comparison
+ * @returns `true` if point A coincides with point B, `false` otherwise
+ */
+__host__ __device__ bool operator==(SpacePoint a, SpacePoint b);
+
+/**
+ * Returns the result of comparison of two `SpacePoint`s
+ *
+ * @param a Point in space
+ * @param b Point in space
+ *
+ * @returns `true` if point A does not coincide with point B, `false` otherwise
  */
 __host__ __device__ bool operator!=(SpacePoint a, SpacePoint b);
 

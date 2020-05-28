@@ -1,10 +1,6 @@
 #include "Polyhedron.cuh"
 
 
-/// Observational error constant
-__device__ const double eps = 1. / (100 * 100);
-
-
 __device__ Polyhedron::Polyhedron(Face *faces, ll n_of_faces) :
         faces(malloc_and_copy(faces, n_of_faces)), n_of_faces(n_of_faces)
 {

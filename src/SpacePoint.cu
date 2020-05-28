@@ -1,9 +1,10 @@
 #include "SpacePoint.cuh"
 
 
-/// Observational error constant
-__device__ const double eps = 1. / (1000 * 100 * 100);
-
+__host__ __device__ bool operator==(SpacePoint a, SpacePoint b)
+{
+    return (a.x == b.x && a.y == b.y && a.z == b.z);
+}
 
 __host__ __device__ bool operator!=(SpacePoint a, SpacePoint b)
 {
