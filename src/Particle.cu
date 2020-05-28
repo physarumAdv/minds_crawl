@@ -9,11 +9,11 @@ __device__ Particle::Particle(MapNode *map_node, SpacePoint coordinates, double 
     coordinates(coordinates), map_node(map_node)
 {
     Face current_face = map_node->polyhedron->faces[map_node->polyhedron_face_id];
-    this->normal = current_face.normal;
+    normal = current_face.normal;
 
     SpacePoint radius = current_face.vertices[0] - coordinates;
     radius = radius * jc::speed / get_distance(radius, origin);
-    this->direction_vector = this->rotate_point_angle(radius, angle);
+    direction_vector = rotate_point_angle(radius, angle);
 }
 
 
@@ -27,9 +27,11 @@ __device__ SpacePoint Particle::rotate_point_angle(SpacePoint radius, double ang
 
 __device__ void Particle::do_sensory_behaviours()
 {
-    double trail_l = find_nearest_mapnode(map_node->polyhedron, left_sensor, map_node)->trail;
-    double trail_m = find_nearest_mapnode(map_node->polyhedron, middle_sensor, map_node)->trail;
-    double trail_r = find_nearest_mapnode(map_node->polyhedron, right_sensor, map_node)->trail;
+    Polyhedron *p = map_node->polyhedron;
+
+    double trail_l = find_nearest_mapnode(p, rotate_point_angle(direction_vector, -jc::sa), map_node)->trail;
+    double trail_m = find_nearest_mapnode(p, direction_vector, map_node)->trail;
+    double trail_r = find_nearest_mapnode(p, rotate_point_angle(direction_vector, jc::ra), map_node)->trail;
 
     if((trail_m > trail_l) && (trail_m > trail_r)) // m > l, r
         return;
@@ -50,13 +52,7 @@ __device__ void Particle::do_sensory_behaviours()
 
 __device__ void Particle::rotate(double angle)
 {
-    SpacePoint c = coordinates;
-    Polyhedron *p = map_node->polyhedron;
-    int f = map_node->polyhedron_face_id;
-
-    left_sensor = get_projected_vector_end(c, rotate_point_angle(left_sensor, angle), f, p);
-    middle_sensor = get_projected_vector_end(c, rotate_point_angle(middle_sensor, angle), f, p);
-    right_sensor = get_projected_vector_end(c, rotate_point_angle(right_sensor, angle), f, p);
+    direction_vector = rotate_point_angle(direction_vector, angle);
 }
 
 __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron)
@@ -89,19 +85,19 @@ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int c
 __device__ int find_face_next_to_edge(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron)
 {
     for(int i = 0; i < polyhedron->n_of_faces; ++i)
-        if (polyhedron->faces[i].id != current_face_id && is_edge_belongs_face(a, b, polyhedron->faces[i]))
+        if (polyhedron->faces[i].id != current_face_id && is_edge_belongs_face(a, b, &polyhedron->faces[i]))
             return i;
     return current_face_id;
 }
 
-__device__ bool is_edge_belongs_face(SpacePoint a, SpacePoint b, const Face& face)
+__device__ bool is_edge_belongs_face(SpacePoint a, SpacePoint b, const Face *const face)
 {
     bool flag1 = false, flag2 = false;
-    for (int i = 0; i < face.n_of_vertices; ++i)
+    for (int i = 0; i < face->n_of_vertices; ++i)
     {
-        if (face.vertices[i] == a)
+        if (face->vertices[i] == a)
             flag1 = true;
-        if (face.vertices[i] == b)
+        if (face->vertices[i] == b)
             flag2 = true;
     }
     return flag1 && flag2;

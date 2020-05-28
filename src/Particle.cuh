@@ -44,7 +44,7 @@ __device__ int find_face_next_to_edge(SpacePoint a, SpacePoint b, int current_fa
  *
  * @returns `true` if edge AB belongs to face, `false` otherwise
  */
-__device__ bool is_edge_belongs_face(SpacePoint a, SpacePoint b, const Face& face);
+__device__ bool is_edge_belongs_face(SpacePoint a, SpacePoint b, const Face *face);
 
 
 /// Object describing a particle in the model (also called "agent" - from the original Jones' book)
@@ -81,6 +81,7 @@ public:
      * @param angle The angle (in radians) to be rotated by
      */
     __device__ void rotate(double angle);
+
 
     /// The particle's location
     SpacePoint coordinates;

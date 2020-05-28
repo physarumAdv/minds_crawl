@@ -8,7 +8,7 @@ __host__ __device__ bool operator==(SpacePoint a, SpacePoint b)
 
 __host__ __device__ bool operator!=(SpacePoint a, SpacePoint b)
 {
-    return (a.x != b.x || a.y != b.y || a.z != b.z);
+    return !(a == b);
 }
 
 __host__ __device__ SpacePoint operator-(SpacePoint a, SpacePoint b)
@@ -49,7 +49,7 @@ __host__ __device__ SpacePoint operator%(SpacePoint a, SpacePoint b)
 
 __device__ double get_distance(SpacePoint a, SpacePoint b)
 {
-    return sqrt((double) ((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z)));
+    return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z));
 }
 
 __device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d)
