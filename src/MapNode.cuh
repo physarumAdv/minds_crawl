@@ -139,14 +139,19 @@ public:
      */
     __device__ Particle *get_particle() const;
 
+    // TODO: make `remove_particle` get a `Particle *` argument and remove particle only if the particle is correct
     /**
      * Marks the node as not occupied (not containing a particle)
      *
      * @note The operation is thread-safe
      *
-     * @warning This function <b>does not</b> free memory, allocated for particle, so if you want to free the particle,
-     *      you have to do it <b>before</b> calling `remove_particle`. You can obtain a pointer you can use for freeing
-     *      memory via `get_particle()`
+     * @warning Detaching particle from a map node <b>does not</b> free memory, allocated for `Particle`, so if you want
+     *      to free memory, you have to firstly obtain a pointer to the `Particle` if you don't have it yet (can be done
+     *      via `get_particle()`), then detach the particle from it's node (call `remove_particle()`), and then free
+     *      memory.
+     *      
+     *      Remember about thread-safety: `MapNode` does not guarantee that the `Particle` being removed didn't change
+     *      since calling `get_particle()`
      *
      * @see MapNode::set_particle, MapNode::get_particle
      */
