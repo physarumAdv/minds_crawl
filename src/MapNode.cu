@@ -27,8 +27,8 @@ __device__ MapNode::~MapNode()
  */
 __device__ inline bool set_neighbor(MapNode **target, MapNode *value)
 {
-    // Check if I can safely cast `MapNode **` to `unsigned long long *`
-    static_assert(sizeof(target) == sizeof(unsigned long long *));
+    static_assert(sizeof(target) == sizeof(unsigned long long *), "I think, I can't safely cast `MapNode **` to"
+                                                                  "`unsigned long long *`");
 
     if(value == nullptr)
         return false;
@@ -80,12 +80,13 @@ __device__ MapNode *MapNode::get_bottom() const
 }
 
 
-__device__ bool MapNode::set_particle(Particle *value)
+__device__ bool MapNode::attach_particle(Particle *value)
 {
-    // Check if I can safely cast `Particle **` to `unsigned long long *`
-    static_assert(sizeof(&particle) == sizeof(unsigned long long *));
+    static_assert(sizeof(&particle) == sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to"
+                                                                     "`unsigned long long *`");
 
-    atomicCAS((unsigned long long *)&particle, (unsigned long long)nullptr, (unsigned long long)value);
+    return nullptr == (Particle *)atomicCAS((unsigned long long *)&particle, (unsigned long long)nullptr,
+                                            (unsigned long long)value);
 }
 
 __device__ Particle *MapNode::get_particle() const
@@ -93,7 +94,16 @@ __device__ Particle *MapNode::get_particle() const
     return particle;
 }
 
-__device__ void MapNode::remove_particle()
+__device__ void MapNode::detach_particle()
 {
     particle = nullptr;
+}
+
+[[nodiscard]] __device__ bool MapNode::detach_particle(Particle *p)
+{
+    static_assert(sizeof(&particle) == sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to"
+                                                                     "`unsigned long long *`");
+
+    return p == (Particle *)atomicCAS((unsigned long long *)&particle, (unsigned long long)p,
+                                      (unsigned long long)nullptr);
 }

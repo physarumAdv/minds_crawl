@@ -126,36 +126,45 @@ public:
      *
      * @note This operation is thread-safe
      *
-     * @see MapNode::get_particle, MapNode::remove_particle
+     * @see MapNode::get_particle, MapNode::detach_particle
      */
-    [[nodiscard]] __device__ bool set_particle(Particle *value);
+    [[nodiscard]] __device__ bool attach_particle(Particle *value);
 
     /**
      * Returns a pointer to the attached particle
      *
      * @returns Pointer to the attached particle, if there is any, otherwise `nullptr`
      *
-     * @see mapNode::set_particle, MapNode::remove_particle
+     * @see mapNode::attach_particle, MapNode::detach_particle
      */
     __device__ Particle *get_particle() const;
 
-    // TODO: make `remove_particle` get a `Particle *` argument and remove particle only if the particle is correct
     /**
-     * Marks the node as not occupied (not containing a particle)
+     * Marks the node as not occupied (not containing a particle) / Detaches particle from the node
      *
      * @note The operation is thread-safe
      *
      * @warning Detaching particle from a map node <b>does not</b> free memory, allocated for `Particle`, so if you want
      *      to free memory, you have to firstly obtain a pointer to the `Particle` if you don't have it yet (can be done
-     *      via `get_particle()`), then detach the particle from it's node (call `remove_particle()`), and then free
+     *      via `get_particle()`), then detach the particle from it's node (call `detach_particle()`), and then free
      *      memory.
-     *      
-     *      Remember about thread-safety: `MapNode` does not guarantee that the `Particle` being removed didn't change
+     *
+     * @warning Remember about thread-safety: `MapNode` does not guarantee that the `Particle` being removed didn't change
      *      since calling `get_particle()`
      *
-     * @see MapNode::set_particle, MapNode::get_particle
+     * @see MapNode::attach_particle, MapNode::get_particle
      */
-    __device__ void remove_particle();
+    __device__ void detach_particle();
+
+    /**
+     * Detaches the given `Particle` from the `MapNode`, if it is attached
+     *
+     * @param p Pointer to the `Particle` to be detached
+     *
+     * @returns `true`, if the given `Particle` was attached to the node (which means it was successfully removed),
+     *      otherwise `false`
+     */
+    [[nodiscard]] __device__ bool detach_particle(Particle *p);
 
 
     /// Polyhedron containing the node
