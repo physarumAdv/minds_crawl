@@ -147,7 +147,11 @@ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint dest, MapNode *
  *
  * @see find_nearest_mapnode_greedy
  */
-__device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, const SpacePoint dest, MapNode *start=nullptr);
+__device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, const SpacePoint dest, MapNode *start = nullptr);
+
+
+/// Cuda-like atomicCAS implementation for `bool`s (see official CUDA documentation for details)
+__device__ bool atomicCAS(bool *address, const bool compare, const bool val);
 
 
 #endif //MIND_S_CRAWL_FUCKING_SHIT_CUH

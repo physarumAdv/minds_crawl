@@ -183,20 +183,20 @@ __host__ int main()
     init_rand<<<1, 1>>>(time(nullptr));
 
     SimulationMap *simulation_map;
-    cudaMallocManaged((void **) &simulation_map, sizeof(SimulationMap));
+    cudaMallocManaged((void **)&simulation_map, sizeof(SimulationMap));
     Polyhedron *polyhedron;
-    cudaMallocManaged((void **) &polyhedron, sizeof(Polyhedron));
+    cudaMallocManaged((void **)&polyhedron, sizeof(Polyhedron));
     init_simulation_objects<<<1, 1>>>(simulation_map, polyhedron);
 
     init_food<<<1, 1>>>(...);
 
     int *iteration_number;
-    cudaMalloc((void **) &iteration_number, sizeof(int));
+    cudaMalloc((void **)&iteration_number, sizeof(int));
     set_cuda_variable_value(iteration_number, 0);
 
     // Obtaining `n_of_nodes`:
     int *_temporary;
-    cudaMalloc((void **) &_temporary, sizeof(int));
+    cudaMalloc((void **)&_temporary, sizeof(int));
     get_n_of_nodes<<<1, 1>>>(simulation_map, _temporary);
     const int n_of_nodes = get_cuda_variable_value(_temporary);
     cudaFree(_temporary);

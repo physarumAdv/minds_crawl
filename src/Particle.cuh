@@ -64,6 +64,16 @@ public:
     /// Forbids copying `Particle` objects
     __host__ __device__ Particle(const Particle &) = delete;
 
+
+    /**
+     * Moves particle in the direction in which the particle is rotated
+     *
+     * Tries to move the particle in the direction set by `direction_vector` (correctly handles polyhedron edge
+     * crossing). If the target `MapNode` contains a particle already, nothing happens. Otherwise the particle is being
+     * moved and reattached to that `MapNode`
+     */
+    __device__ void do_motor_behaviours();
+
     /**
      * Rotates particle in the current plane based on amount of trail under sensors
      *

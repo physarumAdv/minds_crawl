@@ -11,9 +11,6 @@ namespace jc = jones_constants;
 
 __device__ void create_particle(MapNode *node)
 {
-    /* Please, note that we're using `new` and `delete` operators for allocating and deallocating Particles,
-     * and it doesn't matter if we're running on cpu or gpu
-     */
     node->particle = new Particle(node, node->coordinates, rand0to1() * 360);
 
     node->contains_particle = true;
@@ -21,9 +18,6 @@ __device__ void create_particle(MapNode *node)
 
 __device__ void delete_particle(MapNode *node)
 {
-    /* Please, note that we're using `new` and `delete` operators for allocating and deallocating Particles,
-     * and it doesn't matter if we're running on cpu or gpu
-     */
     delete node->particle;
 
     node->contains_particle = false;
@@ -36,10 +30,10 @@ __device__ void diffuse_trail(MapNode *node)
     { return m->trail; };
 
     double sum = get_trail(node) + get_trail(node->top->left) +
-             get_trail(node->top) + get_trail(node->top->right) +
-             get_trail(node->left) + get_trail(node->right) +
-             get_trail(node->bottom->left) + get_trail(node->bottom) +
-             get_trail(node->bottom->right);
+                 get_trail(node->top) + get_trail(node->top->right) +
+                 get_trail(node->left) + get_trail(node->right) +
+                 get_trail(node->bottom->left) + get_trail(node->bottom) +
+                 get_trail(node->bottom->right);
 
     node->temp_trail = (1 - jc::diffdamp) * (sum / 9.0);
 }
@@ -148,3 +142,33 @@ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, Spa
 
     return find_nearest_mapnode_greedy(dest, polyhedron->faces[polyhedron->find_face_id_by_point(dest)].node);
 }
+
+
+// `address` CANNOT be pointer to const, because we are trying to edit memory by it's address
+__device__ bool atomicCAS(bool *const address, const bool compare, const bool val)
+{
+    auto addr = (unsigned long long)address;
+    unsigned pos = addr & 3;  // byte position within the int
+    auto *int_addr = (unsigned *)(addr - pos);  // int-aligned address
+    unsigned old = *int_addr, assumed, ival;
+
+    bool current_value;
+
+    do
+    {
+        current_value = (bool)(old & ((0xFFU) << (8 * pos)));
+
+        if(current_value != compare) // If we expected that bool to be different, then
+            break; // stop trying to update it and just return it's current value
+
+        assumed = old;
+        if(val)
+            ival = old | (1U << (8 * pos));
+        else
+            ival = old & (~((0xFFU) << (8 * pos)));
+        old = atomicCAS(int_addr, assumed, ival);
+    } while(assumed != old);
+
+    return current_value;
+}
+
