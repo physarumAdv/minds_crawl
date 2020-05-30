@@ -20,18 +20,20 @@ __device__ Particle::Particle(MapNode *map_node, SpacePoint coordinates, double 
 __device__ SpacePoint Particle::rotate_point_angle(SpacePoint radius, double angle) const
 {
     double angle_cos = cos(angle);
-    return (1 - angle_cos) * (this->normal * radius) * this->normal + angle_cos * radius +
-                      sin(angle) * (this->normal % radius) + this->coordinates;
+    SpacePoint new_point = (1 - angle_cos) * (normal * radius) * normal + angle_cos * radius +
+                      sin(angle) * (normal % radius) + coordinates;
+    return get_projected_vector_end(coordinates, new_point, map_node->polyhedron_face_id, map_node->polyhedron);
 }
 
 
 __device__ void Particle::do_sensory_behaviours()
 {
     Polyhedron *p = map_node->polyhedron;
+    SpacePoint m_sensor_direction = direction_vector * jc::so / jc::speed;
 
-    double trail_l = find_nearest_mapnode(p, rotate_point_angle(direction_vector, -jc::sa), map_node)->trail;
-    double trail_m = find_nearest_mapnode(p, direction_vector, map_node)->trail;
-    double trail_r = find_nearest_mapnode(p, rotate_point_angle(direction_vector, jc::ra), map_node)->trail;
+    double trail_l = find_nearest_mapnode(p, rotate_point_angle(m_sensor_direction, -jc::sa), map_node)->trail;
+    double trail_m = find_nearest_mapnode(p, rotate_point_angle(m_sensor_direction, 0.), map_node)->trail;
+    double trail_r = find_nearest_mapnode(p, rotate_point_angle(m_sensor_direction, jc::sa), map_node)->trail;
 
     if((trail_m > trail_l) && (trail_m > trail_r)) // m > l, r
         return;
@@ -73,8 +75,8 @@ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int c
             double phi_sin = sin(acos(phi_cos));
             double alpha_cos = moving_vector * (normal_before % normal_after);
 
-            SpacePoint faced_vector_direction = (normal_before + normal_after * phi_cos) * sin(acos(alpha_cos)) / phi_sin +
-                    (normal_before % normal_after) * alpha_cos / phi_sin;
+            SpacePoint faced_vector_direction = (normal_before + normal_after * phi_cos) * sin(acos(alpha_cos)) /
+                    phi_sin + (normal_before % normal_after) * alpha_cos / phi_sin;
 
             return intersection + faced_vector_direction * (get_distance(a, b) - get_distance(intersection, a));
         }
