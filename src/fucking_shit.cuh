@@ -18,20 +18,25 @@
  *
  * @param node The node to create particle at
  *
- * @warning This function must not be called if the node contains a particle already, calling it with a node
- * containing a particle causes a memory leak
+ * @returns `true` if the `MapNode` was not occupied (which means a new `Particle` was created there), otherwise `false`
+ *
+ * @note This function does allocate new memory for a new `Particle`, but this memory is freed immediately if the
+ *      created `Particle` was not attached to the `MapNode`
  */
-__device__ void create_particle(MapNode *node);
+[[nodiscard]] __device__ bool create_particle(MapNode *node);
 
 /**
  * Removes a particle from the given node
  *
  * @param node The node to remove particle from
  *
- * @warning This function must only be called if the node contains a particle already, calling it with node
- * not containing a particle causes undefined behaviour
+ * @returns `true`, if successfully deleted particle (which means there was a particle attached to the node and it
+ *      wasn't replace by another one during deleting process), otherwise `false`
+ *
+ * @warning This operation is thread safe and cannot cause memory leaks, however it's highly recommended to run it only
+ *      when there's no way for the particle to be updated by other threads
  */
-__device__ void delete_particle(MapNode *node);
+[[nodiscard]] __device__ bool delete_particle(MapNode *node);
 
 /**
  * Diffuses trail in the given node
@@ -73,10 +78,15 @@ __device__ int count_particles_in_node_window(MapNode *node, int window_size);
  *
  * @param node The node to run random death test in
  *
+ * @returns `true` if a particle was deleted from the node, otherwise `false`
+ *
+ * @note Return value does not tell you whether the operation was successful. It tells you whether the particle was
+ *      removed, that's it
+ *
  * @warning This function must only be called if the node contains a particle already, calling it with node
  * not containing a particle causes undefined behaviour
  */
-__device__ void random_death_test(MapNode *node);
+__device__ bool random_death_test(MapNode *node);
 
 /**
  * Runs a death test in the given node
@@ -87,10 +97,15 @@ __device__ void random_death_test(MapNode *node);
  *
  * @param node The node to run death test in
  *
+ * @returns `true` if a particle was deleted from the node, otherwise `false`
+ *
+ * @note Return value does not tell you whether the operation was successful. It tells you whether the particle was
+ *      removed, that's it
+ *
  * @warning This function must only be called if the node contains a particle already, calling it with node
  * not containing a particle causes undefined behaviour
  */
-__device__ void death_test(MapNode *node);
+__device__ bool death_test(MapNode *node);
 
 /**
  * Runs a division test in the given node

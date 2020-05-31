@@ -4,7 +4,7 @@
 
 
 __device__ MapNode::MapNode(Polyhedron *const polyhedron, int polyhedron_face_id, SpacePoint coordinates) :
-        polyhedron(polyhedron), trail(0), contains_food(false), coordinates(coordinates), contains_particle(false),
+        polyhedron(polyhedron), trail(0), contains_food(false), coordinates(coordinates),
         polyhedron_face_id(polyhedron_face_id), left(nullptr), top(nullptr), right(nullptr), bottom(nullptr)
 {}
 
@@ -27,7 +27,7 @@ __device__ MapNode::~MapNode()
  */
 __device__ inline bool set_neighbor(MapNode **target, MapNode *value)
 {
-    static_assert(sizeof(target) == sizeof(unsigned long long *), "I think, I can't safely cast `MapNode **` to"
+    static_assert(sizeof(target) <= sizeof(unsigned long long *), "I think, I can't safely cast `MapNode **` to"
                                                                   "`unsigned long long *`");
 
     if(value == nullptr)
@@ -80,9 +80,14 @@ __device__ MapNode *MapNode::get_bottom() const
 }
 
 
+__device__ bool MapNode::contains_particle() const
+{
+    return particle != nullptr;
+}
+
 __device__ bool MapNode::attach_particle(Particle *value)
 {
-    static_assert(sizeof(&particle) == sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to"
+    static_assert(sizeof(&particle) <= sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to"
                                                                      "`unsigned long long *`");
 
     return nullptr == (Particle *)atomicCAS((unsigned long long *)&particle, (unsigned long long)nullptr,
@@ -101,7 +106,7 @@ __device__ void MapNode::detach_particle()
 
 [[nodiscard]] __device__ bool MapNode::detach_particle(Particle *p)
 {
-    static_assert(sizeof(&particle) == sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to"
+    static_assert(sizeof(&particle) <= sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to"
                                                                      "`unsigned long long *`");
 
     return p == (Particle *)atomicCAS((unsigned long long *)&particle, (unsigned long long)p,

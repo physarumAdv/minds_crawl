@@ -116,6 +116,8 @@ public:
     __device__ MapNode *get_bottom() const;
 
 
+    __device__ bool contains_particle() const;
+
     /**
      * Attaches the given `Particle` to the node, if it is not occupied already
      *
@@ -163,6 +165,8 @@ public:
      *
      * @returns `true`, if the given `Particle` was attached to the node (which means it was successfully removed),
      *      otherwise `false`
+     *
+     * @note This operation is thread-safe
      */
     [[nodiscard]] __device__ bool detach_particle(Particle *p);
 

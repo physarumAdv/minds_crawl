@@ -11,6 +11,13 @@
 
 namespace jc = jones_constants;
 
+#define run_iteration_set_self_or_return(self) { \
+            unsigned int i = blockIdx.x * blockDim.x + threadIdx.x; \
+            if(i >= simulation_map->get_n_of_nodes()) \
+            return; \
+            self = &simulation_map->nodes[i]; \
+        }
+
 
 const int cuda_block_size = 256;
 
@@ -60,12 +67,7 @@ __global__ void run_iteration(const SimulationMap *simulation_map, const int *co
 {
     /// Pointer to the `MapNode` being processed by current thread
     MapNode *self;
-    {
-        unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
-        if(i >= simulation_map->get_n_of_nodes())
-            return;
-        self = &simulation_map->nodes[i];
-    }
+    run_iteration_set_self_or_return(self)
 
     if(jc::projectnutrients && *iteration_number >= jc::startprojecttime)
     {
@@ -78,13 +80,14 @@ __global__ void run_iteration(const SimulationMap *simulation_map, const int *co
                 trail_value = jc::projectvalue;
 
             // Add trail to 3x3 node window
-            MapNode *left = self->left;
-            for(MapNode *node : {left->top, left, left->bottom}) // for each leading node of rows of 3x3 square
+            MapNode *left = self->get_left();
+            for(MapNode *node : {left->get_top(), left,
+                                 left->get_bottom()}) // for each leading node of rows of 3x3 square
             {
                 for(int i = 0; i < 3; ++i)
                 {
                     node->trail += trail_value; // add trail
-                    node = node->right; // move to next node in row
+                    node = node->get_right(); // move to next node in row
                 }
             }
         }
@@ -93,18 +96,20 @@ __global__ void run_iteration(const SimulationMap *simulation_map, const int *co
     // Diffuses trail in the current node
     diffuse_trail(self);
 
-    if(self->contains_particle)
+    if(self->contains_particle())
     {
-        do_motor_behaviours(self);
-        self->particle->do_sensory_behaviours();
+        self->get_particle()->do_motor_behaviours();
+        self->get_particle()->do_sensory_behaviours();
 
-        if(jc::do_random_death_test && jc::random_death_probability > 0 &&
-           *iteration_number > jc::startprojecttime)
-            random_death_test(self);
-        if(*iteration_number % jc::death_test_frequency == 0)
-            death_test(self);
         if(*iteration_number % jc::division_test_frequency == 0)
             division_test(self);
+        if(jc::do_random_death_test && jc::random_death_probability > 0 &&
+           *iteration_number > jc::startprojecttime)
+            if(random_death_test(self)) // If the particle died
+                return;
+        if(*iteration_number % jc::death_test_frequency == 0)
+            if(death_test(self)) // If the particle died
+                return;
     }
 }
 

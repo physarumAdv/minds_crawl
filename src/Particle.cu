@@ -5,8 +5,8 @@
 namespace jc = jones_constants;
 
 
-__device__ Particle::Particle(MapNode *map_node, SpacePoint coordinates, double angle) :
-        coordinates(coordinates), map_node(map_node)
+__device__ Particle::Particle(MapNode *map_node, double angle) :
+        coordinates(map_node->coordinates), map_node(map_node)
 {
     Face &current_face = map_node->polyhedron->faces[map_node->polyhedron_face_id];
     normal = current_face.normal;

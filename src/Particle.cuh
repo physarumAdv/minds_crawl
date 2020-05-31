@@ -54,12 +54,10 @@ public:
     /**
      * Creates a `Particle` object
      *
-     * @param polyhedron The polyhedron to create particle on
      * @param map_node The polyhedron's face to create particle on
-     * @param coordinates The coordinates to create particle at
      * @param angle Initial direction of the particle
      */
-    __device__ Particle(MapNode *map_node, SpacePoint coordinates, double angle);
+    __device__ Particle(MapNode *map_node, double angle);
 
     /// Forbids copying `Particle` objects
     __host__ __device__ Particle(const Particle &) = delete;
