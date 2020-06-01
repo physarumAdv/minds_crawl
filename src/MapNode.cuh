@@ -21,9 +21,9 @@ public:
     /**
      * Creates a `MapNode` object
      *
-     * @param polyhedron The polyhedron to create node on
+     * @param polyhedron Pointer to the polyhedron to create node on
      * @param polyhedron_face_id The polyhedron's face to create node on
-     * @param coordinates The coordinates of node to create node at
+     * @param coordinates Coordinates of node to create node at
      */
     __device__ MapNode(Polyhedron *polyhedron, int polyhedron_face_id, SpacePoint coordinates);
 
@@ -90,28 +90,28 @@ public:
     /**
      * Returns a pointer to the left neighbor
      *
-     * @returns Pointer to the left neighbor (`nullptr` if the neighbor is not set)
+     * @returns Pointer to the left neighbor (`nullptr` if it is not set)
      */
     __device__ MapNode *get_left() const;
 
     /**
      * Returns a pointer to the top neighbor
      *
-     * @returns Pointer to the top neighbor (`nullptr` if the neighbor is not set)
+     * @returns Pointer to the top neighbor (`nullptr` if it is not set)
      */
     __device__ MapNode *get_top() const;
 
     /**
      * Returns a pointer to the right neighbor
      *
-     * @returns Pointer to the right neighbor (`nullptr` if the neighbor is not set)
+     * @returns Pointer to the right neighbor (`nullptr` if it is not set)
      */
     __device__ MapNode *get_right() const;
 
     /**
      * Returns a pointer to the bottom neighbor
      *
-     * @returns Pointer to the bottom neighbor (`nullptr` if the neighbor is not set)
+     * @returns Pointer to the bottom neighbor (`nullptr` if it is not set)
      */
     __device__ MapNode *get_bottom() const;
 

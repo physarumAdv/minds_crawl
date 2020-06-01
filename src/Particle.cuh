@@ -117,7 +117,7 @@ public:
     __device__ void release();
 
 
-    /// The particle's location
+    /// The particle's location in space
     SpacePoint coordinates;
 
 private:
@@ -135,7 +135,7 @@ private:
     /// Direction vector of the particle's agent
     SpacePoint direction_vector;
 
-    /// Map node the particle belongs to
+    /// Pointer to a map node the particle belongs to
     MapNode *map_node;
 
 

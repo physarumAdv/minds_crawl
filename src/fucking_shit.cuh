@@ -16,7 +16,7 @@
  *
  * Creates a new `Particle` object with coordinates of the given node and attaches particle to it
  *
- * @param node The node to create particle at
+ * @param node Pointer to the node to create particle at
  *
  * @returns `true` if the `MapNode` was not occupied (which means a new `Particle` was created there), otherwise `false`
  *
@@ -28,7 +28,7 @@
 /**
  * Removes a particle from the given node
  *
- * @param node The node to remove particle from
+ * @param node Pointer to the node to remove particle from
  *
  * @returns `true`, if successfully deleted particle (which means there was a particle attached to the node and it
  *      wasn't replace by another one during deleting process), otherwise `false`
@@ -47,7 +47,7 @@
  * smell spread: on each iteration smell moves more far from the source, but becomes less strong, because
  * `(1 - jones_constants::diffdamp)` < 1
  *
- * @param node The node to diffuse trail at
+ * @param node Pointer to the node to diffuse trail at
  */
 __device__ void diffuse_trail(MapNode *node);
 
@@ -62,7 +62,7 @@ __device__ void diffuse_trail(MapNode *node);
  * vertices (X - (W-1)/2, Y - (W-1)/2) and (X + (W-1)/2, Y + (W-1)/2). <br><br>
  * This function returns a number of particles in a node window around the given node of the given size
  *
- * @param node The node to get node window around
+ * @param node Pointer to the node to get node window around
  * @param window_size The node window size
  *
  * @note `window_size` must be a positive odd integer
@@ -76,7 +76,7 @@ __device__ int count_particles_in_node_window(MapNode *node, int window_size);
  *
  * Removes a particle in the given node with the `jones_constants::random_death_probability` probability
  *
- * @param node The node to run random death test in
+ * @param node Pointer to the node to run random death test in
  *
  * @returns `true` if a particle was deleted from the node, otherwise `false`
  *
@@ -95,7 +95,7 @@ __device__ bool random_death_test(MapNode *node);
  * `jones_constants::smin` <= P <= `jones_constants::smax`, then nothing happens. Otherwise the particle is removed
  * from the given node
  *
- * @param node The node to run death test in
+ * @param node Pointer to the node to run death test in
  *
  * @returns `true` if a particle was deleted from the node, otherwise `false`
  *
@@ -116,7 +116,7 @@ __device__ bool death_test(MapNode *node);
  * division process we try to find a node without particle in a 3x3 node window around the given node. If we succeed,
  * we create a particle in the found node. Otherwise nothing happens
  *
- * @param node The node to run division test in
+ * @param node Pointer to the node to run division test in
  *
  * @warning This function must only be called if the node contains a particle already, calling it with node
  * not containing a particle causes undefined behaviour
@@ -132,9 +132,9 @@ __device__ void division_test(MapNode *node);
      * If current node is nearer than all the neighbors, it is the answer
      *
      * @param dest Destination space point we are trying to find
-     * @param start `MapNode` to start going from
+     * @param start Pointer to a `MapNode` to start going from
      *
-     * @returns `MapNode` found by the algorithm
+     * @returns Pointer to a `MapNode` found by the algorithm
      *
      * @note It's not guaranteed, that a node found with this function is actually the nearest one. Please, see:
      *
@@ -151,9 +151,9 @@ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint dest, MapNode *
  * `start` is not provided) finds a `Face` of `this->polyhedron` to which `dest` is closest, and calls
  * `find_nearest_mapnode_greedy` from dest and some `MapNode` located on the found face
  *
- * @param polyhedron
+ * @param polyhedron Pointer to the `Polyhedron` object `MapNode`s correspond to
  * @param dest `SpacePoint` to find nearest `MapNode` to
- * @param start (optional) `MapNode` to start searching from
+ * @param start (optional) Pointer to a `MapNode` to start searching from
  *
  * @returns Pointer to a `MapNode` which is considered to be nearest to the given destination
  *

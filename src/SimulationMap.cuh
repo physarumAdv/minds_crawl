@@ -43,10 +43,10 @@ public:
     __global__ friend void get_n_of_nodes(const SimulationMap *simulation_map, int *return_value);
 
 
-    /// The array of nodes on the map
+    /// Pointer-represented array of nodes on the map
     MapNode *const nodes;
 
-    /// The polyhedron simulation is runned on
+    /// Pointer to the polyhedron simulation is runned on
     Polyhedron *const polyhedron;
 
 private:

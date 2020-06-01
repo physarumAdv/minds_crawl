@@ -11,7 +11,7 @@
  *
  * @tparam T Type of an array
  *
- * @param source Pointer to an array to copy
+ * @param source Pointer-represented array to copy
  * @param count Number of elements to copy
  *
  * @returns Pointer to a copied array
