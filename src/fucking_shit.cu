@@ -33,21 +33,6 @@ namespace jc = jones_constants;
 }
 
 
-__device__ void diffuse_trail(MapNode *node)
-{
-    auto get_trail = [](MapNode *m)
-    { return m->trail; };
-
-    auto left = node->get_left(), top = node->get_top(), right = node->get_right(), bottom = node->get_bottom();
-
-    double sum = get_trail(top->get_left()) + get_trail(top) + get_trail(top->get_right()) +
-                 get_trail(left) + get_trail(node) + get_trail(right) +
-                 get_trail(bottom->get_left()) + get_trail(bottom) + get_trail(bottom->get_right());
-
-    node->temp_trail = (1 - jc::diffdamp) * (sum / 9.0);
-}
-
-
 __device__ int count_particles_in_node_window(MapNode *node, int window_size)
 {
     for(int i = 0; i < window_size / 2; ++i)
@@ -167,6 +152,7 @@ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, Spa
 }
 
 
+// The following code is from https://stackoverflow.com/a/62094892/11248508
 // `address` CANNOT be pointer to const, because we are trying to edit memory by it's address
 __device__ bool atomicCAS(bool *const address, const bool compare, const bool val)
 {
@@ -195,3 +181,26 @@ __device__ bool atomicCAS(bool *const address, const bool compare, const bool va
     return current_value;
 }
 
+// I (Nikolay Nechaev, @kolayne) have no idea why the fuck the following only works with #else. If you're reading this
+// and now why, PLEASE, contact me and tell me
+#if !defined(__CUDA_ARCH__) || __CUDA_ARCH__ >= 600
+#else
+// The following code is from https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html
+__device__ double atomicAdd(double* address, double val)
+{
+    unsigned long long int* address_as_ull =
+            (unsigned long long int*)address;
+    unsigned long long int old = *address_as_ull, assumed;
+
+    do {
+        assumed = old;
+        old = atomicCAS(address_as_ull, assumed,
+                        __double_as_longlong(val +
+                                             __longlong_as_double(assumed)));
+
+        // Note: uses integer comparison to avoid hang in case of NaN (since NaN != NaN)
+    } while (assumed != old);
+
+    return __longlong_as_double(old);
+}
+#endif

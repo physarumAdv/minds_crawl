@@ -168,5 +168,12 @@ __device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, const Spa
 /// Cuda-like atomicCAS implementation for `bool`s (see official CUDA documentation for details)
 __device__ bool atomicCAS(bool *address, const bool compare, const bool val);
 
+// I (Nikolay Nechaev, @kolayne) have no idea why the fuck the following only works with #else. If you're reading this
+// and now why, PLEASE, contact me and tell me
+#if !defined(__CUDA_ARCH__) || __CUDA_ARCH__ >= 600
+#else
+__device__ double atomicAdd(double* address, double val);
+#endif
+
 
 #endif //MIND_S_CRAWL_FUCKING_SHIT_CUH

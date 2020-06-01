@@ -2,7 +2,7 @@
 #define MIND_S_CRAWL_COMMON_CUH
 
 
-#define stop_all_threads_except_first if(threadIdx.x || threadIdx.y || threadIdx.z || \
+#define STOP_ALL_THREADS_EXCEPT_FIRST if(threadIdx.x || threadIdx.y || threadIdx.z || \
         blockIdx.x || blockIdx.y || blockIdx.z) return
 
 
