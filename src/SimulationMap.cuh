@@ -35,17 +35,18 @@ public:
     __device__ int get_n_of_nodes() const;
 
     /**
-     * Returns the number of nodes in the simulation
+     * Saves the number of nodes in the simulation to the given variable
      *
-     * @overload SimulationMap::get_n_of_nodes
+     * @param simulation_map `SimulationMap` object
+     * @param return_value Pointer to save answer to
      */
     __global__ friend void get_n_of_nodes(const SimulationMap *simulation_map, int *return_value);
 
 
-    /// The array of nodes on the map
-    MapNode *nodes;
+    /// Pointer-represented array of nodes on the map
+    MapNode *const nodes;
 
-    /// The polyhedron simulation is runned on
+    /// Pointer to the polyhedron simulation is runned on
     Polyhedron *const polyhedron;
 
 private:

@@ -63,12 +63,12 @@ __device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, SpacePoint c
     double h_origin_dist = get_distance(h, origin);
     double k_origin_dist = get_distance(k, origin);
 
-    if (h_origin_dist < eps || k_origin_dist < eps)
+    if(h_origin_dist < eps || k_origin_dist < eps)
         return origin;
     else
     {
         SpacePoint l = direction_vectorAB * h_origin_dist / k_origin_dist;
-        if ((h * k) / (h_origin_dist * k_origin_dist) > 0)
+        if((h * k) / (h_origin_dist * k_origin_dist) > 0)
             return a + l;
         else
             return a - l;

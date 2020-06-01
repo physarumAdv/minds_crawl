@@ -18,7 +18,7 @@ __device__ int SimulationMap::get_n_of_nodes() const
 
 __global__ void get_n_of_nodes(const SimulationMap *const simulation_map, int *return_value)
 {
-    stop_all_threads_except_first;
+    STOP_ALL_THREADS_EXCEPT_FIRST;
 
     *return_value = simulation_map->get_n_of_nodes();
 }
