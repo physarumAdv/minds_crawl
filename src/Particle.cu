@@ -17,13 +17,19 @@ __device__ Particle::Particle(MapNode *map_node, double angle) :
 }
 
 
-__device__ SpacePoint Particle::rotate_point_angle(SpacePoint radius, double angle) const
+__device__ void Particle::do_motor_behaviours()
 {
-    double angle_cos = cos(angle);
-    return (1 - angle_cos) * (this->normal * radius) * this->normal + angle_cos * radius +
-           sin(angle) * (this->normal % radius) + this->coordinates;
+    SpacePoint end = get_projected_vector_end(coordinates, coordinates + direction_vector,
+                                              map_node->polyhedron_face_id, map_node->polyhedron);
+    MapNode *new_node = find_nearest_mapnode(map_node->polyhedron, end, map_node);
+    if(new_node->attach_particle(this)) // If can reattach myself to that node
+    {
+        map_node->detach_particle(this);
+        map_node = new_node;
+        coordinates = end;
+        normal = map_node->polyhedron->faces[map_node->polyhedron_face_id].normal;
+    }
 }
-
 
 __device__ void Particle::do_sensory_behaviours()
 {
@@ -94,6 +100,15 @@ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int c
     }
     return b;
 }
+
+
+__device__ SpacePoint Particle::rotate_point_angle(SpacePoint radius, double angle) const
+{
+    double angle_cos = cos(angle);
+    return (1 - angle_cos) * (this->normal * radius) * this->normal + angle_cos * radius +
+           sin(angle) * (this->normal % radius) + this->coordinates;
+}
+
 
 __device__ int find_face_next_to_edge(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron)
 {

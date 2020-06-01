@@ -85,13 +85,13 @@ __device__ bool MapNode::contains_particle() const
     return particle != nullptr;
 }
 
-__device__ bool MapNode::attach_particle(Particle *value)
+__device__ bool MapNode::attach_particle(Particle *p)
 {
     static_assert(sizeof(&particle) <= sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to"
                                                                      "`unsigned long long *`");
 
     return nullptr == (Particle *)atomicCAS((unsigned long long *)&particle, (unsigned long long)nullptr,
-                                            (unsigned long long)value);
+                                            (unsigned long long)p);
 }
 
 __device__ Particle *MapNode::get_particle() const

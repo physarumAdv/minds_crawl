@@ -121,7 +121,7 @@ public:
     /**
      * Attaches the given `Particle` to the node, if it is not occupied already
      *
-     * @param value Pointer to the particle to be attached
+     * @param p Pointer to the particle to be attached
      *
      * @returns `true`, if the particle was successfully attached (which means the node was not occupied before),
      *      otherwise `false`
@@ -130,7 +130,7 @@ public:
      *
      * @see MapNode::get_particle, MapNode::detach_particle
      */
-    [[nodiscard]] __device__ bool attach_particle(Particle *value);
+    [[nodiscard]] __device__ bool attach_particle(Particle *p);
 
     /**
      * Returns a pointer to the attached particle
