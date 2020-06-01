@@ -104,7 +104,7 @@ __device__ void MapNode::detach_particle()
     particle = nullptr;
 }
 
-[[nodiscard]] __device__ bool MapNode::detach_particle(Particle *p)
+__device__ bool MapNode::detach_particle(Particle *p)
 {
     static_assert(sizeof(&particle) <= sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to"
                                                                      "`unsigned long long *`");

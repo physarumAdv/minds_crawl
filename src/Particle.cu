@@ -55,6 +55,18 @@ __device__ void Particle::rotate(double angle)
     direction_vector = rotate_point_angle(direction_vector, angle);
 }
 
+
+__device__ bool Particle::capture()
+{
+    return !atomicCAS(&is_captured, false, true);
+}
+
+__device__ void Particle::release()
+{
+    is_captured = false;
+}
+
+
 __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron)
 {
     Face &current_face = polyhedron->faces[current_face_id];

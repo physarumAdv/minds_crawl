@@ -150,7 +150,7 @@ __global__ void run_iteration_process_particles(SimulationMap *simulation_map, c
     MapNode *self;
     RUN_ITERATION_SET_SELF(self)
 
-    if(!self->contains_particle())
+    if(!self->contains_particle() || !self->get_particle()->capture())
         return;
 
     self->get_particle()->do_motor_behaviours();
@@ -170,7 +170,8 @@ __global__ void run_iteration_process_particles(SimulationMap *simulation_map, c
 /**
  * Runs some operations which must be performed after running the simulation iteration before running the next one
  *
- * Applies trail changes (sets `trail`s to `temp_trail`s) and increases `iteration_number` by 1
+ * Applies trail changes (sets `trail`s to `temp_trail`s), releases captured particles and increases `iteration_number`
+ * by 1
  *
  * @param simulation_map Simulation map to run iteration on
  * @param iteration_number Serial number of current iteration
@@ -188,6 +189,8 @@ __global__ void run_iteration_cleanup(SimulationMap *simulation_map, int *const 
     RUN_ITERATION_SET_SELF(self)
 
     self->trail = self->temp_trail;
+    if(self->contains_particle())
+        self->get_particle()->release();
 
     STOP_ALL_THREADS_EXCEPT_FIRST;
     ++*iteration_number;

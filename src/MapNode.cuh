@@ -90,28 +90,28 @@ public:
     /**
      * Returns a pointer to the left neighbor
      *
-     * @returns Pointer to the left neighbor
+     * @returns Pointer to the left neighbor (`nullptr` if the neighbor is not set)
      */
     __device__ MapNode *get_left() const;
 
     /**
      * Returns a pointer to the top neighbor
      *
-     * @returns Pointer to the top neighbor
+     * @returns Pointer to the top neighbor (`nullptr` if the neighbor is not set)
      */
     __device__ MapNode *get_top() const;
 
     /**
      * Returns a pointer to the right neighbor
      *
-     * @returns Pointer to the right neighbor
+     * @returns Pointer to the right neighbor (`nullptr` if the neighbor is not set)
      */
     __device__ MapNode *get_right() const;
 
     /**
      * Returns a pointer to the bottom neighbor
      *
-     * @returns Pointer to the bottom neighbor
+     * @returns Pointer to the bottom neighbor (`nullptr` if the neighbor is not set)
      */
     __device__ MapNode *get_bottom() const;
 
@@ -168,7 +168,7 @@ public:
      *
      * @note This operation is thread-safe
      */
-    [[nodiscard]] __device__ bool detach_particle(Particle *p);
+    __device__ bool detach_particle(Particle *p);
 
 
     /// Polyhedron containing the node

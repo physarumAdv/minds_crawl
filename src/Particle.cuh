@@ -91,6 +91,32 @@ public:
     __device__ void rotate(double angle);
 
 
+    /**
+     * Tries to mark the `Particle` as "captured" by a thread while running an iteration
+     *
+     * Before trying to process a `Particle`, a thread should capture it (if it didn't succeed, this means another
+     * thread is processing the `Particle` already). After processing, a `Particle` should be released, see the
+     *
+     * @returns `true` if the particle was successfully captured and the captured thread is allowed to process it,
+     *      otherwise `false`
+     *
+     * @note This operation is thread-safe
+     *
+     * @see Particle::release
+     */
+    __device__ bool capture();
+
+    /**
+     * Releases a captured particle
+     *
+     * Releases a particle to allow capturing it again. The method should <b>only</b> be called when all the threads
+     * which could try to capture the `Particle` are finished
+     *
+     * @see Particle::capture
+     */
+    __device__ void release();
+
+
     /// The particle's location
     SpacePoint coordinates;
 
@@ -106,17 +132,22 @@ private:
     __device__ SpacePoint rotate_point_angle(SpacePoint radius, double angle) const;
 
 
-    /// The direction vector of the particle's agent
+    /// Direction vector of the particle's agent
     SpacePoint direction_vector;
 
-    /// A map node the particle belongs to
+    /// Map node the particle belongs to
     MapNode *map_node;
 
 
-    /// A normal to the current face
+    /// Normal to the current face
     SpacePoint normal;
 
 
+    /**
+     * Flag showing whether the particle was processed during current iteration (should be changed with `capture` and
+     * `release` methods)
+     */
+    bool is_captured = false;
 };
 
 #endif //MIND_S_CRAWL_PARTICLE_CUH
