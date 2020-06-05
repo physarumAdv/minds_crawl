@@ -113,7 +113,7 @@ __device__ void division_test(MapNode *node)
 }
 
 
-__device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint dest, MapNode *const start)
+__device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint &dest, MapNode *const start)
 {
     MapNode *current = start;
     double current_dist = get_distance(dest, current->coordinates);
@@ -137,7 +137,8 @@ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint dest, MapNode *
     return current;
 }
 
-__device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, SpacePoint dest, MapNode *start)
+__device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, const SpacePoint &dest,
+                                         MapNode *const start)
 {
     int dest_face = polyhedron->find_face_id_by_point(dest);
 

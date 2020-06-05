@@ -140,7 +140,7 @@ __device__ void division_test(MapNode *node);
      *
      * @see find_nearest_mapnode
      */
-__device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint dest, MapNode *const start);
+__device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint &dest, MapNode *start);
 
 /**
  * Finds a `MapNode` which is nearest to a given destination `SpacePoint`. Tries to find it next to `start`, if
@@ -162,7 +162,8 @@ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint dest, MapNode *
  *
  * @see find_nearest_mapnode_greedy
  */
-__device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, const SpacePoint dest, MapNode *start = nullptr);
+__device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, const SpacePoint &dest,
+                                         MapNode *start = nullptr);
 
 
 #ifdef COMPILE_FOR_CPU
