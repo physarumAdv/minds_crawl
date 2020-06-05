@@ -142,9 +142,6 @@ __host__ int main()
 
     while(true)
     {
-        if(cudaErrorNotReady == cudaStreamQuery(iterations_stream))
-            printf("I: Redrawed, but kernel haven't finished yet\n");
-
         // (implicit synchronization)
         cudaMemcpy((void *)nodes, (void *)nodes_d, sizeof(MapNode) * n_of_nodes, cudaMemcpyDeviceToHost);
 
