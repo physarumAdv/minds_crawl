@@ -112,3 +112,9 @@ __device__ bool MapNode::detach_particle(Particle *p)
     return p == (Particle *)atomicCAS((unsigned long long *)&particle, (unsigned long long)p,
                                       (unsigned long long)nullptr);
 }
+
+
+__host__ __device__ bool operator==(const MapNode &a, const MapNode &b)
+{
+    return a.coordinates == b.coordinates;
+}

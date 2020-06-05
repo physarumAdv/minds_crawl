@@ -1,4 +1,5 @@
 #include "Particle.cuh"
+#include "MapNode.cuh"
 #include "fucking_shit.cuh"
 #include "jones_constants.hpp"
 
@@ -28,6 +29,10 @@ __device__ void Particle::do_motor_behaviours()
         map_node = new_node;
         coordinates = end;
         normal = map_node->polyhedron->faces[map_node->polyhedron_face_id].normal;
+    }
+    else if(*new_node == *map_node)
+    {
+        coordinates = end;
     }
 }
 

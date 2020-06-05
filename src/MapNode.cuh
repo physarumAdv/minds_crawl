@@ -201,4 +201,8 @@ private:
     Particle *particle;
 };
 
+
+__host__ __device__ bool operator==(const MapNode &a, const MapNode &b);
+
+
 #endif //MIND_S_CRAWL_MAPNODE_CUH
