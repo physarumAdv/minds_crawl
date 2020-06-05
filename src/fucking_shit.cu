@@ -152,12 +152,12 @@ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, Spa
 }
 
 
-// The following code is from https://stackoverflow.com/a/62094892/11248508
+// The following code is from https://stackoverflow.com/a/62094892/11248508 (@kolayne can explain)
 // `address` CANNOT be pointer to const, because we are trying to edit memory by it's address
 __device__ bool atomicCAS(bool *const address, const bool compare, const bool val)
 {
     auto addr = (unsigned long long)address;
-    unsigned pos = addr & 3;  // byte position within the int
+    unsigned pos = addr & 3U;  // byte position within the int
     auto *int_addr = (unsigned *)(addr - pos);  // int-aligned address
     unsigned old = *int_addr, assumed, ival;
 
@@ -185,7 +185,7 @@ __device__ bool atomicCAS(bool *const address, const bool compare, const bool va
 // and now why, PLEASE, contact me and tell me
 #if !defined(__CUDA_ARCH__) || __CUDA_ARCH__ >= 600
 #else
-// The following code is from https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html
+// The following code is from https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html (@kolayne can explain)
 __device__ double atomicAdd(double* address, double val)
 {
     unsigned long long int* address_as_ull =
