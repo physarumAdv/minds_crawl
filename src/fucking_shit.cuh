@@ -165,6 +165,64 @@ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint dest, MapNode *
 __device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, const SpacePoint dest, MapNode *start = nullptr);
 
 
+#ifdef COMPILE_FOR_CPU
+
+
+/**
+ * Thread-unsafe version of atomicCAS (for CPU)
+ *
+ * See cuda documentation on atomicCAS for details
+ *
+ * @param address Pointer to the variable possibly being updated
+ * @param compare Expected value of the variable possibly being updated
+ * @param val Value to be set if `*address == compare`
+ *
+ * @returns Value of `*address` before update (doesn't matter was it really updated)
+ */
+int atomicCAS(int *address, const int compare, const int val)
+{
+    int ans = *address;
+
+    if(*address == compare)
+        *address = val;
+
+    return ans;
+}
+
+/**
+ * Thread-unsafe version of atomicAdd (for CPU)
+ *
+ * See cuda documentation on atomicAdd for details
+ *
+ * @param address Pointer to the variable being updated
+ * @param value Value being added to the variable being updated
+ */
+int atomicAdd(int *address, int value)
+{
+    int ans = *address;
+
+    *address += value;
+
+    return ans;
+}
+
+/**
+ * Thread-unsafe version of atomicAdd (for CPU)
+ *
+ * @overload atomicAdd
+ */
+double atomicAdd(double *address, double value)
+{
+    double ans = *address;
+
+    *address += value;
+
+    return ans;
+}
+
+
+#endif //COMPILE_FOR_CPU
+
 /// Cuda-like atomicCAS implementation for `bool`s (see official CUDA documentation for details)
 __device__ bool atomicCAS(bool *address, const bool compare, const bool val);
 

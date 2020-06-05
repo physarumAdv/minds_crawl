@@ -2,8 +2,16 @@
 #define MIND_S_CRAWL_COMMON_CUH
 
 
+#include <cstdlib>
+#include <cstring>
+
+
+#ifdef COMPILE_FOR_CPU
+#define STOP_ALL_THREADS_EXCEPT_FIRST
+#else
 #define STOP_ALL_THREADS_EXCEPT_FIRST if(threadIdx.x || threadIdx.y || threadIdx.z || \
         blockIdx.x || blockIdx.y || blockIdx.z) return
+#endif //COMPILE_FOR_CPU
 
 
 /**
