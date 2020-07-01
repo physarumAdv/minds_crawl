@@ -69,7 +69,7 @@ __global__ void run_iteration(const SimulationMap *simulation_map, const int *co
 
     if(jc::projectnutrients && *iteration_number >= jc::startprojecttime)
     {
-        if(self->contains_food)
+        if(self->does_contain_food())
         {
             double trail_value;
             if(count_particles_in_node_window(self, 3) > 0)

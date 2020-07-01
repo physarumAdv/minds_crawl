@@ -117,6 +117,42 @@ public:
 
 
     /**
+     * Returns the node's coordinates
+     *
+     * @returns The coordinates of the node
+     *
+     * @note This parameter is never ever changed during the existence of the object
+     */
+    __device__ SpacePoint get_coordinates() const;
+
+    /**
+     * Returns the polyhedron the node is laying on
+     *
+     * @returns The pointer to the polyhedron
+     *
+     * @note This parameter is never ever changed during the existence of the object
+     */
+    __device__ Polyhedron *get_polyhedron() const;
+
+    /**
+     * Returns the id of face the node is laying on
+     *
+     * @returns The id of face the node belongs to
+     *
+     * @note This parameter is never ever changed during the existence of the object
+     */
+    __device__ int get_face_id() const;
+
+
+    /**
+     * Returns whether the node contains food or not
+     *
+     * @returns True if the node does contain food, False otherwise
+     */
+    __device__ bool does_contain_food() const;
+
+
+    /**
      * Attaches the given `Particle` to the node, if it is not occupied already
      *
      * @param value Pointer to the particle to be attached
@@ -153,30 +189,29 @@ public:
     __device__ void remove_particle();
 
 
-    /// Polyhedron containing the node
-    Polyhedron *const polyhedron;
-
-    /// Polyhedron's face the node is located on
-    const int polyhedron_face_id;
-
-
     /// Trail value in the node
     double trail;
 
     /// Temporary trail value in the node (implementation-level field)
     double temp_trail;
 
-    /// Whether there is food in the current node
-    const bool contains_food;
-
-
-    /// The node's coordinates
-    const SpacePoint coordinates;
-
-
 private:
     /// Pointer to a neighbor from the corresponding side
     MapNode *left, *top, *right, *bottom;
+
+
+    /// Polyhedron containing the node
+    Polyhedron *polyhedron;
+
+    /// Polyhedron's face the node is located on
+    int polyhedron_face_id;
+
+    /// The node's coordinates
+    SpacePoint coordinates;
+
+
+    /// Whether there is food in the current node
+    bool contains_food;
 
 
     /// Pointer to a particle attached to the node if it exists or TO WHATEVER otherwise

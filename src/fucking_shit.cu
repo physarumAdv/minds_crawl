@@ -11,7 +11,7 @@ namespace jc = jones_constants;
 
 __device__ void create_particle(MapNode *node)
 {
-    node->particle = new Particle(node, node->coordinates, rand0to1() * 360);
+    node->particle = new Particle(node, node->get_coordinates(), rand0to1() * 360);
 
     node->contains_particle = true;
 }
@@ -108,13 +108,13 @@ __device__ void division_test(MapNode *node)
 __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint dest, MapNode *const start)
 {
     MapNode *current = start;
-    double current_dist = get_distance(dest, current->coordinates);
+    double current_dist = get_distance(dest, current->get_coordinates());
     while(true)
     {
         bool found_better = false;
         for(auto next : {current->left, current->top, current->right, current->bottom})
         {
-            double next_dist = get_distance(dest, next->coordinates);
+            double next_dist = get_distance(dest, next->get_coordinates());
             if(next_dist < current_dist)
             {
                 current = next;
@@ -136,7 +136,7 @@ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, Spa
     if(start != nullptr)
     {
         MapNode *ans = find_nearest_mapnode_greedy(dest, start);
-        if(ans->polyhedron_face_id == dest_face)
+        if(ans->get_face_id() == dest_face)
             return ans;
     }
 

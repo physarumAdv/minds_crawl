@@ -59,7 +59,7 @@ public:
     const SpacePoint normal;
 
     /// Some node laying on the face
-    MapNode *const node;
+    MapNode *node;
 };
 
 
