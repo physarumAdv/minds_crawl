@@ -104,6 +104,19 @@ __host__ __device__ SpacePoint operator%(SpacePoint a, SpacePoint b);
 
 
 /**
+ * Rotates point B relative to point A along the face with given normal
+ *
+ * @param a Point A in space
+ * @param b Point B in space
+ * @param normal Normal to the face
+ * @param angle Rotation angle
+ *
+ * @returns Coordinates of point B after rotation
+ */
+__device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint b, SpacePoint normal, double angle);
+
+
+/**
  * Returns the distance between two points
  *
  * @param a Point in 3D

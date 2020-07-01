@@ -47,6 +47,15 @@ __host__ __device__ SpacePoint operator%(SpacePoint a, SpacePoint b)
 }
 
 
+__device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint b, SpacePoint normal, double angle)
+{
+    double angle_cos = cos(angle);
+    SpacePoint radius = b - a;
+    return (1 - angle_cos) * (normal * radius) * normal + angle_cos * radius +
+           sin(angle) * (normal % radius) + a;
+}
+
+
 __device__ double get_distance(SpacePoint a, SpacePoint b)
 {
     return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z));
