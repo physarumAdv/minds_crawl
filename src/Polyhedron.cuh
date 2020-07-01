@@ -61,6 +61,17 @@ public:
 __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron);
 
 /**
+ * Returns the intersection point of segment AB with an edge of given face if it exists, point B otherwise
+ *
+ * @param a Point A of segment AB
+ * @param b Point B of segment AB
+ * @param current_face Face the segment AB belongs to
+ *
+ * @returns The point of intersection with edge if it exists, point B otherwise
+ */
+__device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Face *current_face);
+
+/**
  * Finds a face adjacent to the given face along the edge AB
  *
  * @param a Point A of edge AB

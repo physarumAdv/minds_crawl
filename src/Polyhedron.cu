@@ -28,27 +28,32 @@ __device__ int Polyhedron::find_face_id_by_point(SpacePoint point) const
 
 __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron)
 {
-    Face &current_face = polyhedron->faces[current_face_id];
-    for(int i = 0; i < current_face.n_of_vertices - 1; ++i)
+    SpacePoint intersection = find_intersection_with_edge(a, b, &polyhedron->faces[current_face_id]);
+
+    SpacePoint normal_before = polyhedron->faces[current_face_id].normal;
+    SpacePoint normal_after = polyhedron->faces[find_face_next_to_edge(a, b, current_face_id, polyhedron)].normal;
+    SpacePoint moving_vector = (b - a) / get_distance(a, b);
+
+    double phi_cos = normal_after * normal_before;
+    double phi_sin = sin(acos(phi_cos));
+    double alpha_cos = moving_vector * (normal_before % normal_after);
+
+    SpacePoint faced_vector_direction = (normal_before + normal_after * phi_cos) * sin(acos(alpha_cos)) / phi_sin +
+                                        (normal_before % normal_after) * alpha_cos / phi_sin;
+
+    return intersection + faced_vector_direction * (get_distance(a, b) - get_distance(intersection, a));
+}
+
+__device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Face *current_face)
+{
+    for(int i = 0; i < current_face->n_of_vertices - 1; ++i)
     {
-        SpacePoint intersection = line_intersection(current_face.vertices[i], current_face.vertices[i + 1], a, b);
+        SpacePoint intersection = line_intersection(current_face->vertices[i], current_face->vertices[i + 1], a, b);
         if(intersection != origin && is_in_segment(a, b, intersection) &&
-           is_in_segment(current_face.vertices[i], current_face.vertices[i + 1], intersection) &&
-           get_distance(intersection, a) > eps)
+                is_in_segment(current_face->vertices[i], current_face->vertices[i + 1], intersection) &&
+                get_distance(intersection, a) > eps)
         {
-            Face &next_face = polyhedron->faces[find_face_next_to_edge(a, b, current_face_id, polyhedron)];
-            SpacePoint normal_before = current_face.normal;
-            SpacePoint normal_after = next_face.normal;
-            SpacePoint moving_vector = (b - a) / get_distance(a, b);
-            double phi_cos = normal_after * normal_before;
-            double phi_sin = sin(acos(phi_cos));
-            double alpha_cos = moving_vector * (normal_before % normal_after);
-
-            SpacePoint faced_vector_direction =
-                    (normal_before + normal_after * phi_cos) * sin(acos(alpha_cos)) / phi_sin +
-                    (normal_before % normal_after) * alpha_cos / phi_sin;
-
-            return intersection + faced_vector_direction * (get_distance(a, b) - get_distance(intersection, a));
+            return intersection;
         }
     }
     return b;
