@@ -12,12 +12,11 @@ class SimulationMap
 {
 public:
     /**
-     * Creates a `SimulationMap` object
+     * Creates a `SimulationMap` object and a grid of mapnodes
      *
-     * This function isn't implemented yet, neither it's ready to be implemented, so the description stays
-     * empty for now
+     * @param polyhedron The polyhedron in simulation
      */
-    __device__ SimulationMap(...);
+    __device__ SimulationMap(Polyhedron *polyhedron);
 
     /// Forbids copying `SimulationMap` objects
     __host__ __device__ SimulationMap(const SimulationMap &) = delete;
@@ -25,12 +24,36 @@ public:
     /// Destructs a `SimulationMap` object
     __device__ ~SimulationMap();
 
+
+    /**
+     * Returns the index of neighbor node in `nodes` array if it already exists
+     * Creates new node in given coordinates if it does not exists and if it is possible and returns its index
+     * Returns `-1` if node cannot be created
+     *
+     * @param current_node_id Index of the node whose neighbor is searched
+     * @param neighbor_coordinates Coordinates of neighbor node
+     *
+     * @returns The index of neighbor node if it exists, `-1` otherwise
+     */
+    __device__ int get_neighbor_mapnode_id(int current_node_id, SpacePoint neighbor_coordinates,
+                                           SpacePoint **nodes_directions, SpacePoint top_direction);
+
+    /**
+     * Finds the nearest node to the given point
+     *
+     * @param point_coordinates Coordinates of the point
+     *
+     * @returns The index of the found node in `nodes` array
+     */
+    __device__ int find_nearest_mapnode_to_point(SpacePoint point_coordinates) const;
+
+
     /**
      * Returns the number of nodes in the simulation
      *
      * @returns The number of nodes on the map
      *
-     * @note This number is never ever changed since creation of the object
+     * @note This number is never ever changed during the existence of the object
      */
     __device__ int get_n_of_nodes() const;
 
