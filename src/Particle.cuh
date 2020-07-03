@@ -104,7 +104,7 @@ public:
      *
      * @see Particle::release
      */
-    __device__ bool capture();
+    [[nodiscard]] __device__ bool capture();
 
     /**
      * Releases a captured particle

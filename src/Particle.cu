@@ -69,7 +69,7 @@ __device__ void Particle::rotate(double angle)
 }
 
 
-__device__ bool Particle::capture()
+[[nodiscard]] __device__ bool Particle::capture()
 {
     return !atomicCAS(&is_captured, false, true);
 }
