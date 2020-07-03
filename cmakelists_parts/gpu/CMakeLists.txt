@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(mind_s_crawl CUDA)
 
-set(CMAKE_CUDA_COMPILER nvcc) # We are using nvcc 10.1
+set(CMAKE_CUDA_COMPILER nvcc)
 set(CMAKE_CUDA_STANDARD 14)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmakelists_parts/common/1/CMakeLists.txt)
