@@ -25,6 +25,7 @@ __device__ void Particle::do_motor_behaviours()
     MapNode *new_node = find_nearest_mapnode(map_node->polyhedron, end, map_node);
     if(new_node->attach_particle(this)) // If can reattach myself to that node
     {
+        map_node->trail += jc::dept;
         map_node->detach_particle(this);
         map_node = new_node;
         coordinates = end;
