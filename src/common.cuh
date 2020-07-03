@@ -27,9 +27,12 @@
 template<class T>
 __device__ T *malloc_and_copy(T *source, int count)
 {
-    T *p = (T *)malloc(count * sizeof(T));
-    memcpy((void *)p, (void *)source, count * sizeof(T));
-    return p;
+    T *new_array = (T *)malloc(count * sizeof(T));
+    for(int i = 0; i < count; ++i)
+    {
+        new_array[i] = source[i];
+    }
+    return new_array;
 }
 
 
