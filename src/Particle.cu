@@ -1,6 +1,7 @@
 #include "Particle.cuh"
 #include "MapNode.cuh"
 #include "fucking_shit.cuh"
+#include "random_generator.cuh"
 #include "jones_constants.hpp"
 
 namespace jc = jones_constants;
@@ -20,20 +21,28 @@ __device__ Particle::Particle(MapNode *map_node, double angle) :
 
 __device__ void Particle::do_motor_behaviours()
 {
+    if(rand0to1() < jc::pcd)
+    {
+        rotate(rand0to1() * 2 * M_PI);
+    }
+
     SpacePoint end = get_projected_vector_end(coordinates, coordinates + direction_vector,
                                               map_node->polyhedron_face_id, map_node->polyhedron);
     MapNode *new_node = find_nearest_mapnode(map_node->polyhedron, end, map_node);
     if(new_node->attach_particle(this)) // If can reattach myself to that node
     {
-        map_node->trail += jc::dept;
         map_node->detach_particle(this);
         map_node = new_node;
-        coordinates = end;
         normal = map_node->polyhedron->faces[map_node->polyhedron_face_id].normal;
     }
-    else if(*new_node == *map_node)
+    if(*new_node == *map_node) // If either just reattached myself successfully or trying to move to the same node
     {
+        map_node->trail += jc::dept;
         coordinates = end;
+    }
+    else if(!jc::osc)
+    {
+        rotate(rand0to1() * 2 * M_PI);
     }
 }
 
