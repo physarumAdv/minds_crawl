@@ -16,6 +16,7 @@ __device__ SpacePoint get_normal(const SpacePoint *vertices);
 
 
 class MapNode;
+class Polyhedron;
 
 /// Object describing a polyhedron face
 class Face
@@ -35,13 +36,29 @@ public:
      * vertices[1] and so on. Assuming there are N vertices in total, A's neighbors are B clockwise and
      * X counterclock-wise, X must be saved to vertices[N - 2], and A must be saved <b>again</b> to vertices[N - 1]
      */
-    __device__ Face(int id, const SpacePoint *vertices, int n_of_vertices, MapNode *node);
+    __device__ Face(int id, const SpacePoint *vertices, int n_of_vertices);
 
     /// Forbids copying `Face` objects
     __host__ __device__ Face(const Face &) = delete;
 
     /// Destructs a `Face` object
     __device__ ~Face();
+
+
+    /**
+     * Attaches given node to the face, if the node lays on it, nothing happens otherwise
+     *
+     * @param some_node Some node laying on the face
+     * @param polyhedron Polyhedron in simulation
+     */
+    __device__ void set_node(MapNode *some_node, Polyhedron *polyhedron);
+
+    /**
+     * Returns a pointer to some node laying on the face
+     *
+     * @returns Pointer to some node laying on the face if it exists, otherwise `nullptr`
+     */
+    __device__ MapNode *get_node() const;
 
 
     /// An identifier of the face of a `Polyhedron`
@@ -58,7 +75,8 @@ public:
     /// Normal to the face
     const SpacePoint normal;
 
-    /// Some node laying on the face
+private:
+    /// Pointer to some node laying on the face
     MapNode *node;
 };
 

@@ -140,7 +140,7 @@ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, Spa
             return ans;
     }
 
-    return find_nearest_mapnode_greedy(dest, polyhedron->faces[polyhedron->find_face_id_by_point(dest)].node);
+    return find_nearest_mapnode_greedy(dest, polyhedron->faces[polyhedron->find_face_id_by_point(dest)].get_node());
 }
 
 

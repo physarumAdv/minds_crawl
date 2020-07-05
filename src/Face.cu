@@ -1,5 +1,6 @@
 #include "Face.cuh"
 #include "MapNode.cuh"
+#include "Polyhedron.cuh"
 
 
 __device__ SpacePoint get_normal(const SpacePoint *vertices)
@@ -8,9 +9,9 @@ __device__ SpacePoint get_normal(const SpacePoint *vertices)
     return normal / get_distance(normal, origin);
 }
 
-__device__ Face::Face(int id, const SpacePoint *vertices, int n_of_vertices, MapNode *node) :
+__device__ Face::Face(int id, const SpacePoint *vertices, int n_of_vertices) :
         id(id), vertices(malloc_and_copy(vertices, n_of_vertices)), n_of_vertices(n_of_vertices),
-        normal(get_normal(vertices)), node(node)
+        normal(get_normal(vertices)), node(nullptr)
 {
 
 }
@@ -18,6 +19,20 @@ __device__ Face::Face(int id, const SpacePoint *vertices, int n_of_vertices, Map
 __device__ Face::~Face()
 {
     free((void *)vertices);
+}
+
+
+__device__ void Face::set_node(MapNode *some_node, Polyhedron *polyhedron)
+{
+    if (polyhedron->find_face_id_by_point(some_node->get_coordinates()) == id)
+    {
+        node = some_node;
+    }
+}
+
+__device__ MapNode *Face::get_node() const
+{
+    return node;
 }
 
 
