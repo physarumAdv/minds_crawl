@@ -66,22 +66,27 @@ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int c
  * @param a Point A of segment AB
  * @param b Point B of segment AB
  * @param current_face Face the segment AB belongs to
+ * @param intersection_edge Pointer to a variable in which to save index of vertex of edge that intersect segment AB
+ *                          in `Face::vertices` array
  *
- * @returns The point of intersection with edge if it exists, point B otherwise
+ * @note `intersection_edge` will not be changed if segment AB does not intersect any edge of face
+ *
+ * @returns Point of intersection with edge if it exists, point B otherwise
  */
-__device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Face *current_face);
+__device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Face *current_face,
+                                                  int *intersection_edge);
 
 /**
- * Finds a face adjacent to the given face along the edge AB
+ * Finds a face adjacent to the given face along the edge represented by vertices
+ * with indexes `vertex_id` and `vertex_id + 1 in `Face::vertices` array
  *
- * @param a Point A of edge AB
- * @param b Point B of edge AB
+ * @param vertex_id Index of edge vertex in `Face::vertices` array
  * @param current_face_id Identifier of given face
  * @param polyhedron The polyhedron in simulation
  *
- * @returns Identifier of the found face or `first_face_id` if nothing was found
+ * @returns Identifier of the found face
  */
-__device__ int find_face_next_to_edge(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron);
+__device__ int find_face_next_to_edge(int vertex_id, int current_face_id, Polyhedron *polyhedron);
 
 /**
  * Returns whether the edge's vertices belong to face
@@ -92,7 +97,7 @@ __device__ int find_face_next_to_edge(SpacePoint a, SpacePoint b, int current_fa
  *
  * @returns `true` if edge AB belongs to face, `false` otherwise
  */
-__device__ bool is_edge_belongs_face(SpacePoint a, SpacePoint b, const Face *face);
+__device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, const Face *face);
 
 
 #endif //MIND_S_CRAWL_POLYHEDRON_CUH

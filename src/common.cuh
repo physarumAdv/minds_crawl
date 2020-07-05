@@ -2,6 +2,9 @@
 #define MIND_S_CRAWL_COMMON_CUH
 
 
+#include <utility>
+
+
 #define stop_all_threads_except_first if(threadIdx.x || threadIdx.y || threadIdx.z || \
         blockIdx.x || blockIdx.y || blockIdx.z) return
 
@@ -43,7 +46,7 @@ __device__ T *device_realloc(T *source, int old_size, int new_size)
     T *new_array = (T *)malloc(new_size * sizeof(T));
     for(int i = 0; i < old_size; ++i)
     {
-        new_array[i] = source[i];
+        new_array[i] = std::move(source[i]);
     }
     free(source);
     return new_array;
