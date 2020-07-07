@@ -26,6 +26,30 @@ public:
 
 
     /**
+     * Returns the number of nodes in the simulation
+     *
+     * @returns The number of nodes on the map
+     *
+     * @note This number is never ever changed during the existence of the object
+     */
+    __device__ int get_n_of_nodes() const;
+
+    /**
+     * Returns the number of nodes in the simulation
+     *
+     * @overload SimulationMap::get_n_of_nodes
+     */
+    __global__ friend void get_n_of_nodes(const SimulationMap *simulation_map, int *return_value);
+
+
+    /// The array of nodes on the map
+    MapNode *nodes;
+
+    /// The polyhedron simulation is runned on
+    Polyhedron *const polyhedron;
+
+private:
+    /**
      * Returns coordinates of neighbor node with or without projection on polyhedron
      *
      * @param current_node_id Index of the node whose neighbor is searched
@@ -91,30 +115,6 @@ public:
                                         bool create_new_nodes);
 
 
-    /**
-     * Returns the number of nodes in the simulation
-     *
-     * @returns The number of nodes on the map
-     *
-     * @note This number is never ever changed during the existence of the object
-     */
-    __device__ int get_n_of_nodes() const;
-
-    /**
-     * Returns the number of nodes in the simulation
-     *
-     * @overload SimulationMap::get_n_of_nodes
-     */
-    __global__ friend void get_n_of_nodes(const SimulationMap *simulation_map, int *return_value);
-
-
-    /// The array of nodes on the map
-    MapNode *nodes;
-
-    /// The polyhedron simulation is runned on
-    Polyhedron *const polyhedron;
-
-private:
     /// The number of nodes on the map
     int n_of_nodes;
 };
