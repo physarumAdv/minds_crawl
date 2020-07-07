@@ -42,13 +42,17 @@ public:
 
 
     /**
-     * Finds the nearest node to the given point
+     * Returns the index of the nearest node to the given point in `nodes` array
      *
-     * @param point_coordinates Coordinates of the point that the closest node is searched to
+     * Searches in the whole `nodes` array to find the nearest node, not using the pointers to neighbor nodes
+     *
+     * @param dest Coordinates of the point to find the nearest node to
+     *
+     * @note It's guaranteed that the result is the closest node to `dest`
      *
      * @returns The index of the found node in `nodes` array
      */
-    __device__ int find_nearest_node_to_point(SpacePoint point_coordinates) const;
+    __device__ int find_index_of_nearest_node(SpacePoint dest) const;
 
 
     /**

@@ -34,7 +34,7 @@ public:
      * @note The vertices order. Looking on a face <b>from outside</b> the polyhedron, some vertex (let's call it A)
      * must be saved to vertices[0]. It's neighbour clockwise - vertex B (B is next to A clockwise) must be saved to
      * vertices[1] and so on. Assuming there are N vertices in total, A's neighbors are B clockwise and
-     * X counterclock-wise, X must be saved to vertices[N - 2], and A must be saved <b>again</b> to vertices[N - 1]
+     * X counterclockwise, X must be saved to vertices[N - 2], and A must be saved <b>again</b> to vertices[N - 1]
      */
     __device__ Face(int id, const SpacePoint *vertices, int n_of_vertices);
 
@@ -64,9 +64,7 @@ public:
     /// An identifier of the face of a `Polyhedron`
     const int id;
 
-    /**
-     * Array of vertices that belong to the face (represented as described in the constructor)
-     */
+    /// Array of vertices that belong to the face (represented as described in the constructor)
     const SpacePoint *const vertices;
 
     /// Number of vertices on the face

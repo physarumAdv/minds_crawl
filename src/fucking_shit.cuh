@@ -110,21 +110,25 @@ __device__ void division_test(MapNode *node);
 
 
 /**
-     * Greedily looks for a `MapNode` nearest to a given `dest` point
-     *
-     * A "current" `MapNode` is initialized with `start` value. On each iteration looks a current node's
-     * neighbor, which is nearer to `dest`, than the current node. If found it, it's the new value of current node.
-     * If current node is nearer than all the neighbors, it is the answer
-     *
-     * @param dest Destination space point we are trying to find
-     * @param start `MapNode` to start going from
-     *
-     * @returns `MapNode` found by the algorithm
-     *
-     * @note It's not guaranteed, that a node found with this function is actually the nearest one. Please, see:
-     *
-     * @see find_nearest_mapnode
-     */
+ * Greedily looks for a `MapNode` nearest to a given `dest` point
+ *
+ * A "current" `MapNode` is initialized with `start` value. On each iteration looks a current node's
+ * neighbor, which is nearer to `dest`, than the current node. If found it, it's the new value of current node.
+ * If current node is nearer than all the neighbors, it is the answer
+ *
+ * Uses pointers to neighbor nodes to find the nearest node to `dest` point, so needs completed grid of nodes
+ * with all pointers set
+ *
+ * @param dest Destination space point we are trying to find
+ * @param start `MapNode` to start going from
+ *
+ * @returns `MapNode` found by the algorithm
+ *
+ * @note Works correctly only if grid of nodes is <b>completed</b>. Even if grid is completed, it's not guaranteed,
+ * that a node found with this function is actually the nearest one. Please, see:
+ *
+ * @see find_nearest_mapnode
+ */
 __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint dest, MapNode *const start);
 
 /**
@@ -142,8 +146,8 @@ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint dest, MapNode *
  *
  * @returns Pointer to a `MapNode` which is considered to be nearest to the given destination
  *
- * @note If the given destination is not located on the simulation's polyhedron, any `MapNode` of the simulation
- * can be returned
+ * @note Works correctly only if grid of nodes is <b>completed</b>. If the given destination is not located
+ * on the simulation's polyhedron, any `MapNode` of the simulation can be returned
  *
  * @see find_nearest_mapnode_greedy
  */

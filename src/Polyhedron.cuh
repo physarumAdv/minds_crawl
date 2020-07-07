@@ -66,15 +66,15 @@ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int c
  * @param a Point A of segment AB
  * @param b Point B of segment AB
  * @param current_face Face the segment AB belongs to
- * @param intersection_edge Pointer to a variable in which to save index of vertex of edge that intersect segment AB
- *                          in `Face::vertices` array
+ * @param intersection_edge (optional) Pointer to a variable in which to save index of vertex of edge
+ * that intersect segment AB in `Face::vertices` array
  *
  * @note `intersection_edge` will not be changed if segment AB does not intersect any edge of face
  *
  * @returns Point of intersection with edge if it exists, point B otherwise
  */
 __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Face *current_face,
-                                                  int *intersection_edge);
+                                                  int *intersection_edge = nullptr);
 
 /**
  * Finds a face adjacent to the given face along the edge represented by vertices

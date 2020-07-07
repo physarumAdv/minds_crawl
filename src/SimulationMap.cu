@@ -128,13 +128,13 @@ __device__ SpacePoint SimulationMap::count_neighbor_node_coordinates(int current
 }
 
 
-__device__ int SimulationMap::find_nearest_node_to_point(SpacePoint point_coordinates) const
+__device__ int SimulationMap::find_index_of_nearest_node(SpacePoint dest) const
 {
     int nearest_mapnode_id = 0;
     for(int neighbor = 0; neighbor < n_of_nodes; ++neighbor)
     {
-        if (get_distance(nodes[neighbor].get_coordinates(), point_coordinates) <
-                get_distance(nodes[nearest_mapnode_id].get_coordinates(), point_coordinates))
+        if (get_distance(nodes[neighbor].get_coordinates(), dest) <
+            get_distance(nodes[nearest_mapnode_id].get_coordinates(), dest))
         {
             nearest_mapnode_id = neighbor;
         }
@@ -159,7 +159,7 @@ __device__ void SimulationMap::set_direction_to_top_neighbor(int current_node_id
                 find_intersection_with_edge(current_node->get_coordinates(),
                         count_neighbor_node_coordinates(current_node_id, (*nodes_directions)[current_node_id],
                                                            angle, false),
-                        &polyhedron->faces[current_node->get_face_id()], nullptr);
+                        &polyhedron->faces[current_node->get_face_id()]);
         new_direction = relative_point_rotation(neighbor_node->get_coordinates(),
                                                 neighbor_node->get_coordinates() + new_direction,
                                                 polyhedron->faces[neighbor_node->get_face_id()].normal,
@@ -181,7 +181,7 @@ __device__ int SimulationMap::get_neighbor_node_id(int current_node_id, SpacePoi
                                                                       (*nodes_directions)[current_node_id], angle,
                                                                       true);
     int next_face_id = polyhedron->find_face_id_by_point(neighbor_coordinates);
-    int nearest_node_id = find_nearest_node_to_point(neighbor_coordinates);
+    int nearest_node_id = find_index_of_nearest_node(neighbor_coordinates);
     if (!create_new_nodes || (current_face_id == nodes[nearest_node_id].get_face_id() &&
             get_distance(nodes[nearest_node_id].get_coordinates(), neighbor_coordinates) < eps))
     {
