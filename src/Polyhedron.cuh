@@ -46,19 +46,27 @@ public:
 
 
 /**
- * Returns the coordinates of the end of AB vector's overlay on the polyhedron's surface
+ * Returns whether the edge's vertices belong to face
  *
- * If vector AB completely lies on the current face of polyhedron, coordinates of point B are returned
- * If vector AB crosses the edge of current face, the end of overlay on the next face to edge is returned
+ * @param a Point A of edge AB
+ * @param b Point B of edge AB
+ * @param face `Face`
  *
- * @param a The beginning of vector AB, point A
- * @param b The end of vector AB, point B
- * @param current_face_id Identifier of the face point A belongs to
+ * @returns `true` if edge AB belongs to face, `false` otherwise
+ */
+__device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, const Face *face);
+
+/**
+ * Finds a face adjacent to the given face along the edge represented by vertices
+ * with indexes `vertex_id` and `vertex_id + 1 in `Face::vertices` array
+ *
+ * @param vertex_id Index of edge vertex in `Face::vertices` array
+ * @param current_face_id Identifier of given face
  * @param polyhedron The polyhedron in simulation
  *
- * @returns Coordinates of the end of AB vector's overlay
+ * @returns Identifier of the found face
  */
-__device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron);
+__device__ int find_face_next_to_edge(int vertex_id, int current_face_id, Polyhedron *polyhedron);
 
 /**
  * Returns the intersection point of segment AB with an edge of given face if it exists, point B otherwise
@@ -77,27 +85,19 @@ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Fa
                                                   int *intersection_edge = nullptr);
 
 /**
- * Finds a face adjacent to the given face along the edge represented by vertices
- * with indexes `vertex_id` and `vertex_id + 1 in `Face::vertices` array
+ * Returns the coordinates of the end of AB vector's overlay on the polyhedron's surface
  *
- * @param vertex_id Index of edge vertex in `Face::vertices` array
- * @param current_face_id Identifier of given face
+ * If vector AB completely lies on the current face of polyhedron, coordinates of point B are returned
+ * If vector AB crosses the edge of current face, the end of overlay on the next face to edge is returned
+ *
+ * @param a The beginning of vector AB, point A
+ * @param b The end of vector AB, point B
+ * @param current_face_id Identifier of the face point A belongs to
  * @param polyhedron The polyhedron in simulation
  *
- * @returns Identifier of the found face
+ * @returns Coordinates of the end of AB vector's overlay
  */
-__device__ int find_face_next_to_edge(int vertex_id, int current_face_id, Polyhedron *polyhedron);
-
-/**
- * Returns whether the edge's vertices belong to face
- *
- * @param a Point A of edge AB
- * @param b Point B of edge AB
- * @param face `Face`
- *
- * @returns `true` if edge AB belongs to face, `false` otherwise
- */
-__device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, const Face *face);
+__device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron);
 
 
 #endif //MIND_S_CRAWL_POLYHEDRON_CUH
