@@ -46,12 +46,12 @@ public:
 
 
     /**
-     * Attaches given node to the face, if the node lays on it, nothing happens otherwise
+     * Attaches given node to the face if the node lays on it, otherwise nothing happens
      *
-     * @param some_node Some node laying on the face
+     * @param node Node laying on the face
      * @param polyhedron Polyhedron in simulation
      */
-    __device__ void set_node(MapNode *some_node, Polyhedron *polyhedron);
+    __device__ void set_node(MapNode *node, Polyhedron *polyhedron);
 
     /**
      * Returns a pointer to some node laying on the face

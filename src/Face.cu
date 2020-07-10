@@ -18,15 +18,15 @@ __device__ Face::Face(int id, const SpacePoint *vertices, int n_of_vertices) :
 
 __device__ Face::~Face()
 {
-    free((void *)vertices);
+    free((void *) vertices);
 }
 
 
-__device__ void Face::set_node(MapNode *some_node, Polyhedron *polyhedron)
+__device__ void Face::set_node(MapNode *node, Polyhedron *polyhedron)
 {
-    if (polyhedron->find_face_id_by_point(some_node->get_coordinates()) == id)
+    if(polyhedron->find_face_id_by_point(node->get_coordinates()) == id)
     {
-        node = some_node;
+        this->node = node;
     }
 }
 
