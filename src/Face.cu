@@ -18,7 +18,7 @@ __device__ Face::Face(int id, const SpacePoint *vertices, int n_of_vertices) :
 
 __device__ Face::~Face()
 {
-    free((void *) vertices);
+    free((void *)vertices);
 }
 
 

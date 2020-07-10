@@ -7,9 +7,9 @@
 #include "random_generator.cuh"
 
 
-typedef bool(MapNode::*set_node_method)(MapNode *);
+typedef bool(MapNode::*SetNodeMethod)(MapNode *);
 
-typedef MapNode *(MapNode::*get_node_method)() const;
+typedef MapNode *(MapNode::*GetNodeMethod)() const;
 
 
 namespace jc = jones_constants;
@@ -26,7 +26,7 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
     Face &start_face = polyhedron->faces[0];
     SpacePoint start_node_coordinates = (start_face.vertices[0] + start_face.vertices[1] +
                                          start_face.vertices[2]) / 3;
-    nodes = (MapNode *) malloc(sizeof(MapNode));
+    nodes = (MapNode *)malloc(sizeof(MapNode));
     nodes[0] = MapNode(polyhedron, start_face.id, start_node_coordinates);
     n_of_nodes = 1;
 
@@ -37,7 +37,7 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
      * Array of direction vectors from nodes with the same index
      * as in `SimulationMap::nodes` array to their top neighbors
      */
-    auto *nodes_directions = (SpacePoint *) malloc(sizeof(SpacePoint));
+    auto *nodes_directions = (SpacePoint *)malloc(sizeof(SpacePoint));
     nodes_directions[0] = direction_vector * mapnode_dist / get_distance(direction_vector, origin);
 
     /*
@@ -46,11 +46,12 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
      * First array element corresponds to a top neighbor,
      * the following elements correspond to the following neighbors counterclockwise
      */
-    auto *get_node_neighbors = new get_node_method[4];
-    get_node_neighbors[0] = &MapNode::get_top;
-    get_node_neighbors[1] = &MapNode::get_left;
-    get_node_neighbors[2] = &MapNode::get_bottom;
-    get_node_neighbors[3] = &MapNode::get_right;
+    GetNodeMethod get_node_neighbors[] = {
+            &MapNode::get_top,
+            &MapNode::get_left,
+            &MapNode::get_bottom,
+            &MapNode::get_right
+    };
 
     /*
      * Array of pointers to the `MapNode` member functions
@@ -58,11 +59,12 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
      * First array element corresponds to a top neighbor,
      * the following elements correspond to the following neighbors counterclockwise
      */
-    auto *set_node_neighbors = new set_node_method[4];
-    set_node_neighbors[0] = &MapNode::set_top;
-    set_node_neighbors[1] = &MapNode::set_left;
-    set_node_neighbors[2] = &MapNode::set_bottom;
-    set_node_neighbors[3] = &MapNode::set_right;
+    SetNodeMethod set_node_neighbors[] = {
+            &MapNode::set_top,
+            &MapNode::set_left,
+            &MapNode::set_bottom,
+            &MapNode::set_right
+    };
 
     // Creating new nodes until it can be done, some nodes may have less neighbors than four
     for(int current_node_id = 0; current_node_id < n_of_nodes; ++current_node_id)
@@ -97,8 +99,6 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
             create_new_nodes = false;
         }
     }
-    delete[] get_node_neighbors;
-    delete[] set_node_neighbors;
 }
 
 __device__ SimulationMap::~SimulationMap()
@@ -129,8 +129,8 @@ __device__ int SimulationMap::find_index_of_nearest_node(SpacePoint dest) const
     int nearest_mapnode_id = 0;
     for(int neighbor = 0; neighbor < n_of_nodes; ++neighbor)
     {
-        if (get_distance(nodes[neighbor].get_coordinates(), dest) <
-                get_distance(nodes[nearest_mapnode_id].get_coordinates(), dest))
+        if(get_distance(nodes[neighbor].get_coordinates(), dest) <
+           get_distance(nodes[nearest_mapnode_id].get_coordinates(), dest))
         {
             nearest_mapnode_id = neighbor;
         }
@@ -178,8 +178,8 @@ __device__ int SimulationMap::get_neighbor_node_id(int current_node_id, SpacePoi
                                                                       true);
     int next_face_id = polyhedron->find_face_id_by_point(neighbor_coordinates);
     int nearest_node_id = find_index_of_nearest_node(neighbor_coordinates);
-    if (!create_new_nodes || (current_face_id == nodes[nearest_node_id].get_face_id() &&
-            get_distance(nodes[nearest_node_id].get_coordinates(), neighbor_coordinates) < eps))
+    if(!create_new_nodes || (current_face_id == nodes[nearest_node_id].get_face_id() &&
+                             get_distance(nodes[nearest_node_id].get_coordinates(), neighbor_coordinates) < eps))
     {
         // Neighbor node has already existed
         return nearest_node_id;

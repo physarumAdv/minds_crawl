@@ -16,6 +16,7 @@ __device__ SpacePoint get_normal(const SpacePoint *vertices);
 
 
 class MapNode;
+
 class Polyhedron;
 
 /// Object describing a polyhedron face
