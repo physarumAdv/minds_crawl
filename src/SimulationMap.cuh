@@ -45,7 +45,7 @@ public:
     /// The array of nodes on the map
     MapNode *nodes;
 
-    /// The polyhedron simulation is runned on
+    /// The polyhedron simulation is running on
     Polyhedron *const polyhedron;
 
 private:
@@ -98,10 +98,10 @@ private:
      *
      * Creates new node in given coordinates if it does not exists and if it is possible and returns its index
      *
-     * Returns `-1` if node cannot be created and `create_new_nodes` is `true`
-     *
-     * Node cannot be created if on the face it belongs to an another node exists and
+     * Node cannot be created if on the face it belongs to another node exists and
      * their directions to the top neighbor are not the same
+     *
+     * Returns `-1` if node cannot be created and `create_new_nodes` is `true`
      *
      * @param current_node_id Index of the node whose neighbor is searched
      * @param nodes_directions Pointer to the array of direction vectors to the top neighbor node from each node
