@@ -93,6 +93,8 @@ private:
 
 
     /**
+     * Returns the index of found or created neighbor node or `-1` in some cases
+     *
      * Returns the index of nearest node to neighbor in `nodes` array, if their coordinates are almost the same
      * or if `create_new_nodes` is `false`
      *
