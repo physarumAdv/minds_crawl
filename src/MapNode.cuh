@@ -2,6 +2,7 @@
 #define MIND_S_CRAWL_MAPNODE_CUH
 
 
+#include "common.cuh"
 #include "SpacePoint.cuh"
 
 class Particle;
@@ -29,6 +30,30 @@ public:
 
     /// Forbids copying `MapNode` objects
     __host__ __device__ MapNode(const MapNode &) = delete;
+
+    /// Move assignment operator
+    __host__ __device__ MapNode &operator=(MapNode &&other) noexcept
+    {
+        swap(polyhedron, other.polyhedron);
+        swap(trail, other.trail);
+        swap(temp_trail, other.temp_trail);
+        swap(left, other.left);
+        swap(right, other.right);
+        swap(top, other.top);
+        swap(bottom, other.bottom);
+        swap(polyhedron_face_id, other.polyhedron_face_id);
+        swap(coordinates, other.coordinates);
+        swap(contains_food, other.contains_food);
+        swap(particle, other.particle);
+        return *this;
+    }
+
+    /// Move constructor for MapNode
+    __host__ __device__ MapNode(MapNode &&other) noexcept
+    {
+        particle = nullptr;
+        *this = std::move(other);
+    }
 
     /// Destructs a `MapNode` object
     __device__ ~MapNode();

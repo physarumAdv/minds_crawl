@@ -16,7 +16,7 @@ public:
      *
      * @param polyhedron The polyhedron in simulation
      */
-    __device__ SimulationMap(Polyhedron *polyhedron);
+    __device__ explicit SimulationMap(Polyhedron *polyhedron);
 
     /// Forbids copying `SimulationMap` objects
     __host__ __device__ SimulationMap(const SimulationMap &) = delete;
