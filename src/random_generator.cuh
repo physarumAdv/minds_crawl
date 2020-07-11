@@ -1,6 +1,7 @@
 #ifndef MIND_S_CRAWL_RANDOM_GENERATOR_CUH
 #define MIND_S_CRAWL_RANDOM_GENERATOR_CUH
 
+
 /**
  * Initializes cuRAND
  *
@@ -21,5 +22,6 @@ __global__ void init_rand(unsigned long long seed);
  * @warning To use this function you firstly need to initialize random via `init_rand`
  */
 __device__ double rand0to1();
+
 
 #endif //MIND_S_CRAWL_RANDOM_GENERATOR_CUH

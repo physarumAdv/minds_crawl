@@ -4,7 +4,7 @@
 
 
 __device__ MapNode::MapNode(Polyhedron *const polyhedron, int polyhedron_face_id, SpacePoint coordinates) :
-        polyhedron(polyhedron), trail(0), contains_food(false), coordinates(coordinates), contains_particle(false),
+        polyhedron(polyhedron), trail(0), contains_food(false), coordinates(coordinates),
         polyhedron_face_id(polyhedron_face_id), left(nullptr), top(nullptr), right(nullptr), bottom(nullptr)
 {}
 
@@ -27,8 +27,8 @@ __device__ MapNode::~MapNode()
  */
 __device__ inline bool set_neighbor(MapNode **target, MapNode *value)
 {
-    // Check if I can safely cast `MapNode **` to `unsigned long long *`
-    static_assert(sizeof(target) == sizeof(unsigned long long *));
+    static_assert(sizeof(target) <= sizeof(unsigned long long *), "I think, I can't safely cast `MapNode **` to"
+                                                                  "`unsigned long long *`");
 
     if(value == nullptr)
         return false;
@@ -101,13 +101,19 @@ __device__ bool MapNode::does_contain_food() const
     return contains_food;
 }
 
-
-__device__ bool MapNode::set_particle(Particle *value)
+__device__ bool MapNode::does_contain_particle() const
 {
-    // Check if I can safely cast `Particle **` to `unsigned long long *`
-    static_assert(sizeof(&particle) == sizeof(unsigned long long *));
+    return particle != nullptr;
+}
 
-    atomicCAS((unsigned long long *)&particle, (unsigned long long)nullptr, (unsigned long long)value);
+
+__device__ bool MapNode::attach_particle(Particle *p)
+{
+    static_assert(sizeof(&particle) <= sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to"
+                                                                     "`unsigned long long *`");
+
+    return nullptr == (Particle *)atomicCAS((unsigned long long *)&particle, (unsigned long long)nullptr,
+                                            (unsigned long long)p);
 }
 
 __device__ Particle *MapNode::get_particle() const
@@ -115,7 +121,22 @@ __device__ Particle *MapNode::get_particle() const
     return particle;
 }
 
-__device__ void MapNode::remove_particle()
+__device__ void MapNode::detach_particle()
 {
     particle = nullptr;
+}
+
+__device__ bool MapNode::detach_particle(Particle *p)
+{
+    static_assert(sizeof(&particle) <= sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to"
+                                                                     "`unsigned long long *`");
+
+    return p == (Particle *)atomicCAS((unsigned long long *)&particle, (unsigned long long)p,
+                                      (unsigned long long)nullptr);
+}
+
+
+__host__ __device__ bool operator==(const MapNode &a, const MapNode &b)
+{
+    return a.coordinates == b.coordinates;
 }

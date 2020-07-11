@@ -36,7 +36,7 @@ public:
     __device__ int find_face_id_by_point(SpacePoint point) const;
 
 
-    /// Array of polyhedron faces
+    /// Pointer-represented array of polyhedron faces
     Face *const faces;
 
     /// Number of polyhedron faces

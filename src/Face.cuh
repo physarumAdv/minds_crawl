@@ -83,8 +83,8 @@ private:
 /**
  * Checks whether two `Face`s are same (checked using ids)
  *
- * @param a `Face`
- * @param b `Face`
+ * @param a `Face` object
+ * @param b `Face` object
  *
  * @returns `true` if two faces have same ids, `false` otherwise
  */
