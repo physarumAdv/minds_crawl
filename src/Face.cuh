@@ -12,7 +12,7 @@
  *
  * @returns Normal to face
  */
-__device__ SpacePoint get_normal(const SpacePoint *vertices);
+__device__ SpacePoint calculate_normal(const SpacePoint *vertices);
 
 
 class MapNode;
@@ -39,8 +39,8 @@ public:
      */
     __device__ Face(int id, const SpacePoint *vertices, int n_of_vertices);
 
-    /// Forbids copying `Face` objects
-    __host__ __device__ Face(const Face &) = delete;
+    /// `Face` object copy constructor
+    __device__ Face(const Face &other);
 
     /// Destructs a `Face` object
     __device__ ~Face();
@@ -54,6 +54,7 @@ public:
      */
     __device__ void set_node(MapNode *node, Polyhedron *polyhedron);
 
+
     /**
      * Returns a pointer to some node laying on the face
      *
@@ -61,34 +62,41 @@ public:
      */
     __device__ MapNode *get_node() const;
 
+    __device__ int get_id() const;
 
-    /// An identifier of the face of a `Polyhedron`
-    const int id;
+    __device__ const SpacePoint *get_vertices() const;
 
-    /// Array of vertices that belong to the face (represented as described in the constructor)
-    const SpacePoint *const vertices;
+    __device__ int get_n_of_vertices() const;
 
-    /// Number of vertices on the face
-    const int n_of_vertices;
+    __device__ SpacePoint get_normal() const;
 
-    /// Normal to the face
-    const SpacePoint normal;
+
+    /**
+     * Checks whether two `Face`s are same (checked using ids)
+     *
+     * @param a `Face` object
+     * @param b `Face` object
+     *
+     * @returns `true` if two faces have same ids, `false` otherwise
+     */
+    __host__ __device__ friend bool operator==(const Face &a, const Face &b);
 
 private:
     /// Pointer to some node laying on the face
     MapNode *node;
+
+    /// An identifier of the face of a `Polyhedron`
+    int id;
+
+    /// Array of vertices that belong to the face (represented as described in the constructor)
+    const SpacePoint *vertices;
+
+    /// Number of vertices on the face
+    int n_of_vertices;
+
+    /// Normal to the face
+    SpacePoint normal;
 };
-
-
-/**
- * Checks whether two `Face`s are same (checked using ids)
- *
- * @param a `Face` object
- * @param b `Face` object
- *
- * @returns `true` if two faces have same ids, `false` otherwise
- */
-bool operator==(const Face &a, const Face &b);
 
 
 #endif //MIND_S_CRAWL_FACE_CUH

@@ -10,9 +10,9 @@ __device__ Particle::Particle(MapNode *map_node, double angle) :
         coordinates(map_node->get_coordinates()), map_node(map_node)
 {
     Face &current_face = map_node->get_polyhedron()->faces[map_node->get_face_id()];
-    normal = current_face.normal;
+    normal = current_face.get_normal();
 
-    SpacePoint radius = current_face.vertices[0] - coordinates;
+    SpacePoint radius = current_face.get_vertices()[0] - coordinates;
     radius = radius * jc::speed / get_distance(radius, origin);
     direction_vector = rotate_point_from_agent(radius, angle);
 }
@@ -38,7 +38,7 @@ __device__ void Particle::do_motor_behaviours()
     {
         map_node->detach_particle(this);
         map_node = new_node;
-        normal = map_node->get_polyhedron()->faces[map_node->get_face_id()].normal;
+        normal = map_node->get_polyhedron()->faces[map_node->get_face_id()].get_normal();
     }
     if(*new_node == *map_node) // If either just reattached myself successfully or trying to move to the same node
     {
@@ -97,16 +97,17 @@ __device__ void Particle::release()
 __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron)
 {
     Face &current_face = polyhedron->faces[current_face_id];
-    for(int i = 0; i < current_face.n_of_vertices - 1; ++i)
+    for(int i = 0; i < current_face.get_n_of_vertices() - 1; ++i)
     {
-        SpacePoint intersection = line_intersection(current_face.vertices[i], current_face.vertices[i + 1], a, b);
+        SpacePoint intersection = line_intersection(current_face.get_vertices()[i], current_face.get_vertices()[i + 1],
+                                                    a, b);
         if(intersection != origin && is_in_segment(a, b, intersection) &&
-           is_in_segment(current_face.vertices[i], current_face.vertices[i + 1], intersection) &&
+           is_in_segment(current_face.get_vertices()[i], current_face.get_vertices()[i + 1], intersection) &&
            get_distance(intersection, a) > eps)
         {
             Face &next_face = polyhedron->faces[find_face_next_to_edge(a, b, current_face_id, polyhedron)];
-            SpacePoint normal_before = current_face.normal;
-            SpacePoint normal_after = next_face.normal;
+            SpacePoint normal_before = current_face.get_normal();
+            SpacePoint normal_after = next_face.get_normal();
             SpacePoint moving_vector = (b - a) / get_distance(a, b);
             double phi_cos = normal_after * normal_before;
             double phi_sin = sin(acos(phi_cos));
@@ -126,7 +127,7 @@ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, int c
 __device__ int find_face_next_to_edge(SpacePoint a, SpacePoint b, int current_face_id, Polyhedron *polyhedron)
 {
     for(int i = 0; i < polyhedron->n_of_faces; ++i)
-        if(polyhedron->faces[i].id != current_face_id && does_edge_belong_to_face(a, b, &polyhedron->faces[i]))
+        if(polyhedron->faces[i].get_id() != current_face_id && does_edge_belong_to_face(a, b, &polyhedron->faces[i]))
             return i;
     return current_face_id;
 }
@@ -134,11 +135,11 @@ __device__ int find_face_next_to_edge(SpacePoint a, SpacePoint b, int current_fa
 __device__ bool is_edge_belongs_face(SpacePoint a, SpacePoint b, const Face *const face)
 {
     bool flag1 = false, flag2 = false;
-    for(int i = 0; i < face->n_of_vertices; ++i)
+    for(int i = 0; i < face->get_n_of_vertices(); ++i)
     {
-        if(face->vertices[i] == a)
+        if(face->get_vertices()[i] == a)
             flag1 = true;
-        if(face->vertices[i] == b)
+        if(face->get_vertices()[i] == b)
             flag2 = true;
     }
     return flag1 && flag2;
