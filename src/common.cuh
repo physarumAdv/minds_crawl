@@ -62,4 +62,21 @@ __device__ T *device_realloc(T *source, int old_size, int new_size)
 }
 
 
+/**
+ * Swaps two given values
+ *
+ * @tparam T Type of values to be swapped
+ *
+ * @param a Value to be swapped
+ * @param b Value to be swapped
+ */
+template<class T>
+__device__ void swap(T &a, T &b)
+{
+    T c = std::move(a);
+    a = std::move(b);
+    b = std::move(c);
+}
+
+
 #endif //MIND_S_CRAWL_COMMON_CUH
