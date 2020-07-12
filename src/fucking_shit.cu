@@ -45,7 +45,7 @@ __device__ int count_particles_in_node_window(MapNode *node, int window_size)
         MapNode *cur = row;
         for(int j = 0; j < window_size; ++j)
         {
-            if(cur->contains_particle())
+            if(cur->does_contain_particle())
                 ++ans;
             cur = cur->get_right();
         }
@@ -116,13 +116,13 @@ __device__ void division_test(MapNode *node)
 __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint &dest, MapNode *const start)
 {
     MapNode *current = start;
-    double current_dist = get_distance(dest, current->coordinates);
+    double current_dist = get_distance(dest, current->get_coordinates());
     while(true)
     {
         bool found_better = false;
         for(auto next : {current->get_left(), current->get_top(), current->get_right(), current->get_bottom()})
         {
-            double next_dist = get_distance(dest, next->coordinates);
+            double next_dist = get_distance(dest, next->get_coordinates());
             if(next_dist < current_dist)
             {
                 current = next;
@@ -145,11 +145,11 @@ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, con
     if(start != nullptr)
     {
         MapNode *ans = find_nearest_mapnode_greedy(dest, start);
-        if(ans->polyhedron_face_id == dest_face)
+        if(ans->get_face_id() == dest_face)
             return ans;
     }
 
-    return find_nearest_mapnode_greedy(dest, polyhedron->faces[polyhedron->find_face_id_by_point(dest)].node);
+    return find_nearest_mapnode_greedy(dest, polyhedron->faces[polyhedron->find_face_id_by_point(dest)].get_node());
 }
 
 

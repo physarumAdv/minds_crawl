@@ -12,10 +12,12 @@
  *
  * @returns Normal to face
  */
-__device__ SpacePoint get_normal(const SpacePoint *vertices);
+__device__ SpacePoint calculate_normal(const SpacePoint *vertices);
 
 
 class MapNode;
+
+class Polyhedron;
 
 /// Object describing a polyhedron face
 class Face
@@ -33,45 +35,68 @@ public:
      * @note The vertices order. Looking on a face <b>from outside</b> the polyhedron, some vertex (let's call it A)
      * must be saved to vertices[0]. It's neighbour clockwise - vertex B (B is next to A clockwise) must be saved to
      * vertices[1] and so on. Assuming there are N vertices in total, A's neighbors are B clockwise and
-     * X counterclock-wise, X must be saved to vertices[N - 2], and A must be saved <b>again</b> to vertices[N - 1]
+     * X counterclockwise, X must be saved to vertices[N - 2], and A must be saved <b>again</b> to vertices[N - 1]
      */
-    __device__ Face(int id, const SpacePoint *vertices, int n_of_vertices, MapNode *node);
+    __device__ Face(int id, const SpacePoint *vertices, int n_of_vertices);
 
-    /// Forbids copying `Face` objects
-    __host__ __device__ Face(const Face &) = delete;
+    /// `Face` object copy constructor
+    __device__ Face(const Face &other);
 
     /// Destructs a `Face` object
     __device__ ~Face();
 
 
-    /// An identifier of the face of a `Polyhedron`
-    const int id;
+    /**
+     * Attaches given node to the face if the node lays on it, otherwise nothing happens
+     *
+     * @param node Node laying on the face
+     * @param polyhedron Polyhedron in simulation
+     */
+    __device__ void set_node(MapNode *node, Polyhedron *polyhedron);
+
 
     /**
-     * Array of vertices that belong to the face (represented as described in the constructor)
+     * Returns a pointer to some node laying on the face
+     *
+     * @returns Pointer to some node laying on the face if it exists, otherwise `nullptr`
      */
-    const SpacePoint *const vertices;
+    __device__ MapNode *get_node() const;
+
+    __device__ int get_id() const;
+
+    __device__ const SpacePoint *get_vertices() const;
+
+    __device__ int get_n_of_vertices() const;
+
+    __device__ SpacePoint get_normal() const;
+
+
+    /**
+     * Checks whether two `Face`s are same (checked using ids)
+     *
+     * @param a `Face` object
+     * @param b `Face` object
+     *
+     * @returns `true` if two faces have same ids, `false` otherwise
+     */
+    __host__ __device__ friend bool operator==(const Face &a, const Face &b);
+
+private:
+    /// Pointer to some node laying on the face
+    MapNode *node;
+
+    /// An identifier of the face of a `Polyhedron`
+    int id;
+
+    /// Array of vertices that belong to the face (represented as described in the constructor)
+    const SpacePoint *vertices;
 
     /// Number of vertices on the face
-    const int n_of_vertices;
+    int n_of_vertices;
 
     /// Normal to the face
-    const SpacePoint normal;
-
-    /// Pointer to some node laying on the face
-    MapNode *const node;
+    SpacePoint normal;
 };
-
-
-/**
- * Checks whether two `Face`s are same (checked using ids)
- *
- * @param a `Face` object
- * @param b `Face` object
- *
- * @returns `true` if two faces have same ids, `false` otherwise
- */
-bool operator==(const Face &a, const Face &b);
 
 
 #endif //MIND_S_CRAWL_FACE_CUH

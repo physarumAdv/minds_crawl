@@ -2,6 +2,7 @@
 #define MIND_S_CRAWL_MAPNODE_CUH
 
 
+#include "common.cuh"
 #include "SpacePoint.cuh"
 
 class Particle;
@@ -29,6 +30,30 @@ public:
 
     /// Forbids copying `MapNode` objects
     __host__ __device__ MapNode(const MapNode &) = delete;
+
+    /// Move assignment operator
+    __host__ __device__ MapNode &operator=(MapNode &&other) noexcept
+    {
+        swap(polyhedron, other.polyhedron);
+        swap(trail, other.trail);
+        swap(temp_trail, other.temp_trail);
+        swap(left, other.left);
+        swap(right, other.right);
+        swap(top, other.top);
+        swap(bottom, other.bottom);
+        swap(polyhedron_face_id, other.polyhedron_face_id);
+        swap(coordinates, other.coordinates);
+        swap(contains_food, other.contains_food);
+        swap(particle, other.particle);
+        return *this;
+    }
+
+    /// Move constructor for MapNode
+    __host__ __device__ MapNode(MapNode &&other) noexcept
+    {
+        particle = nullptr;
+        *this = std::move(other);
+    }
 
     /// Destructs a `MapNode` object
     __device__ ~MapNode();
@@ -116,7 +141,43 @@ public:
     __device__ MapNode *get_bottom() const;
 
 
-    __device__ bool contains_particle() const;
+    __device__ bool does_contain_particle() const;
+
+    /**
+     * Returns the node's coordinates
+     *
+     * @returns The coordinates of the node
+     *
+     * @note This parameter is never ever changed during the existence of the object
+     */
+    __device__ SpacePoint get_coordinates() const;
+
+    /**
+     * Returns the polyhedron the node is laying on
+     *
+     * @returns The pointer to the polyhedron
+     *
+     * @note This parameter is never ever changed during the existence of the object
+     */
+    __device__ Polyhedron *get_polyhedron() const;
+
+    /**
+     * Returns the id of face the node is laying on
+     *
+     * @returns The id of face the node belongs to
+     *
+     * @note This parameter is never ever changed during the existence of the object
+     */
+    __device__ int get_face_id() const;
+
+
+    /**
+     * Returns whether the node contains food or not
+     *
+     * @returns True if the node does contain food, False otherwise
+     */
+    __device__ bool does_contain_food() const;
+
 
     /**
      * Attaches the given `Particle` to the node, if it is not occupied already
@@ -171,11 +232,15 @@ public:
     __device__ bool detach_particle(Particle *p);
 
 
-    /// Polyhedron containing the node
-    Polyhedron *const polyhedron;
-
-    /// Polyhedron's face the node is located on
-    const int polyhedron_face_id;
+    /**
+     * Checks whether two `MapNode`s are same (checked using coordinates)
+     *
+     * @param a `MapNode` object
+     * @param b `MapNode` object
+     *
+     * @returns `true` if two mapnodes have same coordinates, `false` otherwise
+     */
+    __host__ __device__ friend bool operator==(const MapNode &a, const MapNode &b);
 
 
     /// Trail value in the node
@@ -184,25 +249,28 @@ public:
     /// Temporary trail value in the node (implementation-level field)
     double temp_trail;
 
-    /// Whether there is food in the current node
-    const bool contains_food;
-
-
-    /// The node's coordinates
-    const SpacePoint coordinates;
-
-
 private:
     /// Pointer to a neighbor from the corresponding side
     MapNode *left, *top, *right, *bottom;
 
 
+    /// Polyhedron containing the node
+    Polyhedron *polyhedron;
+
+    /// Polyhedron's face the node is located on
+    int polyhedron_face_id;
+
+    /// The node's coordinates
+    SpacePoint coordinates;
+
+
+    /// Whether there is food in the current node
+    bool contains_food;
+
+
     /// Pointer to a particle attached to the node if it exists or TO WHATEVER otherwise
     Particle *particle;
 };
-
-
-__host__ __device__ bool operator==(const MapNode &a, const MapNode &b);
 
 
 #endif //MIND_S_CRAWL_MAPNODE_CUH

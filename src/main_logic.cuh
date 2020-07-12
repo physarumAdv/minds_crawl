@@ -72,7 +72,7 @@ __device__ inline void run_iteration_project_nutrients(SimulationMap *const simu
 
     if(jc::projectnutrients && *iteration_number >= jc::startprojecttime)
     {
-        if(self->contains_food)
+        if(self->does_contain_food())
         {
             double trail_value;
             if(count_particles_in_node_window(self, 3) > 0)
@@ -153,7 +153,7 @@ __device__ inline void run_iteration_process_particles(SimulationMap *const simu
     MapNode *self;
     RUN_ITERATION_SET_SELF(self, node_index)
 
-    if(!self->contains_particle() || !self->get_particle()->capture())
+    if(!self->does_contain_particle() || !self->get_particle()->capture())
         return;
 
     self->get_particle()->do_motor_behaviours();
@@ -194,7 +194,7 @@ __device__ inline void run_iteration_cleanup(SimulationMap *const simulation_map
     RUN_ITERATION_SET_SELF(self, node_index)
 
     self->trail = self->temp_trail;
-    if(self->contains_particle())
+    if(self->does_contain_particle())
         self->get_particle()->release();
 
     if(node_index == 0)

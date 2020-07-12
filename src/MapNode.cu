@@ -80,10 +80,32 @@ __device__ MapNode *MapNode::get_bottom() const
 }
 
 
-__device__ bool MapNode::contains_particle() const
+__device__ SpacePoint MapNode::get_coordinates() const
+{
+    return coordinates;
+}
+
+__device__ Polyhedron *MapNode::get_polyhedron() const
+{
+    return polyhedron;
+}
+
+__device__ int MapNode::get_face_id() const
+{
+    return polyhedron_face_id;
+}
+
+
+__device__ bool MapNode::does_contain_food() const
+{
+    return contains_food;
+}
+
+__device__ bool MapNode::does_contain_particle() const
 {
     return particle != nullptr;
 }
+
 
 __device__ bool MapNode::attach_particle(Particle *p)
 {
