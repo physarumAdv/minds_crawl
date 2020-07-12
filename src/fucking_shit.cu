@@ -1,4 +1,3 @@
-#include <cstdio>
 #include <initializer_list>
 
 #include "fucking_shit.cuh"
@@ -158,7 +157,7 @@ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, con
 __device__ bool atomicCAS(bool *const address, const bool compare, const bool val)
 {
     auto addr = (unsigned long long)address;
-    unsigned pos = addr & 3U;  // byte position within the int
+    unsigned long long pos = addr & 3U;  // byte position within the int
     auto *int_addr = (unsigned *)(addr - pos);  // int-aligned address
     unsigned old = *int_addr, assumed, ival;
 
