@@ -71,7 +71,7 @@ __device__ T *device_realloc(T *source, int old_size, int new_size)
  * @param b Value to be swapped
  */
 template<class T>
-__device__ void swap(T &a, T &b)
+__host__ __device__ void swap(T &a, T &b)
 {
     T c = std::move(a);
     a = std::move(b);

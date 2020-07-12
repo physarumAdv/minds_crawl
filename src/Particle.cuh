@@ -84,17 +84,18 @@ public:
 
 private:
     /**
-     * Rotates given point at the angle relative to agent's coordinates
+     * Rotates given point at the angle relative to agent's coordinates and projects the point on polyhedron
      *
-     * @param radius Vector from agent to point to rotate
+     * @param radius Vector from agent to a point to rotate
      * @param angle Rotation angle
+     * @param do_projection If `true`, rotated point will be projected on polyhedron, otherwise it will not
      *
      * @returns New coordinates of the point
      */
-    __device__ SpacePoint rotate_point_from_agent(SpacePoint radius, double angle) const;
+    __device__ SpacePoint rotate_point_from_agent(SpacePoint radius, double angle, bool do_projection) const;
 
 
-    /// Direction vector of the particle's agent
+    /// Direction <b>vector</b> of the particle's agent
     SpacePoint direction_vector;
 
     /// Pointer to a map node the particle belongs to
