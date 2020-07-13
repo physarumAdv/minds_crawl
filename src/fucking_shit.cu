@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <initializer_list>
 
 #include "fucking_shit.cuh"
