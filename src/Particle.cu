@@ -63,6 +63,7 @@ __device__ void Particle::do_sensory_behaviours()
 
     double trail_l = find_nearest_mapnode(p, rotate_point_from_agent(m_sensor_direction, -jc::sa,
                                                                      true), map_node)->trail;
+    // Rotate 0 radians is not useless! The `rotate_point_from_agent` also projects vector to polyhedron's surface
     double trail_m = find_nearest_mapnode(p, rotate_point_from_agent(m_sensor_direction, 0,
                                                                      true), map_node)->trail;
     double trail_r = find_nearest_mapnode(p, rotate_point_from_agent(m_sensor_direction, jc::sa,
