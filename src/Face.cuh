@@ -19,7 +19,12 @@ class MapNode;
 
 class Polyhedron;
 
-/// Object describing a polyhedron face
+/**
+ * Object describing a polyhedron face
+ *
+ * @warning <b>Before using the class, please, carefully read documentation for both copy and move constructors and
+ *      assignment operators!</b>
+ */
 class Face
 {
 public:
@@ -37,8 +42,37 @@ public:
      */
     __device__ Face(const SpacePoint *vertices, int n_of_vertices);
 
-    /// `Face` object copy constructor
+    /**
+     * `Face` object copy assignment operator
+     *
+     * @warning When copying `Face` object, its `node` field is <b>not</b> copied, but is set to `nullptr`, which means
+     *      the new `Face` won't have a node attached. Please, be careful
+     */
+    __device__ Face &operator=(const Face &other);
+
+    /**
+     * `Face` object copy constructor
+     *
+     * @warning When copying `Face` object, its `node` field is <b>not</b> copied, but is set to `nullptr`, which means
+     *      the new `Face` won't have a node attached. Please, be careful
+     */
     __device__ Face(const Face &other);
+
+    /**
+     * `Face` object move assignment operator
+     *
+     * @warning If the being moved `Face`'s field `node` is not `nullptr`, this might mean there is a node pointing
+     *      to the `Face` being moved, so moving it will <b>invalidate</b> the pointers set at `*node`
+     */
+    __device__ Face &operator=(Face &&other) noexcept;
+
+    /**
+     * Face` object move constructor
+     *
+     * @warning If the being moved `Face`'s field `node` is not `nullptr`, this might mean there is a node pointing
+     *      to the `Face` being moved, so moving it will <b>invalidate</b> the pointers set at `*node`
+     */
+    __device__ Face(Face &&other) noexcept;
 
     /// Destructs a `Face` object
     __device__ ~Face();

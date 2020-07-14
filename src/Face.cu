@@ -11,6 +11,7 @@ __device__ SpacePoint calculate_normal(const SpacePoint *vertices)
     return normal / get_distance(normal, origin);
 }
 
+
 __device__ Face::Face(const SpacePoint *vertices, int n_of_vertices) :
         vertices(malloc_and_copy(vertices, n_of_vertices)), n_of_vertices(n_of_vertices),
         normal(calculate_normal(vertices)), node(nullptr)
@@ -18,12 +19,42 @@ __device__ Face::Face(const SpacePoint *vertices, int n_of_vertices) :
 
 }
 
-__device__ Face::Face(const Face &other) :
-        vertices(malloc_and_copy(other.vertices, other.n_of_vertices)),
-        n_of_vertices(other.n_of_vertices),
-        normal(other.normal), node(other.node)
+__device__ Face &Face::operator=(const Face &other)
 {
+    if(this != &other)
+    {
+        vertices = malloc_and_copy(other.vertices, other.n_of_vertices);
+        n_of_vertices = other.n_of_vertices;
+        normal = other.normal;
+        node = nullptr;
+    }
+    return *this;
+}
 
+__device__ Face::Face(const Face &other)
+{
+    *this = other;
+}
+
+__device__ Face &Face::operator=(Face &&other) noexcept
+{
+    if(this != &other)
+    {
+        swap(vertices, other.vertices);
+        swap(n_of_vertices, other.n_of_vertices);
+        swap(normal, other.normal);
+        swap(node, other.node);
+    }
+
+    return *this;
+}
+
+__device__ Face::Face(Face &&other) noexcept
+{
+    // Protection of further destruction:
+    vertices = nullptr;
+
+    *this = std::move(other);
 }
 
 __device__ Face::~Face()
