@@ -140,16 +140,16 @@ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint &dest, MapNode 
 __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, const SpacePoint &dest,
                                          MapNode *const start)
 {
-    int dest_face = polyhedron->find_face_id_by_point(dest);
+    Face *dest_face = polyhedron->find_face_by_point(dest);
 
     if(start != nullptr)
     {
         MapNode *ans = find_nearest_mapnode_greedy(dest, start);
-        if(ans->get_face_id() == dest_face)
+        if(*ans->get_face() == *dest_face)
             return ans;
     }
 
-    return find_nearest_mapnode_greedy(dest, polyhedron->faces[polyhedron->find_face_id_by_point(dest)].get_node());
+    return find_nearest_mapnode_greedy(dest, polyhedron->find_face_by_point(dest)->get_node());
 }
 
 

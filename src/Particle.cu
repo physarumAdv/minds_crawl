@@ -9,10 +9,10 @@ namespace jc = jones_constants;
 __device__ Particle::Particle(MapNode *map_node, double angle) :
         coordinates(map_node->get_coordinates()), map_node(map_node)
 {
-    Face &current_face = map_node->get_polyhedron()->faces[map_node->get_face_id()];
-    normal = current_face.get_normal();
+    Face *current_face = map_node->get_face();
+    normal = current_face->get_normal();
 
-    SpacePoint radius = current_face.get_vertices()[0] - coordinates;
+    SpacePoint radius = current_face->get_vertices()[0] - coordinates;
     radius = radius * jc::speed / get_distance(radius, origin);
     direction_vector = rotate_point_from_agent(radius, angle, false) - coordinates;
 }
@@ -23,7 +23,7 @@ __device__ SpacePoint Particle::rotate_point_from_agent(SpacePoint radius, doubl
     SpacePoint after_rotation = relative_point_rotation(coordinates, coordinates + radius, normal, angle);
     if(do_projection)
         after_rotation = get_projected_vector_end(coordinates, after_rotation,
-                                                  map_node->get_face_id(),
+                                                  map_node->get_face(),
                                                   map_node->get_polyhedron());
     return after_rotation;
 }
@@ -37,13 +37,13 @@ __device__ void Particle::do_motor_behaviours()
     }
 
     SpacePoint end = get_projected_vector_end(coordinates, coordinates + direction_vector,
-                                              map_node->get_face_id(), map_node->get_polyhedron());
+                                              map_node->get_face(), map_node->get_polyhedron());
     MapNode *new_node = find_nearest_mapnode(map_node->get_polyhedron(), end, map_node);
     if(new_node->attach_particle(this)) // If can reattach myself to that node
     {
         map_node->detach_particle(this);
         map_node = new_node;
-        normal = map_node->get_polyhedron()->faces[map_node->get_face_id()].get_normal();
+        normal = map_node->get_face()->get_normal();
     }
     if(*new_node == *map_node) // If either just reattached myself successfully or trying to move to the same node
     {

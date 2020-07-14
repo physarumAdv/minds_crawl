@@ -3,9 +3,9 @@
 #include "Polyhedron.cuh"
 
 
-__device__ MapNode::MapNode(Polyhedron *const polyhedron, int polyhedron_face_id, SpacePoint coordinates) :
+__device__ MapNode::MapNode(Polyhedron *const polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
         polyhedron(polyhedron), trail(0), contains_food(false), coordinates(coordinates),
-        polyhedron_face_id(polyhedron_face_id), left(nullptr), top(nullptr), right(nullptr), bottom(nullptr)
+        polyhedron_face(polyhedron_face), left(nullptr), top(nullptr), right(nullptr), bottom(nullptr)
 {}
 
 __device__ MapNode::~MapNode()
@@ -90,9 +90,9 @@ __device__ Polyhedron *MapNode::get_polyhedron() const
     return polyhedron;
 }
 
-__device__ int MapNode::get_face_id() const
+__device__ Face *MapNode::get_face() const
 {
-    return polyhedron_face_id;
+    return polyhedron_face;
 }
 
 
