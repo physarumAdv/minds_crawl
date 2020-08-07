@@ -3,7 +3,7 @@
 
 
 #include "SpacePoint.cuh"
-#include "common.cuh"
+
 
 /**
  * Returns the normal to faces defined by vertices

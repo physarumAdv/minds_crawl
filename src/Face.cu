@@ -1,8 +1,7 @@
-#include <utility>
-
 #include "Face.cuh"
 #include "MapNode.cuh"
 #include "Polyhedron.cuh"
+#include "common.cuh"
 
 
 __device__ SpacePoint calculate_normal(const SpacePoint *vertices)
@@ -40,6 +39,9 @@ __device__ Face &Face::operator=(Face &&other) noexcept
 {
     if(this != &other)
     {
+        // Protection for further destruction
+        vertices = nullptr;
+
         swap(vertices, other.vertices);
         swap(n_of_vertices, other.n_of_vertices);
         swap(normal, other.normal);
@@ -51,9 +53,6 @@ __device__ Face &Face::operator=(Face &&other) noexcept
 
 __device__ Face::Face(Face &&other) noexcept
 {
-    // Protection of further destruction:
-    vertices = nullptr;
-
     *this = std::move(other);
 }
 
