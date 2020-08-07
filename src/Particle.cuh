@@ -21,8 +21,27 @@ public:
      */
     __device__ Particle(MapNode *map_node, double angle);
 
-    /// Forbids copying `Particle` objects
+    /**
+     * `Particle` object copy assignment operator (deleted)
+     *
+     * Deleted because copying a `Particle` object does not make sense in the model. (when implementing a fission you
+     * should construct each new `Particle` object from scratch)
+     */
+    __host__ __device__ Particle &operator=(const Particle &) = delete;
+
+    /**
+     * `Particle` object copy constructor (deleted)
+     *
+     * Deleted because copying a `Particle` object does not make sense in the model. (when implementing a fission you
+     * should construct each new `Particle` object from scratch)
+     */
     __host__ __device__ Particle(const Particle &) = delete;
+
+    /// `Particle` object move assignment operator
+    /*__host__ __device__*/ Particle &operator=(Particle &&other) noexcept = default;
+
+    /// `Particle` object move constructor
+    /* __host__ __device__*/ Particle(Particle &&other) noexcept = default;
 
 
     /**
@@ -107,8 +126,8 @@ private:
 
 
     /**
-     * Flag showing whether the particle was processed during current iteration (should be changed with `capture` and
-     * `release` methods)
+     * Flag showing whether the particle was processed during current simulation iteration (should only be updated with
+     * `capture` and `release` methods)
      */
     bool is_captured = false;
 };
