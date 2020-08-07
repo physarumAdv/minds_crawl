@@ -23,7 +23,7 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
 {
     bool create_new_nodes = true;  // New nodes are allowed to be created
 
-    Face *start_face = &polyhedron->faces[0];
+    Face *start_face = &polyhedron->get_faces()[0];
     SpacePoint start_node_coordinates = (start_face->get_vertices()[0] + start_face->get_vertices()[1] +
                                          start_face->get_vertices()[2]) / 3;
     nodes = (MapNode *)malloc(sizeof(MapNode));

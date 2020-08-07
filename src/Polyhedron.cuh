@@ -4,7 +4,6 @@
 
 #include "SpacePoint.cuh"
 #include "Face.cuh"
-#include "common.cuh"
 
 
 /// Object describing a geometric polyhedron for the simulation
@@ -19,8 +18,39 @@ public:
      */
     __device__ Polyhedron(Face *faces, int n_of_faces);
 
-    /// Forbids copying `Polyhedron` objects
-    __host__ __device__ Polyhedron(const Polyhedron &) = delete;
+    /**
+     * `Polyhedron` object copy assignment operator
+     *
+     * @warning Copying `Polyhedron` object requires copying `Face`s inside it, which can sometimes lead to unexpected
+     *      results (different from when moving!). For details check the documentation of `Face` copy assignment
+     *      operator
+     */
+    __device__ Polyhedron &operator=(const Polyhedron &other);
+
+    /**
+     * `Polyhedron` object copy constructor
+     *
+     * @warning Copying `Polyhedron` object requires copying `Face`s inside it, which can sometimes lead to unexpected
+     *      results (different from when moving!). For details check the documentation of `Face` copy constructor
+     */
+    __device__ Polyhedron(const Polyhedron &other);
+
+    /**
+     * `Polyhedron` object move assignment operator
+     *
+     * @warning Moving `Polyhedron` object requires moving `Face`s inside it, which can sometimes lead to unexpected
+     *      results (different from when copying!). For details check the documentation of `Face` move assignment
+     *      operator
+     */
+    __device__ Polyhedron &operator=(Polyhedron &&other) noexcept;
+
+    /**
+     * `Polyhedron` object move constructor
+     *
+     * @warning Moving `Polyhedron` object requires moving `Face`s inside it, which can sometimes lead to unexpected
+     *      results (different from when copying!). For details check the documentation of `Face` move constructor
+     */
+    __device__ Polyhedron(Polyhedron &&other) noexcept;
 
     /// Destructs a `Polyhedron` object
     __device__ ~Polyhedron();
@@ -35,12 +65,17 @@ public:
      */
     __device__ Face *find_face_by_point(SpacePoint point) const;
 
+    __device__ Face *get_faces() const;
 
+    __device__ int get_n_of_faces() const;
+
+
+private:
     /// Pointer-represented array of polyhedron faces
-    Face *const faces;
+    Face *faces;
 
     /// Number of polyhedron faces
-    const int n_of_faces;
+    int n_of_faces;
 
 };
 

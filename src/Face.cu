@@ -53,6 +53,7 @@ __device__ Face &Face::operator=(Face &&other) noexcept
 
 __device__ Face::Face(Face &&other) noexcept
 {
+    // std::move is required here. Without it, copy assignment operator is called
     *this = std::move(other);
 }
 
