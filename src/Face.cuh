@@ -26,18 +26,16 @@ public:
     /**
      * Creates a `Face` object
      *
-     * @param id Identifier of the polyhedron face
      * @param vertices Array of polyhedron vertices that belong to the face.
      *      Must be ordered in a special way (see note below)
      * @param n_of_vertices Number of vertices on the face
-     * @param node Some node laying on the face
      *
      * @note The vertices order. Looking on a face <b>from outside</b> the polyhedron, some vertex (let's call it A)
      * must be saved to vertices[0]. It's neighbour clockwise - vertex B (B is next to A clockwise) must be saved to
      * vertices[1] and so on. Assuming there are N vertices in total, A's neighbors are B clockwise and
      * X counterclockwise, X must be saved to vertices[N - 2], and A must be saved <b>again</b> to vertices[N - 1]
      */
-    __device__ Face(int id, const SpacePoint *vertices, int n_of_vertices);
+    __device__ Face(const SpacePoint *vertices, int n_of_vertices);
 
     /// `Face` object copy constructor
     __device__ Face(const Face &other);
@@ -62,8 +60,6 @@ public:
      */
     __device__ MapNode *get_node() const;
 
-    __device__ int get_id() const;
-
     __device__ const SpacePoint *get_vertices() const;
 
     __device__ int get_n_of_vertices() const;
@@ -72,21 +68,21 @@ public:
 
 
     /**
-     * Checks whether two `Face`s are same (checked using ids)
+     * Checks whether two `Face`s are same (<b>and</b> have same vertices order)
      *
-     * @param a `Face` object
-     * @param b `Face` object
+     * @param a `Face` to be compared
+     * @param b `Face` to be compared
      *
-     * @returns `true` if two faces have same ids, `false` otherwise
+     * @returns `true` if two faces have same vertices sets and same vertices order, `false` otherwise
+     *
+     * @note As mentioned in the brief description, this is not a mathematical comparison of two faces. It only returns
+     *      `true` if the vertices have the same vertices order, starting from the same one
      */
     __host__ __device__ friend bool operator==(const Face &a, const Face &b);
 
 private:
     /// Pointer to some node laying on the face
     MapNode *node;
-
-    /// An identifier of the face of a `Polyhedron`
-    int id;
 
     /// Array of vertices that belong to the face (represented as described in the constructor)
     const SpacePoint *vertices;
@@ -97,6 +93,20 @@ private:
     /// Normal to the face
     SpacePoint normal;
 };
+
+
+/**
+ * Checks whether two `Face`s are same (and have same vertices order)
+ *
+ * @param a `Face` to be compared
+ * @param b `Face` to be compared
+ *
+ * @returns `false` if two faces have same vertices sets and same vertices order, `true` otherwise
+ *
+ * @note As mentioned in the brief description, this is not a mathematical comparison of two faces. It only returns
+ *      `false` if the vertices have the same vertices order, starting from the same one
+ */
+__host__ __device__ bool operator!=(const Face &a, const Face &b);
 
 
 #endif //MIND_S_CRAWL_FACE_CUH

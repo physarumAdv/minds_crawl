@@ -4,6 +4,7 @@
 
 #include "common.cuh"
 #include "SpacePoint.cuh"
+#include "Face.cuh"
 
 class Particle;
 
@@ -23,10 +24,10 @@ public:
      * Creates a `MapNode` object
      *
      * @param polyhedron Pointer to the polyhedron to create node on
-     * @param polyhedron_face_id The polyhedron's face to create node on
+     * @param polyhedron_face The polyhedron's face to create node on
      * @param coordinates Coordinates of node to create node at
      */
-    __device__ MapNode(Polyhedron *polyhedron, int polyhedron_face_id, SpacePoint coordinates);
+    __device__ MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates);
 
     /// Forbids copying `MapNode` objects
     __host__ __device__ MapNode(const MapNode &) = delete;
@@ -41,7 +42,7 @@ public:
         swap(right, other.right);
         swap(top, other.top);
         swap(bottom, other.bottom);
-        swap(polyhedron_face_id, other.polyhedron_face_id);
+        swap(polyhedron_face, other.polyhedron_face);
         swap(coordinates, other.coordinates);
         swap(contains_food, other.contains_food);
         swap(particle, other.particle);
@@ -162,13 +163,13 @@ public:
     __device__ Polyhedron *get_polyhedron() const;
 
     /**
-     * Returns the id of face the node is laying on
+     * Returns pointer to the face the node is laying on
      *
-     * @returns The id of face the node belongs to
+     * @returns Pointer to the face the node belongs to
      *
      * @note This parameter is never ever changed during the existence of the object
      */
-    __device__ int get_face_id() const;
+    __device__ Face *get_face() const;
 
 
     /**
@@ -257,8 +258,8 @@ private:
     /// Polyhedron containing the node
     Polyhedron *polyhedron;
 
-    /// Polyhedron's face the node is located on
-    int polyhedron_face_id;
+    /// Pointer to the polyhedron's face the node is located on
+    Face *polyhedron_face;
 
     /// The node's coordinates
     SpacePoint coordinates;

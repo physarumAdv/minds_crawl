@@ -12,7 +12,7 @@ namespace jc = jones_constants;
 
 [[nodiscard]] __device__ bool create_particle(MapNode *node)
 {
-    auto p = new Particle(node, rand0to1() * 360);
+    auto p = new Particle(node, rand0to1() * 2 * M_PI);
 
     if(node->attach_particle(p))
         return true;
@@ -140,16 +140,16 @@ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint &dest, MapNode 
 __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, const SpacePoint &dest,
                                          MapNode *const start)
 {
-    int dest_face = polyhedron->find_face_id_by_point(dest);
+    Face *dest_face = polyhedron->find_face_by_point(dest);
 
     if(start != nullptr)
     {
         MapNode *ans = find_nearest_mapnode_greedy(dest, start);
-        if(ans->get_face_id() == dest_face)
+        if(*ans->get_face() == *dest_face)
             return ans;
     }
 
-    return find_nearest_mapnode_greedy(dest, polyhedron->faces[polyhedron->find_face_id_by_point(dest)].get_node());
+    return find_nearest_mapnode_greedy(dest, dest_face->get_node());
 }
 
 
