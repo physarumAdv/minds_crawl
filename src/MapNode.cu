@@ -25,7 +25,7 @@ __device__ MapNode::~MapNode()
  *
  * @returns `true`, if the neighbor is updated, otherwise `false`
  */
-__device__ inline bool set_neighbor(MapNode **target, MapNode *value)
+__device__ inline bool set_mapnode_neighbor(MapNode **target, MapNode *value)
 {
     static_assert(sizeof(target) <= sizeof(unsigned long long *), "I think, I can't safely cast `MapNode **` to"
                                                                   "`unsigned long long *`");
@@ -40,22 +40,22 @@ __device__ inline bool set_neighbor(MapNode **target, MapNode *value)
 
 __device__ bool MapNode::set_left(MapNode *value)
 {
-    return set_neighbor(&left, value);
+    return set_mapnode_neighbor(&left, value);
 }
 
 __device__ bool MapNode::set_top(MapNode *value)
 {
-    return set_neighbor(&top, value);
+    return set_mapnode_neighbor(&top, value);
 }
 
 __device__ bool MapNode::set_right(MapNode *value)
 {
-    return set_neighbor(&right, value);
+    return set_mapnode_neighbor(&right, value);
 }
 
 __device__ bool MapNode::set_bottom(MapNode *value)
 {
-    return set_neighbor(&bottom, value);
+    return set_mapnode_neighbor(&bottom, value);
 }
 
 
