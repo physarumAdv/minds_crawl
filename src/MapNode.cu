@@ -3,7 +3,7 @@
 #include "Polyhedron.cuh"
 
 
-__device__ MapNode::MapNode(Polyhedron *const polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
+__device__ MapNode::MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
         polyhedron(polyhedron), trail(0), contains_food(false), coordinates(coordinates),
         polyhedron_face(polyhedron_face), left(nullptr), top(nullptr), right(nullptr), bottom(nullptr)
 {}

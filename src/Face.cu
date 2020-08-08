@@ -1,5 +1,3 @@
-#include <utility>
-
 #include "Face.cuh"
 #include "MapNode.cuh"
 #include "Polyhedron.cuh"
