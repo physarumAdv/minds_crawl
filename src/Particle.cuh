@@ -37,11 +37,21 @@ public:
      */
     __host__ __device__ Particle(const Particle &) = delete;
 
-    /// `Particle` object move assignment operator
-    /*__host__ __device__*/ Particle &operator=(Particle &&other) noexcept = default;
+    /**
+     *  `Particle` object move assignment operator (deleted)
+     *
+     *  Deleted because `Particle` should be created by a `MapNode` which saves pointers to the created particle. Moving
+     *  a `Particle` invalidates the `MapNode`'s pointer
+     */
+    __host__ __device__ Particle &operator=(Particle &&other) noexcept = delete;
 
-    /// `Particle` object move constructor
-    /* __host__ __device__*/ Particle(Particle &&other) noexcept = default;
+    /**
+     * `Particle` object move constructor (deleted)
+     *
+     * Deleted because `Particle` should be created by a `MapNode` which saves pointers to the created particle. Moving
+     *  a `Particle` invalidates the `MapNode`'s pointer
+     */
+    __host__ __device__ Particle(Particle &&other) noexcept = delete;
 
 
     /**
