@@ -29,32 +29,31 @@ public:
      */
     __device__ MapNode(Polyhedron *const polyhedron, Face *polyhedron_face, SpacePoint coordinates);
 
-    /// Forbids copying `MapNode` objects
+    /**
+     * `MapNode` object copy assignment operator (deleted)
+     *
+     * Deleted because the need to copy a `MapNode` is a rather special case and can be done with other methods, while
+     * an accidental copying of a `MapNode` can result into unexpected things (for example, when copying a `MapNode`
+     * the `Particle` from the original node shouldn't be copied, and unwanted copy may create an impression that
+     * there is no particle in a node, but in fact it will be checking a copy of an original node)
+     */
+    __host__ __device__ MapNode &operator=(const MapNode &other) = delete;
+
+    /**
+     * `MapNode` object copy constructor (deleted)
+     *
+     * Deleted because the need to copy a `MapNode` is a rather special case and can be done with other methods, while
+     * an accidental copying of a `MapNode` can result into unexpected things (for example, when copying a `MapNode`
+     * the `Particle` from the original node shouldn't be copied, and unwanted copy may create an impression that
+     * there is no particle in a node, but in fact it will be checking a copy of an original node)
+     */
     __host__ __device__ MapNode(const MapNode &) = delete;
 
-    /// Move assignment operator
-    __host__ __device__ MapNode &operator=(MapNode &&other) noexcept
-    {
-        swap(polyhedron, other.polyhedron);
-        swap(trail, other.trail);
-        swap(temp_trail, other.temp_trail);
-        swap(left, other.left);
-        swap(right, other.right);
-        swap(top, other.top);
-        swap(bottom, other.bottom);
-        swap(polyhedron_face, other.polyhedron_face);
-        swap(coordinates, other.coordinates);
-        swap(contains_food, other.contains_food);
-        swap(particle, other.particle);
-        return *this;
-    }
+    /// `MapNode` object move assignment operator
+    __host__ __device__ MapNode &operator=(MapNode &&other) noexcept;
 
-    /// Move constructor for MapNode
-    __host__ __device__ MapNode(MapNode &&other) noexcept
-    {
-        particle = nullptr;
-        *this = std::move(other);
-    }
+    /// `MapNode` object move constructor
+    __host__ __device__ MapNode(MapNode &&other) noexcept;
 
     /// Destructs a `MapNode` object
     __device__ ~MapNode();

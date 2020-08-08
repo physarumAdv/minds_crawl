@@ -8,6 +8,34 @@ __device__ MapNode::MapNode(Polyhedron *const polyhedron, Face *polyhedron_face,
         polyhedron_face(polyhedron_face), coordinates(coordinates), contains_food(false), particle(nullptr)
 {}
 
+__host__ __device__ MapNode &MapNode::operator=(MapNode &&other) noexcept
+{
+    if(this != &other)
+    {
+        // Protection for further destruction
+        particle = nullptr;
+
+        swap(polyhedron, other.polyhedron);
+        swap(trail, other.trail);
+        swap(temp_trail, other.temp_trail);
+        swap(left, other.left);
+        swap(top, other.top);
+        swap(right, other.right);
+        swap(bottom, other.bottom);
+        swap(polyhedron_face, other.polyhedron_face);
+        swap(coordinates, other.coordinates);
+        swap(contains_food, other.contains_food);
+        swap(particle, other.particle);
+    }
+
+    return *this;
+}
+
+__host__ __device__ MapNode::MapNode(MapNode &&other) noexcept
+{
+    *this = std::move(other);
+}
+
 __device__ MapNode::~MapNode()
 {
     delete particle;
