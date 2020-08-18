@@ -53,9 +53,14 @@ private:
     /**
      * Finds the index of given face in `SimulationMap::polyhedron->faces` array
      *
-     * @param face `Face` to find index of
+     * @param face Pointer to a`Face` to find index of
      *
-     * @returns Index of given face in `SimulationMap::polyhedron->faces` array or `0` if nothing was found
+     * @returns Index of given face in `SimulationMap::polyhedron->faces` array or
+     *          `-1` if `face` is not a pointer to an element of `SimulationMap::polyhedron->faces` array
+     *
+     * @warning This function will find the index of given face in `SimulationMap::polyhedron->faces` array
+     *          <b>only</b> if `face` is a pointer to an element of this array,
+     *          not if `face` is a pointer to a copy of array element
      */
     __device__ int find_face_index(Face *face) const;
 

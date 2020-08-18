@@ -33,23 +33,23 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
     // Direction vector from first node to its top neighbor sets randomly
     SpacePoint direction_vector = relative_point_rotation(start_node_coordinates, start_face->get_vertices()[0],
                                                           start_face->get_normal(), M_PI * 2 * rand0to1());
-    /*
+    /**
      * Array of direction vectors from nodes with the same index
      * as in `SimulationMap::nodes` array to their top neighbors
      */
     auto *nodes_directions = (SpacePoint *)malloc(sizeof(SpacePoint));
     nodes_directions[0] = direction_vector * mapnode_dist / get_distance(direction_vector, origin);
 
-    /*
-     * Boolean array whether the faces have nodes or not
-     * Indexing of the array is the same as indexing of `Polyhedron::faces` array
+    /**
+     * Boolean array where i-th element tells whether the i-th face have nodes or not
+     * `do_faces_have_nodes[i]` value corresponds to `polyhedron->faces[i]` face
      */
     auto *do_faces_have_nodes = (bool *)malloc(sizeof(bool) * polyhedron->n_of_faces);
     do_faces_have_nodes[0] = true;
     for(int i = 1; i < polyhedron->n_of_faces; ++i)
         do_faces_have_nodes[i] = false;
 
-    /*
+    /**
      * Array of pointers to the `MapNode` member functions
      * Each of them returns the particular neighbor node
      * First array element corresponds to a top neighbor,
@@ -62,7 +62,7 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
             &MapNode::get_right
     };
 
-    /*
+    /**
      * Array of pointers to the `MapNode` member functions
      * Each of them sets the link from current node to the particular neighbor node
      * First array element corresponds to a top neighbor,
@@ -126,14 +126,10 @@ __device__ SimulationMap::~SimulationMap()
 
 __device__ int SimulationMap::find_face_index(Face *face) const
 {
-    for(int i = 0; i < polyhedron->n_of_faces; ++i)
-    {
-        if(face == &polyhedron->faces[i])
-        {
-            return i;
-        }
-    }
-    return 0;
+    int index = face - &polyhedron->faces[0];
+    if(0 <= index < polyhedron->n_of_faces)
+        return index;
+    return -1;
 }
 
 
