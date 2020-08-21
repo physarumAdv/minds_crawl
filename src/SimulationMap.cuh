@@ -125,13 +125,13 @@ private:
      * @param nodes_directions Pointer to the array of direction vectors to the top neighbor node from each node
      * @param angle Angle between the top neighbor node and the neighbor node whose index is searched
      *              relative to current node, clockwise is positive direction
-     * @param do_faces_have_nodes Pointer to the boolean array whether the faces have nodes or not
+     * @param does_face_have_nodes Boolean array whether the faces have nodes or not
      * @param create_new_nodes `true` if new node is allowed to be created, `false` otherwise
      *
      * @returns The index of neighbor node if it has existed or was created, `-1` otherwise
      */
     __device__ int get_neighbor_node_id(int current_node_id, SpacePoint **nodes_directions, double angle,
-                                        bool **do_faces_have_nodes, bool create_new_nodes);
+                                        bool *does_face_have_nodes, bool create_new_nodes);
 
 
     /// The number of nodes on the map
