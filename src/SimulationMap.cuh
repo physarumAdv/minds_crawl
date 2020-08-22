@@ -51,6 +51,21 @@ public:
 
 private:
     /**
+     * Finds the index of given face in `SimulationMap::polyhedron->faces` array
+     *
+     * @param face Pointer to a`Face` to find index of
+     *
+     * @returns Index of given face in `SimulationMap::polyhedron->faces` array or
+     *          `-1` if `face` is not a pointer to an element of `SimulationMap::polyhedron->faces` array
+     *
+     * @warning This function will find the index of given face in `SimulationMap::polyhedron->faces` array
+     *          <b>only</b> if `face` is a pointer to an element of this array,
+     *          not if `face` is a pointer to a copy of array element
+     */
+    __device__ int find_face_index(Face *face) const;
+
+
+    /**
      * Returns coordinates of neighbor node with or without projection on polyhedron
      *
      * @param current_node_id Index of the node whose neighbor is searched
@@ -110,12 +125,13 @@ private:
      * @param nodes_directions Pointer to the array of direction vectors to the top neighbor node from each node
      * @param angle Angle between the top neighbor node and the neighbor node whose index is searched
      *              relative to current node, clockwise is positive direction
+     * @param does_face_have_nodes Boolean array whether the faces have nodes or not
      * @param create_new_nodes `true` if new node is allowed to be created, `false` otherwise
      *
      * @returns The index of neighbor node if it has existed or was created, `-1` otherwise
      */
     __device__ int get_neighbor_node_id(int current_node_id, SpacePoint **nodes_directions, double angle,
-                                        bool create_new_nodes);
+                                        bool *does_face_have_nodes, bool create_new_nodes);
 
 
     /// The number of nodes on the map
