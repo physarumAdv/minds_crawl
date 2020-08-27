@@ -33,7 +33,7 @@ namespace jc = jones_constants;
 }
 
 
-__device__ int count_particles_in_node_window(MapNode *node, int window_size)
+__host__ __device__ int count_particles_in_node_window(MapNode *node, int window_size)
 {
     for(int i = 0; i < window_size / 2; ++i)
         node = node->get_top()->get_left();
@@ -81,7 +81,7 @@ __device__ bool death_test(MapNode *node)
         if(!delete_particle(node))
         {
             // This is what called "undefined behaviour" in the docs :)
-            printf("%s:%d - this line should never be reached", __FILE__, __LINE__ - 1);
+            printf("%s:%d - this line should never be reached", __FILE__, __LINE__);
             return false; // Particle was not removed
         }
         return true; // Particle was removed
@@ -113,7 +113,7 @@ __device__ void division_test(MapNode *node)
 }
 
 
-__device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint &dest, MapNode *const start)
+__host__ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint &dest, MapNode *const start)
 {
     MapNode *current = start;
     double current_dist = get_distance(dest, current->get_coordinates());
@@ -137,8 +137,8 @@ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint &dest, MapNode 
     return current;
 }
 
-__device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, const SpacePoint &dest,
-                                         MapNode *const start)
+__host__ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, const SpacePoint &dest,
+                                                  MapNode *const start)
 {
     Face *dest_face = polyhedron->find_face_by_point(dest);
 

@@ -19,7 +19,7 @@ public:
      * @param map_node The polyhedron's face to create particle on
      * @param angle Initial direction of the particle
      */
-    __device__ Particle(MapNode *map_node, double angle);
+    __host__ __device__ Particle(MapNode *map_node, double angle);
 
     /**
      * `Particle` object copy assignment operator (deleted)
@@ -72,14 +72,14 @@ public:
      *
      * @see Particle::rotate
      */
-    __device__ void do_sensory_behaviours();
+    __host__ __device__ void do_sensory_behaviours();
 
     /**
      * Rotates the particle by angle in the current plane
      *
      * @param angle The angle (in radians) to be rotated by
      */
-    __device__ void rotate(double angle);
+    __host__ __device__ void rotate(double angle);
 
 
     /**
@@ -105,6 +105,8 @@ public:
      *
      * @see Particle::capture
      */
+    // This function technically can be made `__host__ __device__`, but it is not made, to meet the declaration
+    // of `Polyhedron::capture`
     __device__ void release();
 
 
@@ -121,7 +123,7 @@ private:
      *
      * @returns New coordinates of the point
      */
-    __device__ SpacePoint rotate_point_from_agent(SpacePoint radius, double angle, bool do_projection) const;
+    __host__ __device__ SpacePoint rotate_point_from_agent(SpacePoint radius, double angle, bool do_projection) const;
 
 
     /// Direction <b>vector</b> of the particle's agent

@@ -1,20 +1,12 @@
-#ifdef COMPILE_FOR_CPU
-
-
 #include <random>
 
 
 std::random_device dev;
 std::mt19937 engine(dev());
-std::uniform_real_distribution<double> unif(0., 1.);
-
-double rand0to1()
-{
-    return unif(engine);
-}
+std::uniform_real_distribution<double> distribution(0., 1.);
 
 
-#else
+#ifndef COMPILE_FOR_CPU
 
 
 #include "curand_kernel.h"
@@ -32,10 +24,15 @@ __global__ void init_rand(unsigned long long seed)
     curand_init(seed, 0, 0, &state);
 }
 
-__device__ double rand0to1()
-{
-    return curand_uniform_double(&state);
-}
-
 
 #endif //COMPILE_FOR_CPU
+
+
+__host__ __device__ double rand0to1()
+{
+#ifdef __CUDA_ARCH__
+    return curand_uniform_double(&state);
+#else
+    return distribution(engine);
+#endif
+}

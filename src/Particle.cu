@@ -6,7 +6,7 @@
 namespace jc = jones_constants;
 
 
-__device__ Particle::Particle(MapNode *map_node, double angle) :
+__host__ __device__ Particle::Particle(MapNode *map_node, double angle) :
         coordinates(map_node->get_coordinates()), map_node(map_node)
 {
     Face *current_face = map_node->get_face();
@@ -18,7 +18,8 @@ __device__ Particle::Particle(MapNode *map_node, double angle) :
 }
 
 
-__device__ SpacePoint Particle::rotate_point_from_agent(SpacePoint radius, double angle, bool do_projection) const
+__host__ __device__ SpacePoint Particle::rotate_point_from_agent(SpacePoint radius, double angle,
+                                                                 bool do_projection) const
 {
     SpacePoint after_rotation = relative_point_rotation(coordinates, coordinates + radius, normal, angle);
     if(do_projection)
@@ -56,7 +57,7 @@ __device__ void Particle::do_motor_behaviours()
     }
 }
 
-__device__ void Particle::do_sensory_behaviours()
+__host__ __device__ void Particle::do_sensory_behaviours()
 {
     Polyhedron *p = map_node->get_polyhedron();
     SpacePoint m_sensor_direction = direction_vector * jc::so / jc::speed;
@@ -86,7 +87,7 @@ __device__ void Particle::do_sensory_behaviours()
         rotate(-jc::ra);
 }
 
-__device__ void Particle::rotate(double angle)
+__host__ __device__ void Particle::rotate(double angle)
 {
     direction_vector = rotate_point_from_agent(direction_vector, angle, false) - coordinates;
 }
