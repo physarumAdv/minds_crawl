@@ -65,10 +65,10 @@ __global__ void wrapped_run_iteration_cleanup(SimulationMap *const simulation_ma
  * @param destination Device memory pointer to copy value to
  * @param value Value to be copied
  *
- * @see get_cuda_variable_value
+ * @see get_device_variable_value
  */
 template<class T>
-__host__ inline void set_cuda_variable_value(T *destination, T value)
+__host__ inline void set_device_variable_value(T *destination, T value)
 {
     cudaMemcpy(destination, &value, sizeof(T), cudaMemcpyHostToDevice);
 }
@@ -83,10 +83,10 @@ __host__ inline void set_cuda_variable_value(T *destination, T value)
  *
  * @returns Value from device memory
  *
- * @see set_cuda_variable_value
+ * @see set_device_variable_value
  */
 template<class T>
-__host__ inline T get_cuda_variable_value(T *source)
+__host__ inline T get_device_variable_value(T *source)
 {
     T ans;
     cudaMemcpy(&ans, source, sizeof(T), cudaMemcpyDeviceToHost);
@@ -110,7 +110,7 @@ __host__ int main()
 
     int *iteration_number;
     cudaMalloc((void **)&iteration_number, sizeof(int));
-    set_cuda_variable_value(iteration_number, 0);
+    set_device_variable_value(iteration_number, 0);
 
     // Obtaining `n_of_nodes`
     int n_of_nodes;
@@ -118,7 +118,7 @@ __host__ int main()
         int *_temporary;
         cudaMalloc((void **)&_temporary, sizeof(int));
         get_n_of_nodes<<<1, 1>>>(simulation_map, _temporary);
-        n_of_nodes = get_cuda_variable_value(_temporary);
+        n_of_nodes = get_device_variable_value(_temporary);
         cudaFree(_temporary);
     }
 
@@ -153,4 +153,8 @@ __host__ int main()
 
         // <redrawing here>
     }
+
+    cudaFree(nodes);
+    cudaFree(iteration_number);
+    cudaFree(simulation_map);
 }
