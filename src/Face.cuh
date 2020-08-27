@@ -12,7 +12,7 @@
  *
  * @returns Normal to face
  */
-__device__ SpacePoint calculate_normal(const SpacePoint *vertices);
+__host__ __device__ SpacePoint calculate_normal(const SpacePoint *vertices);
 
 
 class MapNode;
@@ -40,7 +40,7 @@ public:
      * vertices[1] and so on. Assuming there are N vertices in total, A's neighbors are B clockwise and
      * X counterclockwise, X must be saved to vertices[N - 2], and A must be saved <b>again</b> to vertices[N - 1]
      */
-    __device__ Face(const SpacePoint *vertices, int n_of_vertices);
+    __host__ __device__ Face(const SpacePoint *vertices, int n_of_vertices);
 
     /**
      * `Face` object copy assignment operator
@@ -48,7 +48,7 @@ public:
      * @warning When copying `Face` object, its `node` field is <b>not</b> copied, but is set to `nullptr`, which means
      *      the new `Face` won't have a node attached. Please, be careful
      */
-    __device__ Face &operator=(const Face &other);
+    __host__ __device__ Face &operator=(const Face &other);
 
     /**
      * `Face` object copy constructor
@@ -56,7 +56,7 @@ public:
      * @warning When copying `Face` object, its `node` field is <b>not</b> copied, but is set to `nullptr`, which means
      *      the new `Face` won't have a node attached. Please, be careful
      */
-    __device__ Face(const Face &other);
+    __host__ __device__ Face(const Face &other);
 
     /**
      * `Face` object move assignment operator
@@ -64,7 +64,7 @@ public:
      * @warning If the being moved `Face`'s field `node` is not `nullptr`, this might mean there is a node pointing
      *      to the `Face` being moved, so moving it will <b>invalidate</b> the pointers set at `*node`
      */
-    __device__ Face &operator=(Face &&other) noexcept;
+    __host__ __device__ Face &operator=(Face &&other) noexcept;
 
     /**
      * Face` object move constructor
@@ -72,10 +72,10 @@ public:
      * @warning If the being moved `Face`'s field `node` is not `nullptr`, this might mean there is a node pointing
      *      to the `Face` being moved, so moving it will <b>invalidate</b> the pointers set at `*node`
      */
-    __device__ Face(Face &&other) noexcept;
+    __host__ __device__ Face(Face &&other) noexcept;
 
     /// Destructs a `Face` object
-    __device__ ~Face();
+    __host__ __device__ ~Face();
 
 
     /**
@@ -84,7 +84,7 @@ public:
      * @param node Node laying on the face
      * @param polyhedron Polyhedron in simulation
      */
-    __device__ void set_node(MapNode *node, Polyhedron *polyhedron);
+    __host__ __device__ void set_node(MapNode *node, Polyhedron *polyhedron);
 
 
     /**
@@ -92,13 +92,13 @@ public:
      *
      * @returns Pointer to some node laying on the face if it exists, otherwise `nullptr`
      */
-    __device__ MapNode *get_node() const;
+    __host__ __device__ MapNode *get_node() const;
 
-    __device__ const SpacePoint *get_vertices() const;
+    __host__ __device__ const SpacePoint *get_vertices() const;
 
-    __device__ int get_n_of_vertices() const;
+    __host__ __device__ int get_n_of_vertices() const;
 
-    __device__ SpacePoint get_normal() const;
+    __host__ __device__ SpacePoint get_normal() const;
 
 
     /**

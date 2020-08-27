@@ -10,10 +10,10 @@ struct SpacePoint
 
 
 /// The origin of space
-__device__ const SpacePoint origin = {0, 0, 0};
+#define origin (SpacePoint{0, 0, 0})
 
 /// Observational error constant
-__device__ const double eps = 1. / (100 * 100 * 100);
+const double eps = 1. / (100 * 100 * 100);
 
 /**
  * Returns the result of comparison of two `SpacePoint`s
@@ -113,7 +113,7 @@ __host__ __device__ SpacePoint operator%(SpacePoint a, SpacePoint b);
  *
  * @returns Coordinates of point B after rotation
  */
-__device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint b, SpacePoint normal, double angle);
+__host__ __device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint b, SpacePoint normal, double angle);
 
 
 /**
@@ -124,7 +124,7 @@ __device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint b, SpaceP
  *
  * @returns Distance between two points
  */
-__device__ double get_distance(SpacePoint a, SpacePoint b);
+__host__ __device__ double get_distance(SpacePoint a, SpacePoint b);
 
 /**
  * Returns the point of lines AB and CD intersection or origin if they are parallel
@@ -136,7 +136,7 @@ __device__ double get_distance(SpacePoint a, SpacePoint b);
  *
  * @returns The point of two lines intersection or origin if they are parallel
  */
-__device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d);
+__host__ __device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d);
 
 /**
  * Checks if the point C is in segment AB
@@ -145,7 +145,7 @@ __device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, SpacePoint c
  * @param c Point C to check
  * @returns `true` if point C belongs to segment AB, `false` otherwise
  */
-__device__ bool is_in_segment(SpacePoint a, SpacePoint b, SpacePoint c);
+__host__ __device__ bool is_in_segment(SpacePoint a, SpacePoint b, SpacePoint c);
 
 
 #endif //MIND_S_CRAWL_SPACEPOINT_CUH
