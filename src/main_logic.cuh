@@ -202,4 +202,64 @@ __device__ inline void run_iteration_cleanup(SimulationMap *const simulation_map
 }
 
 
+/**
+ * Creates a cube and returns it
+ *
+ * Will be only used in the early stages of development, later will be replaced with a universal function building
+ * arbitrary polyhedrons
+ * 
+ * @param edge_length Length of the cube's edge
+ *
+ * @returns Cube represented wth a `Polyhedron` object
+ */
+__host__ inline Polyhedron generate_cube(double edge_length = 200)
+{
+    using std::move;
+
+
+    Face face1((SpacePoint[]){
+            {0,           0, 0},
+            {0,           0, edge_length},
+            {edge_length, 0, edge_length},
+            {edge_length, 0, 0}
+    }, 4);
+    Face face2((SpacePoint[]){
+            {0, 0,           0},
+            {0, edge_length, 0},
+            {0, edge_length, edge_length},
+            {0, 0,           edge_length}
+    }, 4);
+    Face face3((SpacePoint[]){
+            {0,           0,           0},
+            {edge_length, 0,           0},
+            {edge_length, edge_length, 0},
+            {0,           edge_length, 0}
+    }, 4);
+    Face face4((SpacePoint[]){
+            {edge_length, 0,           edge_length},
+            {edge_length, edge_length, edge_length},
+            {edge_length, edge_length, 0},
+            {edge_length, 0,           0}
+    }, 4);
+    Face face5((SpacePoint[]){
+            {0,           0,           edge_length},
+            {0,           edge_length, edge_length},
+            {edge_length, edge_length, edge_length},
+            {edge_length, 0,           edge_length}
+    }, 4);
+    Face face6((SpacePoint[]){
+            {edge_length, edge_length, 0},
+            {edge_length, edge_length, edge_length},
+            {0,           edge_length, edge_length},
+            {0,           edge_length, 0}
+    }, 4);
+
+    Polyhedron cube(
+            (Face[]){move(face1), move(face2), move(face3), move(face4), move(face5), move(face6)},
+            6
+    );
+    return cube;
+}
+
+
 #endif //MIND_S_CRAWL_MAIN_LOGIC_CUH
