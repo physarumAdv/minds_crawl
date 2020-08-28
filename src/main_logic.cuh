@@ -239,50 +239,53 @@ __device__ inline void run_iteration_cleanup(SimulationMap *const simulation_map
  */
 __host__ inline Polyhedron generate_cube(double edge_length = 200)
 {
-    using std::move;
-
-
-    Face face1((SpacePoint[]){
+    SpacePoint vertices1[] = {
             {0,           0, 0},
             {0,           0, edge_length},
             {edge_length, 0, edge_length},
             {edge_length, 0, 0}
-    }, 4);
-    Face face2((SpacePoint[]){
+    };
+    SpacePoint vertices2[] = {
             {0, 0,           0},
             {0, edge_length, 0},
             {0, edge_length, edge_length},
             {0, 0,           edge_length}
-    }, 4);
-    Face face3((SpacePoint[]){
+    };
+    SpacePoint vertices3[] = {
             {0,           0,           0},
             {edge_length, 0,           0},
             {edge_length, edge_length, 0},
             {0,           edge_length, 0}
-    }, 4);
-    Face face4((SpacePoint[]){
+    };
+    SpacePoint vertices4[] = {
             {edge_length, 0,           edge_length},
             {edge_length, edge_length, edge_length},
             {edge_length, edge_length, 0},
             {edge_length, 0,           0}
-    }, 4);
-    Face face5((SpacePoint[]){
+    };
+    SpacePoint vertices5[] = {
             {0,           0,           edge_length},
             {0,           edge_length, edge_length},
             {edge_length, edge_length, edge_length},
             {edge_length, 0,           edge_length}
-    }, 4);
-    Face face6((SpacePoint[]){
+    };
+    SpacePoint vertices6[] = {
             {edge_length, edge_length, 0},
             {edge_length, edge_length, edge_length},
             {0,           edge_length, edge_length},
             {0,           edge_length, 0}
-    }, 4);
+    };
 
-    Polyhedron cube(
-            (Face[]){move(face1), move(face2), move(face3), move(face4), move(face5), move(face6)},
-            6
-    );
+    Face faces[] = {
+            Face(vertices1, 4),
+            Face(vertices2, 4),
+            Face(vertices3, 4),
+            Face(vertices4, 4),
+            Face(vertices5, 4),
+            Face(vertices6, 4)
+    };
+
+    Polyhedron cube(std::move(faces), 6);
     return cube;
 }
 
