@@ -8,14 +8,6 @@
 const int cuda_block_size = 256;
 
 
-__global__ void wrapped_init_environment(...)
-{
-    STOP_ALL_THREADS_EXCEPT_FIRST;
-
-    init_environment(...);
-}
-
-
 __global__ void wrapped_run_iteration_project_nutrients(SimulationMap *const simulation_map,
                                                         const int *const iteration_number)
 {
@@ -100,7 +92,7 @@ __host__ int main()
     *polyhedron = generate_cube();
 
     init_simulation_objects<<<1, 1>>>(simulation_map, polyhedron);
-    wrapped_init_environment<<<1, 1>>>(...);
+    init_environment<<<1, 1>>>(simulation_map);
 
     int *iteration_number;
     cudaMalloc((void **)&iteration_number, sizeof(int));

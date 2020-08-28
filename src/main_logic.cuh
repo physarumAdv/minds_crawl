@@ -9,6 +9,7 @@
 #include "MapNode.cuh"
 #include "Particle.cuh"
 #include "fucking_shit.cuh"
+#include "random_generator.cuh"
 #include "jones_constants.hpp"
 #include "common.cuh"
 
@@ -46,13 +47,25 @@ __global__ void init_simulation_objects(SimulationMap *const simulation_map, Pol
 }
 
 /**
- * Initializes food on the `SimulationMap`
+ * Initializes environment (food, first particles) of the `SimulationMap`
  *
- * This function isn't implemented yet, neither it's ready to be implemented, so the description stays empty for now
+ * Purpose of this function is to flexibly perform additional configuration of a simulation map such as placing food
+ * and first particles on it. However, at the moment (on the most early stages of development) it performs the most
+ * basic configuration you can't control from outside of the function. Later the function is of course going to take
+ * more parameters
+ *
+ * @param simulation_map Pointer to `SimulationMap` object to be configured
  */
-__device__ inline void init_environment(...)
+__global__ void init_environment(SimulationMap *const simulation_map)
 {
-    // <initialization here>
+    STOP_ALL_THREADS_EXCEPT_FIRST;
+
+    int random_node_index = (int)(rand0to1() * (simulation_map->get_n_of_nodes() - 1));
+    MapNode *random_node = simulation_map->nodes + random_node_index;
+    if(!create_particle(random_node))
+    {
+        printf("%s:%d - something went REALLY wrong at ", __FILE__, __LINE__);
+    }
 }
 
 
