@@ -101,6 +101,26 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
     }
 }
 
+__host__ __device__ SimulationMap &SimulationMap::operator=(SimulationMap &&other) noexcept
+{
+    if(this != &other)
+    {
+        // Protection for further destruction
+        nodes = nullptr;
+
+        swap(n_of_nodes, other.n_of_nodes);
+        swap(nodes, other.nodes);
+        swap(polyhedron, other.polyhedron);
+    }
+
+    return *this;
+}
+
+__host__ __device__ SimulationMap::SimulationMap(SimulationMap &&other) noexcept
+{
+    *this = std::move(other);
+}
+
 __device__ SimulationMap::~SimulationMap()
 {
     free(nodes);
@@ -211,4 +231,3 @@ __global__ void get_n_of_nodes(const SimulationMap *const simulation_map, int *r
 
     *return_value = simulation_map->get_n_of_nodes();
 }
-
