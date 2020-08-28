@@ -21,7 +21,7 @@ public:
     /**
      * `SimulationMap` object copy assignment operator (deleted)
      *
-     * Deleted because despite `SimulationMap` makes sense and is possible to implement, accidental copying of a
+     * Deleted because despite copying `SimulationMap` makes sense and is possible to implement, accidental copying of a
      * `SimulationMap` may seriously harm performance and need to copy it is a rather special case. However, a special
      * function for copying `SimulationMap` objects will possibly be implemented someday
      */
@@ -30,7 +30,7 @@ public:
     /**
      * `SimulationMap` object copy constructor (deleted)
      *
-     * Deleted because despite `SimulationMap` makes sense and is possible to implement, accidental copying of a
+     * Deleted because despite copying `SimulationMap` makes sense and is possible to implement, accidental copying of a
      * `SimulationMap` may seriously harm performance and need to copy it is a rather special case. However, a special
      * function for copying `SimulationMap` objects will possibly be implemented someday
      */
