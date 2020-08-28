@@ -8,13 +8,6 @@
 const int cuda_block_size = 256;
 
 
-__global__ void wrapped_init_simulation_objects(SimulationMap *simulation_map, Polyhedron *polyhedron, ...)
-{
-    STOP_ALL_THREADS_EXCEPT_FIRST;
-
-    init_simulation_objects(simulation_map, polyhedron, ...);
-}
-
 __global__ void wrapped_init_environment(...)
 {
     STOP_ALL_THREADS_EXCEPT_FIRST;
@@ -103,9 +96,10 @@ __host__ int main()
     SimulationMap *simulation_map;
     cudaMallocManaged((void **)&simulation_map, sizeof(SimulationMap));
     Polyhedron *polyhedron;
-    cudaMalloc((void **)&polyhedron, sizeof(Polyhedron));
+    cudaMallocManaged((void **)&polyhedron, sizeof(Polyhedron));
+    *polyhedron = generate_cube();
 
-    wrapped_init_simulation_objects<<<1, 1>>>(simulation_map, polyhedron, ...);
+    init_simulation_objects<<<1, 1>>>(simulation_map, polyhedron);
     wrapped_init_environment<<<1, 1>>>(...);
 
     int *iteration_number;

@@ -10,8 +10,10 @@
 #include "Particle.cuh"
 #include "fucking_shit.cuh"
 #include "jones_constants.hpp"
+#include "common.cuh"
 
 namespace jc = jones_constants;
+
 
 #define RUN_ITERATION_SET_SELF(self, i) { \
             if(i >= simulation_map->get_n_of_nodes()) \
@@ -24,13 +26,23 @@ typedef void (*RunIterationFunc)(SimulationMap *, int *);
 
 // TODO: Add the opposite (destructing) function
 /**
- * Initializes the simulation's objects (simulation map, polyhedron, probably something else)
+ * Initializes the simulation's objects (at the moment only `SimulationMap`)
  *
- * This function isn't implemented yet, neither it's ready to be implemented, so the description stays empty for now
+ * This function is used to initialize simulation objects on device. It at the moment only initializes `SimulationMap`,
+ * but can be extended to initialize more objects
+ *
+ * @param simulation_map Pointer to `SimulationMap`. A constructed simulation map will be moved there
+ * @param polyhedron Pointer to a polyhedron to be used to initialize `SimulationMap` (constructor's parameter)
+ *
+ * @warning While `polyhedron` parameter must point to a real `Polyhedron` object, `simulation_map` might contain an
+ *      existing map already, but it will be destructed in this case. Note that if the pointer doesn't contain an
+ *      object the destructor will be called anyway, but it should be safe (???)
  */
-__device__ inline void init_simulation_objects(SimulationMap *const simulation_map, Polyhedron *const polyhedron, ...)
+__global__ void init_simulation_objects(SimulationMap *const simulation_map, Polyhedron *const polyhedron)
 {
-    // <initialization here>
+    STOP_ALL_THREADS_EXCEPT_FIRST;
+
+    *simulation_map = SimulationMap(polyhedron);
 }
 
 /**
