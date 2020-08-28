@@ -21,7 +21,7 @@ public:
     /**
      * `SimulationMap` object copy assignment operator (deleted)
      *
-     * Deleted because despite `SimulationMap` makes sense and is possible to implement, accidental copying of a
+     * Deleted because despite copying `SimulationMap` makes sense and is possible to implement, accidental copying of a
      * `SimulationMap` may seriously harm performance and need to copy it is a rather special case. However, a special
      * function for copying `SimulationMap` objects will possibly be implemented someday
      */
@@ -30,29 +30,17 @@ public:
     /**
      * `SimulationMap` object copy constructor (deleted)
      *
-     * Deleted because despite `SimulationMap` makes sense and is possible to implement, accidental copying of a
+     * Deleted because despite copying `SimulationMap` makes sense and is possible to implement, accidental copying of a
      * `SimulationMap` may seriously harm performance and need to copy it is a rather special case. However, a special
      * function for copying `SimulationMap` objects will possibly be implemented someday
      */
     __host__ __device__ SimulationMap(const SimulationMap &) = delete;
 
-    /**
-     * `SimulationMap` object move assignment operator (deleted)
-     *
-     * Deleted because there is no need in this operation yet, and the default operator can't be used, because it would
-     * break some implementation invariants. Deletion of this function is not a design decision, the team just
-     * doesn't want to spend time on it's implementation
-     */
-    __host__ __device__ SimulationMap &operator=(SimulationMap &&other) noexcept = delete;
+    /// `SimulationMap` object move assignment operator
+    __host__ __device__ SimulationMap &operator=(SimulationMap &&other) noexcept;
 
-    /**
-     * `SimulationMap` object move constructor (deleted)
-     *
-     * Deleted because there is no need in this operation yet, and the default constructor can't be used, because it
-     * would break some implementation invariants. Deletion of this function is not a design decision, the team just
-     * doesn't want to spend time on it's implementation
-     */
-    __host__ __device__ SimulationMap(SimulationMap &&other) noexcept = delete;
+    /// `SimulationMap` object move constructor
+    __host__ __device__ SimulationMap(SimulationMap &&other) noexcept;
 
     /// Destructs a `SimulationMap` object
     __device__ ~SimulationMap();
