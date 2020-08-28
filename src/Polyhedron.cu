@@ -27,7 +27,6 @@ __host__ __device__ Polyhedron &Polyhedron::operator=(Polyhedron &&other) noexce
 {
     if(this != &other)
     {
-        // Protection for further destruction
         faces = nullptr;
 
         swap(faces, other.faces);
@@ -39,7 +38,6 @@ __host__ __device__ Polyhedron &Polyhedron::operator=(Polyhedron &&other) noexce
 
 __host__ __device__ Polyhedron::Polyhedron(Polyhedron &&other) noexcept
 {
-    // std::move is required here. Without it, copy assignment operator is called
     *this = std::move(other);
 }
 
