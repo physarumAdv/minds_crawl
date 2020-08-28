@@ -12,7 +12,6 @@ __host__ __device__ MapNode &MapNode::operator=(MapNode &&other) noexcept
 {
     if(this != &other)
     {
-        // Protection for further destruction
         particle = nullptr;
 
         swap(polyhedron, other.polyhedron);

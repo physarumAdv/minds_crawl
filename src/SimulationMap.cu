@@ -105,7 +105,6 @@ __host__ __device__ SimulationMap &SimulationMap::operator=(SimulationMap &&othe
 {
     if(this != &other)
     {
-        // Protection for further destruction
         nodes = nullptr;
 
         swap(n_of_nodes, other.n_of_nodes);
