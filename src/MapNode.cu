@@ -134,7 +134,7 @@ __host__ __device__ bool MapNode::does_contain_particle() const
 }
 
 
-__device__ bool MapNode::attach_particle(Particle *p)
+[[nodiscard]] __device__ bool MapNode::attach_particle(Particle *p)
 {
     static_assert(sizeof(&particle) <= sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to "
                                                                      "`unsigned long long *`");
