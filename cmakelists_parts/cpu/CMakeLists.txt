@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(mind_s_crawl CXX)
+project(minds_crawl CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -12,7 +12,7 @@ before_target_creation(sources_list)
 set_source_files_properties(${sources_list} PROPERTIES LANGUAGE CXX)
 add_definitions(-x c++)
 
-add_executable(mind_s_crawl src/main.cpp ${sources_list})
+add_executable(minds_crawl src/main.cpp ${sources_list})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
