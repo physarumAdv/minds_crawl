@@ -33,6 +33,8 @@ int main()
     auto *simulation_map = (SimulationMap *)malloc(sizeof(SimulationMap));
     auto *polyhedron = (Polyhedron *)malloc(sizeof(Polyhedron));
 
+    *polyhedron = generate_cube();
+
     init_simulation_objects(simulation_map, polyhedron);
     init_environment(simulation_map);
 
