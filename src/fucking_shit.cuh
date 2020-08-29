@@ -173,7 +173,6 @@ __host__ __device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, 
 
 #ifdef COMPILE_FOR_CPU
 
-
 /**
  * Thread-unsafe version of atomicCAS (for CPU)
  *
@@ -185,15 +184,8 @@ __host__ __device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, 
  *
  * @returns Value of `*address` before update (doesn't matter was it really updated)
  */
-int atomicCAS(int *address, const int compare, const int val)
-{
-    int ans = *address;
-
-    if(*address == compare)
-        *address = val;
-
-    return ans;
-}
+unsigned long long atomicCAS(unsigned long long *address, const unsigned long long compare,
+                             const unsigned long long val);
 
 /**
  * Thread-unsafe version of atomicAdd (for CPU)
@@ -203,29 +195,14 @@ int atomicCAS(int *address, const int compare, const int val)
  * @param address Pointer to the variable being updated
  * @param value Value being added to the variable being updated
  */
-int atomicAdd(int *address, int value)
-{
-    int ans = *address;
-
-    *address += value;
-
-    return ans;
-}
+int atomicAdd(int *address, int value);
 
 /**
  * Thread-unsafe version of atomicAdd (for CPU)
  *
  * @overload atomicAdd
  */
-double atomicAdd(double *address, double value)
-{
-    double ans = *address;
-
-    *address += value;
-
-    return ans;
-}
-
+double atomicAdd(double *address, double value);
 
 #endif //COMPILE_FOR_CPU
 

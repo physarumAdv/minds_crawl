@@ -1,6 +1,7 @@
 #include "MapNode.cuh"
 #include "Particle.cuh"
 #include "Polyhedron.cuh"
+#include "fucking_shit.cuh"
 
 
 __host__ __device__ MapNode::MapNode(Polyhedron *const polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
@@ -51,6 +52,8 @@ __host__ __device__ MapNode::~MapNode()
  * @param value Neighbor to be set
  *
  * @returns `true`, if the neighbor is updated, otherwise `false`
+ *
+ * @note This operation is thread-safe when compiled as CUDA code, thread-unsafe when compiled as C++
  */
 __device__ inline bool set_neighbor(MapNode **target, MapNode *value)
 {

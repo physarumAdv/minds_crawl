@@ -68,7 +68,7 @@ public:
      *
      * @note If the given value is `nullptr`, nothing happens, `false` is returned
      *
-     * @note This operation is thread-safe
+     * @note This operation is thread-safe when compiled as CUDA code, thread-unsafe when compiled as C++
      */
     __device__ bool set_left(MapNode *value);
 
@@ -81,7 +81,7 @@ public:
      *
      * @note If the given value is `nullptr`, nothing happens, `false` is returned
      *
-     * @note This operation is thread-safe
+     * @note This operation is thread-safe when compiled as CUDA code, thread-unsafe when compiled as C++
      */
     __device__ bool set_top(MapNode *value);
 
@@ -94,7 +94,7 @@ public:
      *
      * @note If the given value is `nullptr`, nothing happens, `false` is returned
      *
-     * @note This operation is thread-safe
+     * @note This operation is thread-safe when compiled as CUDA code, thread-unsafe when compiled as C++
      */
     __device__ bool set_right(MapNode *value);
 

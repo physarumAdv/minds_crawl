@@ -2,7 +2,7 @@
 #define MIND_S_CRAWL_MAIN_LOGIC_CUH
 
 
-#include <initializer_list>
+#include <cstdio>
 
 #include "SimulationMap.cuh"
 #include "Polyhedron.cuh"

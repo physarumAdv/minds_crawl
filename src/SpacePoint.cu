@@ -1,3 +1,7 @@
+#ifdef COMPILE_FOR_CPU
+#include <cmath>
+#endif //COMPILE_FOR_CPU
+
 #include "SpacePoint.cuh"
 
 
@@ -52,7 +56,7 @@ __host__ __device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint 
     double angle_cos = cos(angle);
     SpacePoint radius = b - a;
     return (1 - angle_cos) * (normal * radius) * normal + angle_cos * radius +
-           sin(angle) * (normal % radius) + a;
+            sin(angle) * (normal % radius) + a;
 }
 
 

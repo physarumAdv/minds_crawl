@@ -1,3 +1,7 @@
+#ifdef COMPILE_FOR_CPU
+#include <cmath>
+#endif
+
 #include "Polyhedron.cuh"
 #include "common.cuh"
 
@@ -88,9 +92,9 @@ __host__ __device__ Face *find_face_next_to_edge(int vertex_id, Face *current_fa
 {
     for(int i = 0; i < polyhedron->get_n_of_faces(); ++i)
         if(polyhedron->get_faces()[i] != *current_face &&
-           does_edge_belong_to_face(current_face->get_vertices()[vertex_id],
-                                    current_face->get_vertices()[vertex_id + 1],
-                                    &polyhedron->get_faces()[i]))
+                does_edge_belong_to_face(current_face->get_vertices()[vertex_id],
+                                         current_face->get_vertices()[vertex_id + 1],
+                                         &polyhedron->get_faces()[i]))
             return &polyhedron->get_faces()[i];
     return current_face;
 }
@@ -103,8 +107,8 @@ __host__ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePo
         SpacePoint intersection = line_intersection(current_face->get_vertices()[i],
                                                     current_face->get_vertices()[i + 1], a, b);
         if(intersection != origin && is_in_segment(a, b, intersection) &&
-           is_in_segment(current_face->get_vertices()[i], current_face->get_vertices()[i + 1], intersection) &&
-           get_distance(intersection, a) > eps)
+                is_in_segment(current_face->get_vertices()[i], current_face->get_vertices()[i + 1], intersection) &&
+                get_distance(intersection, a) > eps)
         {
             if(intersection_edge != nullptr)
             {
@@ -132,7 +136,7 @@ __host__ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint
     double alpha_cos = moving_vector * (normal_before % normal_after);
 
     SpacePoint faced_vector_direction = (normal_before + normal_after * phi_cos) * sin(acos(alpha_cos)) / phi_sin +
-                                        (normal_before % normal_after) * alpha_cos / phi_sin;
+            (normal_before % normal_after) * alpha_cos / phi_sin;
 
     // If vector AB does not intersect any edge of face, `intersection` equals `b`,
     // so `faced_vector_direction` does not affect at all

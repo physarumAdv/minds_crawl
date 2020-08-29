@@ -1,5 +1,4 @@
 #include <cstdio>
-#include <initializer_list>
 
 #include "fucking_shit.cuh"
 #include "random_generator.cuh"
@@ -152,15 +151,43 @@ __host__ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhe
     return find_nearest_mapnode_greedy(dest, dest_face->get_node());
 }
 
+#ifdef COMPILE_FOR_CPU
 
-// The following code is from https://stackoverflow.com/a/62094892/11248508 (@kolayne can explain)
+unsigned long long atomicCAS(unsigned long long *address, const unsigned long long compare,
+                             const unsigned long long val)
+{
+    unsigned long long ans = *address;
+
+    if(*address == compare)
+        *address = val;
+
+    return ans;
+}
+
+int atomicAdd(int *address, int value)
+{
+    int ans = *address;
+    *address += value;
+    return ans;
+}
+
+double atomicAdd(double *address, double value)
+{
+    double ans = *address;
+    *address += value;
+    return ans;
+}
+
+#endif //COMPILE_FOR_CPU
+
+// The following code is compied from https://stackoverflow.com/a/62094892/11248508 and modified (@kolayne can explain)
 // `address` CANNOT be pointer to const, because we are trying to edit memory by it's address
 __device__ bool atomicCAS(bool *const address, const bool compare, const bool val)
 {
     auto addr = (unsigned long long)address;
     unsigned long long pos = addr & 3U;  // byte position within the int
-    auto *int_addr = (unsigned *)(addr - pos);  // int-aligned address
-    unsigned old = *int_addr, assumed, ival;
+    auto *int_addr = (unsigned long long *)(addr - pos);  // int-aligned address
+    unsigned long long old = *int_addr, assumed, ival;
 
     bool current_value;
 
@@ -204,4 +231,4 @@ __device__ double atomicAdd(double* address, double val)
 
     return __longlong_as_double(old);
 }
-#endif
+#endif // !defined(__CUDA_ARCH__) || __CUDA_ARCH__ >= 600
