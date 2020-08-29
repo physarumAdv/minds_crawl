@@ -41,7 +41,9 @@ typedef void (*RunIterationFunc)(SimulationMap *, int *);
  */
 __global__ void init_simulation_objects(SimulationMap *const simulation_map, Polyhedron *const polyhedron)
 {
+#ifndef COMPILE_FOR_CPU
     STOP_ALL_THREADS_EXCEPT_FIRST;
+#endif
 
     *simulation_map = SimulationMap(polyhedron);
 }
@@ -58,7 +60,9 @@ __global__ void init_simulation_objects(SimulationMap *const simulation_map, Pol
  */
 __global__ void init_environment(SimulationMap *const simulation_map)
 {
+#ifndef COMPILE_FOR_CPU
     STOP_ALL_THREADS_EXCEPT_FIRST;
+#endif
 
     int random_node_index = (int)(rand0to1() * (simulation_map->get_n_of_nodes() - 1));
     MapNode *random_node = simulation_map->nodes + random_node_index;
