@@ -1,6 +1,6 @@
 # Mind's Crawl
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cd8ac0eb5b334c68b7661ab756049191)](https://app.codacy.com/gh/physarumAdv/mind-s_crawl?utm_source=github.com&utm_medium=referral&utm_content=physarumAdv/mind-s_crawl&utm_campaign=Badge_Grade_Dashboard)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cd8ac0eb5b334c68b7661ab756049191)](https://app.codacy.com/gh/physarumAdv/minds_crawl?utm_source=github.com&utm_medium=referral&utm_content=physarumAdv/minds_crawl&utm_campaign=Badge_Grade_Dashboard)
 
 This is a simulation of Physarum Polycephalum, written in CUDA, but can be compiled for CPU execution with NVCC.
 At the moment, the code is very raw, it is going to be better commented and rearranged in files

@@ -3,8 +3,8 @@
 function(after_target_creation)
 
     set_target_properties(
-        mind_s_crawl
-        PROPERTIES
+        minds_crawl
+            PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON)
 
 endfunction(after_target_creation)
