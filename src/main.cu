@@ -1,4 +1,5 @@
 #include <ctime>
+#include <iostream>
 
 #include "main_logic.cuh"
 #include "random_generator.cuh"
@@ -88,6 +89,7 @@ __host__ int main()
     cudaMallocManaged((void **)&simulation_map, sizeof(SimulationMap));
     Polyhedron *polyhedron;
     cudaMallocManaged((void **)&polyhedron, sizeof(Polyhedron));
+
     *polyhedron = generate_cube();
 
     init_simulation_objects<<<1, 1>>>(simulation_map, polyhedron);
@@ -125,18 +127,31 @@ __host__ int main()
 
     const int cuda_grid_size = (n_of_nodes + cuda_block_size - 1) / cuda_block_size;
 
-    while(true)
+    if(cudaPeekAtLastError() == cudaSuccess)
     {
-        // (implicit synchronization)
-        cudaMemcpy((void *)nodes, (void *)nodes_d, sizeof(MapNode) * n_of_nodes, cudaMemcpyDeviceToHost);
-
-        for(RunIterationFunc f : iteration_runners)
+        while(true)
         {
-            f<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map,
-                                                                         iteration_number);
-        }
+            // (implicit synchronization)
+            cudaMemcpy((void *)nodes, (void *)nodes_d, sizeof(MapNode) * n_of_nodes, cudaMemcpyDeviceToHost);
 
-        // <redrawing here>
+            if(cudaPeekAtLastError()) // After synchronization caused by cudaMemcpy
+            {
+                break;
+            }
+
+            for(RunIterationFunc f : iteration_runners)
+            {
+                f<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map, iteration_number);
+            }
+
+            // <redrawing here>
+        }
+    }
+
+    cudaError_t error = cudaPeekAtLastError();
+    if(error != cudaSuccess)
+    {
+        std::cout << cudaGetErrorName(error) << ": " << cudaGetErrorString(error) << std::endl;
     }
 
     cudaFree(nodes);
