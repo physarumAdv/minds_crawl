@@ -55,6 +55,7 @@ int main()
         // <redrawing here>
     }
 
+    destruct_simulation_objects(simulation_map);
     free(polyhedron);
     free(simulation_map);
 }

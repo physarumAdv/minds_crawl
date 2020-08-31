@@ -25,9 +25,8 @@ namespace jc = jones_constants;
 typedef void (*RunIterationFunc)(SimulationMap *, int *);
 
 
-// TODO: Add the opposite (destructing) function
 /**
- * Initializes the simulation's objects (at the moment only `SimulationMap`)
+ * Initializes the simulation's objects (at the moment only a `SimulationMap`)
  *
  * This function is used to initialize simulation objects on device. It at the moment only initializes `SimulationMap`,
  * but can be extended to initialize more objects
@@ -38,6 +37,8 @@ typedef void (*RunIterationFunc)(SimulationMap *, int *);
  * @warning While `polyhedron` parameter must point to a real `Polyhedron` object, `simulation_map` might contain an
  *      existing map already, but it will be destructed in this case. Note that if the pointer doesn't contain an
  *      object the destructor will be called anyway, but it should be safe (???)
+ *
+ * @see destruct_simulation_objects
  */
 __global__ void init_simulation_objects(SimulationMap *const simulation_map, Polyhedron *const polyhedron)
 {
@@ -70,6 +71,25 @@ __global__ void init_environment(SimulationMap *const simulation_map)
     {
         printf("%s:%d - something went REALLY wrong at ", __FILE__, __LINE__);
     }
+}
+
+/**
+ * The opposite of `init_simulation_objects`
+ *
+ * This function destructs the objects constructed in `init_simulation_objects` (at the moment only a `SimulationMap`)
+ * to let you safely free memory without breaking any invariants etc
+ *
+ * @param simulation_map Pointer to the `SimulationMap` to be destructed
+ *
+ * @see init_simulation_objects
+ */
+__global__ void destruct_simulation_objects(SimulationMap *const simulation_map)
+{
+#ifndef COMPILE_FOR_CPU
+    STOP_ALL_THREADS_EXCEPT_FIRST;
+#endif
+
+    simulation_map->~SimulationMap();
 }
 
 
