@@ -38,7 +38,7 @@ int main()
     init_simulation_objects(simulation_map, polyhedron);
     init_environment(simulation_map);
 
-    int iteration_number = 0;
+    int iteration_number = 0; // Incremented inside of `run_iteration_cleanup`
 
     RunIterationFunc iteration_runners[] = {(RunIterationFunc)wrapped_run_iteration_project_nutrients,
                                             (RunIterationFunc)wrapped_run_iteration_diffuse_trail,

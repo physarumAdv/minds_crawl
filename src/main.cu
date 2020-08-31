@@ -95,7 +95,7 @@ __host__ int main()
     init_simulation_objects<<<1, 1>>>(simulation_map, polyhedron);
     init_environment<<<1, 1>>>(simulation_map);
 
-    int *iteration_number;
+    int *iteration_number; // Incremented inside of `run_iteration_cleanup`
     cudaMalloc((void **)&iteration_number, sizeof(int));
     set_device_variable_value(iteration_number, 0);
 
@@ -156,5 +156,6 @@ __host__ int main()
 
     cudaFree(nodes);
     cudaFree(iteration_number);
+    cudaFree(polyhedron);
     cudaFree(simulation_map);
 }
