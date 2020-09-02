@@ -7,16 +7,19 @@ At the moment, the code is very raw, it is going to be better commented and rear
 
 ### Compiling
 
-**PLEASE, NOTE** that there is no default `CMakeLists.txt` file, so you have to symbolically **link** `CMakeLists.txt`
-to either `cmakelists_parts/cpu/CMakeLists.txt` or `cmakelists_parts/gpu/CMakeLists.txt`, for example:
-
+To compile (the produced executable will require an NVidia GPU to run):
 ```bash
-cd project_dir
-ln -s cmakelists_parts/gpu/CMakeLists.txt CMakeLists.txt
+mkdir cmake-build-release && cd cmake-build-release
+cmake ..
+cmake --build . -- -j "$(nproc)"
 ```
 
-After that, you will be able to build the project. The executable will run on either CPU or GPU depending on
-which file you choose
+Note that there is also a way to produce an executable which will only use CPU for running, however it's highly unrecommended to use this mode for any purposes but debugging:
+```bash
+mkdir cmake-build-debug && cd cmake-build-debug
+cmake .. -DCOMPILE_FOR_CPU=ON
+cmake --build . -- -j "$(nproc)"
+```
 
 ## Authors
 
