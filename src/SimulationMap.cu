@@ -105,8 +105,6 @@ __host__ __device__ SimulationMap &SimulationMap::operator=(SimulationMap &&othe
 {
     if(this != &other)
     {
-        nodes = nullptr;
-
         swap(n_of_nodes, other.n_of_nodes);
         swap(nodes, other.nodes);
         swap(polyhedron, other.polyhedron);
@@ -117,6 +115,8 @@ __host__ __device__ SimulationMap &SimulationMap::operator=(SimulationMap &&othe
 
 __host__ __device__ SimulationMap::SimulationMap(SimulationMap &&other) noexcept
 {
+    nodes = nullptr;
+
     *this = std::move(other);
 }
 

@@ -12,8 +12,6 @@ __host__ __device__ MapNode &MapNode::operator=(MapNode &&other) noexcept
 {
     if(this != &other)
     {
-        particle = nullptr;
-
         swap(polyhedron, other.polyhedron);
         swap(trail, other.trail);
         swap(temp_trail, other.temp_trail);
@@ -32,6 +30,8 @@ __host__ __device__ MapNode &MapNode::operator=(MapNode &&other) noexcept
 
 __host__ __device__ MapNode::MapNode(MapNode &&other) noexcept
 {
+    particle = nullptr;
+
     *this = std::move(other);
 }
 
