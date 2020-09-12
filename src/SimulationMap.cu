@@ -44,9 +44,9 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
      * Boolean array where i-th element tells whether the i-th face have nodes or not
      * `does_face_have_nodes[i]` value corresponds to `polyhedron->faces[i]` face
      */
-    auto *does_face_have_nodes = (bool *)malloc(sizeof(bool) * polyhedron->n_of_faces);
+    auto *does_face_have_nodes = (bool *)malloc(sizeof(bool) * polyhedron->get_n_of_faces());
     does_face_have_nodes[0] = true;
-    for(int i = 1; i < polyhedron->n_of_faces; ++i)
+    for(int i = 1; i < polyhedron->get_n_of_faces(); ++i)
         does_face_have_nodes[i] = false;
 
     /**
@@ -145,8 +145,8 @@ __device__ SimulationMap::~SimulationMap()
 
 __device__ int SimulationMap::find_face_index(Face *face) const
 {
-    int index = face - &polyhedron->faces[0];
-    if(0 <= index && index < polyhedron->n_of_faces)
+    int index = face - &polyhedron->get_faces()[0];
+    if(0 <= index && index < polyhedron->get_n_of_faces())
         return index;
     return -1;
 }
