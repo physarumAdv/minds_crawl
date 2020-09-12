@@ -4,21 +4,21 @@
 #include "common.cuh"
 
 
-__device__ SpacePoint calculate_normal(const SpacePoint *vertices)
+__host__ __device__ SpacePoint calculate_normal(const SpacePoint *vertices)
 {
     SpacePoint normal = (vertices[2] - vertices[0]) % (vertices[1] - vertices[0]);
     return normal / get_distance(normal, origin);
 }
 
 
-__device__ Face::Face(const SpacePoint *vertices, int n_of_vertices) :
+__host__ __device__ Face::Face(const SpacePoint *vertices, int n_of_vertices) :
         vertices(malloc_and_copy(vertices, n_of_vertices)), n_of_vertices(n_of_vertices),
         normal(calculate_normal(vertices)), node(nullptr)
 {
 
 }
 
-__device__ Face &Face::operator=(const Face &other)
+__host__ __device__ Face &Face::operator=(const Face &other)
 {
     if(this != &other)
     {
@@ -30,12 +30,12 @@ __device__ Face &Face::operator=(const Face &other)
     return *this;
 }
 
-__device__ Face::Face(const Face &other)
+__host__ __device__ Face::Face(const Face &other)
 {
     *this = other;
 }
 
-__device__ Face &Face::operator=(Face &&other) noexcept
+__host__ __device__ Face &Face::operator=(Face &&other) noexcept
 {
     if(this != &other)
     {
@@ -48,20 +48,20 @@ __device__ Face &Face::operator=(Face &&other) noexcept
     return *this;
 }
 
-__device__ Face::Face(Face &&other) noexcept
+__host__ __device__ Face::Face(Face &&other) noexcept
 {
     vertices = nullptr;
 
     *this = std::move(other);
 }
 
-__device__ Face::~Face()
+__host__ __device__ Face::~Face()
 {
     free((void *)vertices);
 }
 
 
-__device__ void Face::set_node(MapNode *node, Polyhedron *polyhedron)
+__host__ __device__ void Face::set_node(MapNode *node, Polyhedron *polyhedron)
 {
     if(*this == *polyhedron->find_face_by_point(node->get_coordinates()))
     {
@@ -69,22 +69,22 @@ __device__ void Face::set_node(MapNode *node, Polyhedron *polyhedron)
     }
 }
 
-__device__ MapNode *Face::get_node() const
+__host__ __device__ MapNode *Face::get_node() const
 {
     return node;
 }
 
-__device__ const SpacePoint *Face::get_vertices() const
+__host__ __device__ const SpacePoint *Face::get_vertices() const
 {
     return vertices;
 }
 
-__device__ int Face::get_n_of_vertices() const
+__host__ __device__ int Face::get_n_of_vertices() const
 {
     return n_of_vertices;
 }
 
-__device__ SpacePoint Face::get_normal() const
+__host__ __device__ SpacePoint Face::get_normal() const
 {
     return normal;
 }

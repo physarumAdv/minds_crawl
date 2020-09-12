@@ -26,7 +26,7 @@
  * @returns Pointer to a copied array
  */
 template<class T>
-__device__ T *malloc_and_copy(const T *const source, int count)
+__host__ __device__ T *malloc_and_copy(const T *const source, int count)
 {
     T *new_array = (T *)malloc(count * sizeof(T));
     for(int i = 0; i < count; ++i)
@@ -50,7 +50,7 @@ __device__ T *malloc_and_copy(const T *const source, int count)
  * @returns Pointer to the created array
  */
 template<class T>
-__device__ T *device_realloc(T *source, int old_size, int new_size)
+__host__ __device__ T *device_realloc(T *source, int old_size, int new_size)
 {
     T *new_array = (T *)malloc(new_size * sizeof(T));
     for(int i = 0; i < old_size; ++i)

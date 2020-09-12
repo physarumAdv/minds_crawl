@@ -2,13 +2,13 @@
 #include "common.cuh"
 
 
-__device__ Polyhedron::Polyhedron(Face *faces, int n_of_faces) :
+__host__ __device__ Polyhedron::Polyhedron(Face *faces, int n_of_faces) :
         faces(malloc_and_copy(faces, n_of_faces)), n_of_faces(n_of_faces)
 {
 
 }
 
-__device__ Polyhedron &Polyhedron::operator=(const Polyhedron &other)
+__host__ __device__ Polyhedron &Polyhedron::operator=(const Polyhedron &other)
 {
     if(this != &other)
     {
@@ -18,12 +18,12 @@ __device__ Polyhedron &Polyhedron::operator=(const Polyhedron &other)
     return *this;
 }
 
-__device__ Polyhedron::Polyhedron(const Polyhedron &other)
+__host__ __device__ Polyhedron::Polyhedron(const Polyhedron &other)
 {
     *this = other;
 }
 
-__device__ Polyhedron &Polyhedron::operator=(Polyhedron &&other) noexcept
+__host__ __device__ Polyhedron &Polyhedron::operator=(Polyhedron &&other) noexcept
 {
     if(this != &other)
     {
@@ -34,20 +34,20 @@ __device__ Polyhedron &Polyhedron::operator=(Polyhedron &&other) noexcept
     return *this;
 }
 
-__device__ Polyhedron::Polyhedron(Polyhedron &&other) noexcept
+__host__ __device__ Polyhedron::Polyhedron(Polyhedron &&other) noexcept
 {
     faces = nullptr;
 
     *this = std::move(other);
 }
 
-__device__ Polyhedron::~Polyhedron()
+__host__ __device__ Polyhedron::~Polyhedron()
 {
     free((void *)faces);
 }
 
 
-__device__ Face *Polyhedron::find_face_by_point(SpacePoint point) const
+__host__ __device__ Face *Polyhedron::find_face_by_point(SpacePoint point) const
 {
     for(int i = 0; i < n_of_faces; ++i)
     {
@@ -60,18 +60,18 @@ __device__ Face *Polyhedron::find_face_by_point(SpacePoint point) const
     return &faces[0];
 }
 
-__device__ Face *Polyhedron::get_faces() const
+__host__ __device__ Face *Polyhedron::get_faces() const
 {
     return faces;
 }
 
-__device__ int Polyhedron::get_n_of_faces() const
+__host__ __device__ int Polyhedron::get_n_of_faces() const
 {
     return n_of_faces;
 }
 
 
-__device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, const Face *face)
+__host__ __device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, const Face *face)
 {
     bool flag1 = false, flag2 = false;
     for(int i = 0; i < face->get_n_of_vertices(); ++i)
@@ -84,7 +84,7 @@ __device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, const Face 
     return flag1 && flag2;
 }
 
-__device__ Face *find_face_next_to_edge(int vertex_id, Face *current_face, Polyhedron *polyhedron)
+__host__ __device__ Face *find_face_next_to_edge(int vertex_id, Face *current_face, Polyhedron *polyhedron)
 {
     for(int i = 0; i < polyhedron->get_n_of_faces(); ++i)
         if(polyhedron->get_faces()[i] != *current_face &&
@@ -95,8 +95,8 @@ __device__ Face *find_face_next_to_edge(int vertex_id, Face *current_face, Polyh
     return current_face;
 }
 
-__device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Face *current_face,
-                                                  int *intersection_edge)
+__host__ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Face *current_face,
+                                                           int *intersection_edge)
 {
     for(int i = 0; i < current_face->get_n_of_vertices() - 1; ++i)
     {
@@ -116,7 +116,8 @@ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Fa
     return b;
 }
 
-__device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, Face *current_face, Polyhedron *polyhedron)
+__host__ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, Face *current_face,
+                                                        Polyhedron *polyhedron)
 {
     int intersection_edge_vertex_id = 0;
     SpacePoint intersection = find_intersection_with_edge(a, b, current_face, &intersection_edge_vertex_id);

@@ -27,7 +27,7 @@ public:
      * @param polyhedron_face The polyhedron's face to create node on
      * @param coordinates Coordinates of node to create node at
      */
-    __device__ MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates);
+    __host__ __device__ MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates);
 
     /**
      * `MapNode` object copy assignment operator (deleted)
@@ -56,7 +56,7 @@ public:
     __host__ __device__ MapNode(MapNode &&other) noexcept;
 
     /// Destructs a `MapNode` object
-    __device__ ~MapNode();
+    __host__ __device__ ~MapNode();
 
 
     /**
@@ -117,31 +117,31 @@ public:
      *
      * @returns Pointer to the left neighbor (`nullptr` if it is not set)
      */
-    __device__ MapNode *get_left() const;
+    __host__ __device__ MapNode *get_left() const;
 
     /**
      * Returns a pointer to the top neighbor
      *
      * @returns Pointer to the top neighbor (`nullptr` if it is not set)
      */
-    __device__ MapNode *get_top() const;
+    __host__ __device__ MapNode *get_top() const;
 
     /**
      * Returns a pointer to the right neighbor
      *
      * @returns Pointer to the right neighbor (`nullptr` if it is not set)
      */
-    __device__ MapNode *get_right() const;
+    __host__ __device__ MapNode *get_right() const;
 
     /**
      * Returns a pointer to the bottom neighbor
      *
      * @returns Pointer to the bottom neighbor (`nullptr` if it is not set)
      */
-    __device__ MapNode *get_bottom() const;
+    __host__ __device__ MapNode *get_bottom() const;
 
 
-    __device__ bool does_contain_particle() const;
+    __host__ __device__ bool does_contain_particle() const;
 
     /**
      * Returns the node's coordinates
@@ -150,7 +150,7 @@ public:
      *
      * @note This parameter is never ever changed during the existence of the object
      */
-    __device__ SpacePoint get_coordinates() const;
+    __host__ __device__ SpacePoint get_coordinates() const;
 
     /**
      * Returns the polyhedron the node is laying on
@@ -159,7 +159,7 @@ public:
      *
      * @note This parameter is never ever changed during the existence of the object
      */
-    __device__ Polyhedron *get_polyhedron() const;
+    __host__ __device__ Polyhedron *get_polyhedron() const;
 
     /**
      * Returns pointer to the face the node is laying on
@@ -168,7 +168,7 @@ public:
      *
      * @note This parameter is never ever changed during the existence of the object
      */
-    __device__ Face *get_face() const;
+    __host__ __device__ Face *get_face() const;
 
 
     /**
@@ -176,7 +176,7 @@ public:
      *
      * @returns True if the node does contain food, False otherwise
      */
-    __device__ bool does_contain_food() const;
+    __host__ __device__ bool does_contain_food() const;
 
 
     /**
@@ -200,7 +200,7 @@ public:
      *
      * @see mapNode::attach_particle, MapNode::detach_particle
      */
-    __device__ Particle *get_particle() const;
+    __host__ __device__ Particle *get_particle() const;
 
     /**
      * Marks the node as not occupied (not containing a particle) / Detaches particle from the node

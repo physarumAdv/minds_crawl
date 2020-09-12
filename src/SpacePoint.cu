@@ -47,7 +47,7 @@ __host__ __device__ SpacePoint operator%(SpacePoint a, SpacePoint b)
 }
 
 
-__device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint b, SpacePoint normal, double angle)
+__host__ __device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint b, SpacePoint normal, double angle)
 {
     double angle_cos = cos(angle);
     SpacePoint radius = b - a;
@@ -56,12 +56,12 @@ __device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint b, SpaceP
 }
 
 
-__device__ double get_distance(SpacePoint a, SpacePoint b)
+__host__ __device__ double get_distance(SpacePoint a, SpacePoint b)
 {
     return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z));
 }
 
-__device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d)
+__host__ __device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d)
 {
     SpacePoint direction_vectorAB = (b - a) / get_distance(b - a, origin);
     SpacePoint direction_vectorCD = (d - c) / get_distance(d - c, origin);
@@ -84,7 +84,7 @@ __device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, SpacePoint c
     }
 }
 
-__device__ bool is_in_segment(SpacePoint a, SpacePoint b, SpacePoint c)
+__host__ __device__ bool is_in_segment(SpacePoint a, SpacePoint b, SpacePoint c)
 {
     return (get_distance(c, a) + get_distance(c, b) - get_distance(a, b) < eps);
 }

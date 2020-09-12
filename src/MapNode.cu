@@ -3,7 +3,7 @@
 #include "Polyhedron.cuh"
 
 
-__device__ MapNode::MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
+__host__ __device__ MapNode::MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
         trail(0), temp_trail(0), left(nullptr), top(nullptr), right(nullptr), bottom(nullptr), polyhedron(polyhedron),
         polyhedron_face(polyhedron_face), coordinates(coordinates), contains_food(false), particle(nullptr)
 {}
@@ -35,7 +35,7 @@ __host__ __device__ MapNode::MapNode(MapNode &&other) noexcept
     *this = std::move(other);
 }
 
-__device__ MapNode::~MapNode()
+__host__ __device__ MapNode::~MapNode()
 {
     delete particle;
 }
@@ -86,49 +86,49 @@ __device__ bool MapNode::set_bottom(MapNode *value)
 }
 
 
-__device__ MapNode *MapNode::get_left() const
+__host__ __device__ MapNode *MapNode::get_left() const
 {
     return left;
 }
 
-__device__ MapNode *MapNode::get_top() const
+__host__ __device__ MapNode *MapNode::get_top() const
 {
     return top;
 }
 
-__device__ MapNode *MapNode::get_right() const
+__host__ __device__ MapNode *MapNode::get_right() const
 {
     return right;
 }
 
-__device__ MapNode *MapNode::get_bottom() const
+__host__ __device__ MapNode *MapNode::get_bottom() const
 {
     return bottom;
 }
 
 
-__device__ SpacePoint MapNode::get_coordinates() const
+__host__ __device__ SpacePoint MapNode::get_coordinates() const
 {
     return coordinates;
 }
 
-__device__ Polyhedron *MapNode::get_polyhedron() const
+__host__ __device__ Polyhedron *MapNode::get_polyhedron() const
 {
     return polyhedron;
 }
 
-__device__ Face *MapNode::get_face() const
+__host__ __device__ Face *MapNode::get_face() const
 {
     return polyhedron_face;
 }
 
 
-__device__ bool MapNode::does_contain_food() const
+__host__ __device__ bool MapNode::does_contain_food() const
 {
     return contains_food;
 }
 
-__device__ bool MapNode::does_contain_particle() const
+__host__ __device__ bool MapNode::does_contain_particle() const
 {
     return particle != nullptr;
 }
@@ -143,7 +143,7 @@ __device__ bool MapNode::attach_particle(Particle *p)
                                             (unsigned long long)p);
 }
 
-__device__ Particle *MapNode::get_particle() const
+__host__ __device__ Particle *MapNode::get_particle() const
 {
     return particle;
 }

@@ -49,7 +49,7 @@
  *
  * @param node Pointer to the node to diffuse trail at
  */
-__device__ void diffuse_trail(MapNode *node);
+__host__ __device__ void diffuse_trail(MapNode *node);
 
 /**
  * Returns number of particles in a node window around the given node
@@ -69,7 +69,7 @@ __device__ void diffuse_trail(MapNode *node);
  *
  * @returns The number of particles in the node window
  */
-__device__ int count_particles_in_node_window(MapNode *node, int window_size);
+__host__ __device__ int count_particles_in_node_window(MapNode *node, int window_size);
 
 /**
  * Runs a random death test in the given node
@@ -145,7 +145,7 @@ __device__ void division_test(MapNode *node);
  *
  * @see find_nearest_mapnode
  */
-__device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint &dest, MapNode *start);
+__host__ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint &dest, MapNode *start);
 
 /**
  * Finds a `MapNode` which is nearest to a given destination `SpacePoint`. Tries to find it next to `start`, if
@@ -167,8 +167,8 @@ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint &dest, MapNode 
  *
  * @see find_nearest_mapnode_greedy
  */
-__device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, const SpacePoint &dest,
-                                         MapNode *start = nullptr);
+__host__ __device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, const SpacePoint &dest,
+                                                  MapNode *start = nullptr);
 
 
 #ifdef COMPILE_FOR_CPU

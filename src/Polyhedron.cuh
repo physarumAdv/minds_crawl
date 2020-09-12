@@ -16,7 +16,7 @@ public:
      * @param faces Array of `Face` objects describing each face of a
      * @param n_of_faces Number of polyhedron faces
      */
-    __device__ Polyhedron(Face *faces, int n_of_faces);
+    __host__ __device__ Polyhedron(Face *faces, int n_of_faces);
 
     /**
      * `Polyhedron` object copy assignment operator
@@ -25,7 +25,7 @@ public:
      *      results (different from when moving!). For details check the documentation of `Face` copy assignment
      *      operator
      */
-    __device__ Polyhedron &operator=(const Polyhedron &other);
+    __host__ __device__ Polyhedron &operator=(const Polyhedron &other);
 
     /**
      * `Polyhedron` object copy constructor
@@ -33,7 +33,7 @@ public:
      * @warning Copying `Polyhedron` object requires copying `Face`s inside it, which can sometimes lead to unexpected
      *      results (different from when moving!). For details check the documentation of `Face` copy constructor
      */
-    __device__ Polyhedron(const Polyhedron &other);
+    __host__ __device__ Polyhedron(const Polyhedron &other);
 
     /**
      * `Polyhedron` object move assignment operator
@@ -42,7 +42,7 @@ public:
      *      results (different from when copying!). For details check the documentation of `Face` move assignment
      *      operator
      */
-    __device__ Polyhedron &operator=(Polyhedron &&other) noexcept;
+    __host__ __device__ Polyhedron &operator=(Polyhedron &&other) noexcept;
 
     /**
      * `Polyhedron` object move constructor
@@ -50,10 +50,10 @@ public:
      * @warning Moving `Polyhedron` object requires moving `Face`s inside it, which can sometimes lead to unexpected
      *      results (different from when copying!). For details check the documentation of `Face` move constructor
      */
-    __device__ Polyhedron(Polyhedron &&other) noexcept;
+    __host__ __device__ Polyhedron(Polyhedron &&other) noexcept;
 
     /// Destructs a `Polyhedron` object
-    __device__ ~Polyhedron();
+    __host__ __device__ ~Polyhedron();
 
 
     /**
@@ -63,11 +63,11 @@ public:
      *
      * @returns Pointer to the found face
      */
-    __device__ Face *find_face_by_point(SpacePoint point) const;
+    __host__ __device__ Face *find_face_by_point(SpacePoint point) const;
 
-    __device__ Face *get_faces() const;
+    __host__ __device__ Face *get_faces() const;
 
-    __device__ int get_n_of_faces() const;
+    __host__ __device__ int get_n_of_faces() const;
 
 
 private:
@@ -89,7 +89,7 @@ private:
  *
  * @returns `true` if edge AB belongs to face, `false` otherwise
  */
-__device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, const Face *face);
+__host__ __device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, const Face *face);
 
 /**
  * Finds a face adjacent to the given face along the edge represented by vertices
@@ -101,7 +101,7 @@ __device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, const Face 
  *
  * @returns Pointer to the found face
  */
-__device__ Face *find_face_next_to_edge(int vertex_id, Face *current_face, Polyhedron *polyhedron);
+__host__ __device__ Face *find_face_next_to_edge(int vertex_id, Face *current_face, Polyhedron *polyhedron);
 
 /**
  * Returns the intersection point of segment AB with an edge of given face if it exists, point B otherwise
@@ -116,8 +116,8 @@ __device__ Face *find_face_next_to_edge(int vertex_id, Face *current_face, Polyh
  *
  * @returns Point of intersection with edge if it exists, point B otherwise
  */
-__device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Face *current_face,
-                                                  int *intersection_edge = nullptr);
+__host__ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Face *current_face,
+                                                           int *intersection_edge = nullptr);
 
 /**
  * Returns the coordinates of the end of AB vector's overlay on the polyhedron's surface
@@ -132,7 +132,8 @@ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Fa
  *
  * @returns Coordinates of the end of AB vector's overlay
  */
-__device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, Face *current_face, Polyhedron *polyhedron);
+__host__ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, Face *current_face,
+                                                        Polyhedron *polyhedron);
 
 
 #endif //MIND_S_CRAWL_POLYHEDRON_CUH
