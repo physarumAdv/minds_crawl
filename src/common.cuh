@@ -2,6 +2,11 @@
 #define MIND_S_CRAWL_COMMON_CUH
 
 
+#include <cstdlib>
+#include <cstring>
+#include <utility>
+
+
 #ifdef COMPILE_FOR_CPU
 #define STOP_ALL_THREADS_EXCEPT_FIRST
 #else
@@ -21,7 +26,15 @@
  * @returns Pointer to a copied array
  */
 template<class T>
-__host__ __device__ T *malloc_and_copy(const T *source, int count);
+__host__ __device__ T *malloc_and_copy(const T *source, int count)
+{
+    T *new_array = (T *)malloc(count * sizeof(T));
+    for(int i = 0; i < count; ++i)
+    {
+        new_array[i] = source[i];
+    }
+    return new_array;
+}
 
 /**
  * Creates new array with `new_size`, moves source to it, frees up source memory
@@ -37,7 +50,16 @@ __host__ __device__ T *malloc_and_copy(const T *source, int count);
  * @returns Pointer to the created array
  */
 template<class T>
-__host__ __device__ T *device_realloc(T *source, int old_size, int new_size);
+__host__ __device__ T *device_realloc(T *source, int old_size, int new_size)
+{
+    T *new_array = (T *)malloc(new_size * sizeof(T));
+    for(int i = 0; i < old_size; ++i)
+    {
+        new_array[i] = std::move(source[i]);
+    }
+    free(source);
+    return new_array;
+}
 
 /**
  * Swaps two given values
@@ -48,7 +70,12 @@ __host__ __device__ T *device_realloc(T *source, int old_size, int new_size);
  * @param b Value to be swapped
  */
 template<class T>
-__host__ __device__ void swap(T &a, T &b);
+__host__ __device__ void swap(T &a, T &b)
+{
+    T c = std::move(a);
+    a = std::move(b);
+    b = std::move(c);
+}
 
 
 #endif //MIND_S_CRAWL_COMMON_CUH
