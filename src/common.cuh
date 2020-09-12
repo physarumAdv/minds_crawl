@@ -26,7 +26,7 @@
  * @returns Pointer to a copied array
  */
 template<class T>
-__host__ __device__ T *malloc_and_copy(const T *source, int count)
+__host__ __device__ static T *malloc_and_copy(const T *source, int count)
 {
     T *new_array = (T *)malloc(count * sizeof(T));
     for(int i = 0; i < count; ++i)
@@ -50,7 +50,7 @@ __host__ __device__ T *malloc_and_copy(const T *source, int count)
  * @returns Pointer to the created array
  */
 template<class T>
-__host__ __device__ T *device_realloc(T *source, int old_size, int new_size)
+__host__ __device__ static T *device_realloc(T *source, int old_size, int new_size)
 {
     T *new_array = (T *)malloc(new_size * sizeof(T));
     for(int i = 0; i < old_size; ++i)
@@ -70,7 +70,7 @@ __host__ __device__ T *device_realloc(T *source, int old_size, int new_size)
  * @param b Value to be swapped
  */
 template<class T>
-__host__ __device__ void swap(T &a, T &b)
+__host__ __device__ static void swap(T &a, T &b)
 {
     T c = std::move(a);
     a = std::move(b);
