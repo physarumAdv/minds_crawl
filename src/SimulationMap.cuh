@@ -18,8 +18,29 @@ public:
      */
     __device__ explicit SimulationMap(Polyhedron *polyhedron);
 
-    /// Forbids copying `SimulationMap` objects
+    /**
+     * `SimulationMap` object copy assignment operator (deleted)
+     *
+     * Deleted because despite copying `SimulationMap` makes sense and is possible to implement, accidental copying of a
+     * `SimulationMap` may seriously harm performance and need to copy it is a rather special case. However, a special
+     * function for copying `SimulationMap` objects will possibly be implemented someday
+     */
+    __host__ __device__ SimulationMap &operator=(const SimulationMap &other) = delete;
+
+    /**
+     * `SimulationMap` object copy constructor (deleted)
+     *
+     * Deleted because despite copying `SimulationMap` makes sense and is possible to implement, accidental copying of a
+     * `SimulationMap` may seriously harm performance and need to copy it is a rather special case. However, a special
+     * function for copying `SimulationMap` objects will possibly be implemented someday
+     */
     __host__ __device__ SimulationMap(const SimulationMap &) = delete;
+
+    /// `SimulationMap` object move assignment operator
+    __host__ __device__ SimulationMap &operator=(SimulationMap &&other) noexcept;
+
+    /// `SimulationMap` object move constructor
+    __host__ __device__ SimulationMap(SimulationMap &&other) noexcept;
 
     /// Destructs a `SimulationMap` object
     __device__ ~SimulationMap();
@@ -45,9 +66,6 @@ public:
 
     /// Pointer-represented array of nodes on the map
     MapNode *nodes;
-
-    /// Pointer to the polyhedron simulation is running on
-    Polyhedron *const polyhedron;
 
 private:
     /**
@@ -133,6 +151,9 @@ private:
     __device__ int get_neighbor_node_id(int current_node_id, SpacePoint **nodes_directions, double angle,
                                         bool *does_face_have_nodes, bool create_new_nodes);
 
+
+    /// Pointer to the polyhedron simulation is running on
+    Polyhedron *polyhedron;
 
     /// The number of nodes on the map
     int n_of_nodes;

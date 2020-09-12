@@ -1,4 +1,5 @@
 #include "Polyhedron.cuh"
+#include "common.cuh"
 
 
 __device__ Polyhedron::Polyhedron(Face *faces, int n_of_faces) :
@@ -7,10 +8,44 @@ __device__ Polyhedron::Polyhedron(Face *faces, int n_of_faces) :
 
 }
 
+__device__ Polyhedron &Polyhedron::operator=(const Polyhedron &other)
+{
+    if(this != &other)
+    {
+        faces = malloc_and_copy(other.faces, other.n_of_faces);
+        n_of_faces = other.n_of_faces;
+    }
+    return *this;
+}
+
+__device__ Polyhedron::Polyhedron(const Polyhedron &other)
+{
+    *this = other;
+}
+
+__device__ Polyhedron &Polyhedron::operator=(Polyhedron &&other) noexcept
+{
+    if(this != &other)
+    {
+        swap(faces, other.faces);
+        swap(n_of_faces, other.n_of_faces);
+    }
+
+    return *this;
+}
+
+__device__ Polyhedron::Polyhedron(Polyhedron &&other) noexcept
+{
+    faces = nullptr;
+
+    *this = std::move(other);
+}
+
 __device__ Polyhedron::~Polyhedron()
 {
     free((void *)faces);
 }
+
 
 __device__ Face *Polyhedron::find_face_by_point(SpacePoint point) const
 {
@@ -23,6 +58,16 @@ __device__ Face *Polyhedron::find_face_by_point(SpacePoint point) const
             return face;
     }
     return &faces[0];
+}
+
+__device__ Face *Polyhedron::get_faces() const
+{
+    return faces;
+}
+
+__device__ int Polyhedron::get_n_of_faces() const
+{
+    return n_of_faces;
 }
 
 
@@ -41,12 +86,12 @@ __device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, const Face 
 
 __device__ Face *find_face_next_to_edge(int vertex_id, Face *current_face, Polyhedron *polyhedron)
 {
-    for(int i = 0; i < polyhedron->n_of_faces; ++i)
-        if(polyhedron->faces[i] != *current_face &&
+    for(int i = 0; i < polyhedron->get_n_of_faces(); ++i)
+        if(polyhedron->get_faces()[i] != *current_face &&
            does_edge_belong_to_face(current_face->get_vertices()[vertex_id],
                                     current_face->get_vertices()[vertex_id + 1],
-                                    &polyhedron->faces[i]))
-            return &polyhedron->faces[i];
+                                    &polyhedron->get_faces()[i]))
+            return &polyhedron->get_faces()[i];
     return current_face;
 }
 

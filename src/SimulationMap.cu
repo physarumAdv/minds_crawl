@@ -23,7 +23,7 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
 {
     bool create_new_nodes = true;  // New nodes are allowed to be created
 
-    Face *start_face = &polyhedron->faces[0];
+    Face *start_face = &polyhedron->get_faces()[0];
     SpacePoint start_node_coordinates = (start_face->get_vertices()[0] + start_face->get_vertices()[1] +
                                          start_face->get_vertices()[2]) / 3;
     nodes = (MapNode *)malloc(sizeof(MapNode));
@@ -116,6 +116,25 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
 
     free(nodes_directions);
     free(does_face_have_nodes);
+}
+
+__host__ __device__ SimulationMap &SimulationMap::operator=(SimulationMap &&other) noexcept
+{
+    if(this != &other)
+    {
+        swap(n_of_nodes, other.n_of_nodes);
+        swap(nodes, other.nodes);
+        swap(polyhedron, other.polyhedron);
+    }
+
+    return *this;
+}
+
+__host__ __device__ SimulationMap::SimulationMap(SimulationMap &&other) noexcept
+{
+    nodes = nullptr;
+
+    *this = std::move(other);
 }
 
 __device__ SimulationMap::~SimulationMap()
@@ -240,4 +259,3 @@ __global__ void get_n_of_nodes(const SimulationMap *const simulation_map, int *r
 
     *return_value = simulation_map->get_n_of_nodes();
 }
-

@@ -4,9 +4,36 @@
 
 
 __device__ MapNode::MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
-        polyhedron(polyhedron), trail(0), contains_food(false), coordinates(coordinates),
-        polyhedron_face(polyhedron_face), left(nullptr), top(nullptr), right(nullptr), bottom(nullptr)
+        trail(0), temp_trail(0), left(nullptr), top(nullptr), right(nullptr), bottom(nullptr), polyhedron(polyhedron),
+        polyhedron_face(polyhedron_face), coordinates(coordinates), contains_food(false), particle(nullptr)
 {}
+
+__host__ __device__ MapNode &MapNode::operator=(MapNode &&other) noexcept
+{
+    if(this != &other)
+    {
+        swap(polyhedron, other.polyhedron);
+        swap(trail, other.trail);
+        swap(temp_trail, other.temp_trail);
+        swap(left, other.left);
+        swap(top, other.top);
+        swap(right, other.right);
+        swap(bottom, other.bottom);
+        swap(polyhedron_face, other.polyhedron_face);
+        swap(coordinates, other.coordinates);
+        swap(contains_food, other.contains_food);
+        swap(particle, other.particle);
+    }
+
+    return *this;
+}
+
+__host__ __device__ MapNode::MapNode(MapNode &&other) noexcept
+{
+    particle = nullptr;
+
+    *this = std::move(other);
+}
 
 __device__ MapNode::~MapNode()
 {
@@ -27,7 +54,7 @@ __device__ MapNode::~MapNode()
  */
 __device__ inline bool set_mapnode_neighbor(MapNode **target, MapNode *value)
 {
-    static_assert(sizeof(target) <= sizeof(unsigned long long *), "I think, I can't safely cast `MapNode **` to"
+    static_assert(sizeof(target) <= sizeof(unsigned long long *), "I think, I can't safely cast `MapNode **` to "
                                                                   "`unsigned long long *`");
 
     if(value == nullptr)
@@ -109,7 +136,7 @@ __device__ bool MapNode::does_contain_particle() const
 
 __device__ bool MapNode::attach_particle(Particle *p)
 {
-    static_assert(sizeof(&particle) <= sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to"
+    static_assert(sizeof(&particle) <= sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to "
                                                                      "`unsigned long long *`");
 
     return nullptr == (Particle *)atomicCAS((unsigned long long *)&particle, (unsigned long long)nullptr,
@@ -128,7 +155,7 @@ __device__ void MapNode::detach_particle()
 
 __device__ bool MapNode::detach_particle(Particle *p)
 {
-    static_assert(sizeof(&particle) <= sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to"
+    static_assert(sizeof(&particle) <= sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to "
                                                                      "`unsigned long long *`");
 
     return p == (Particle *)atomicCAS((unsigned long long *)&particle, (unsigned long long)p,
