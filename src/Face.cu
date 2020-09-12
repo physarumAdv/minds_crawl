@@ -39,8 +39,6 @@ __host__ __device__ Face &Face::operator=(Face &&other) noexcept
 {
     if(this != &other)
     {
-        vertices = nullptr;
-
         swap(vertices, other.vertices);
         swap(n_of_vertices, other.n_of_vertices);
         swap(normal, other.normal);
@@ -52,6 +50,8 @@ __host__ __device__ Face &Face::operator=(Face &&other) noexcept
 
 __host__ __device__ Face::Face(Face &&other) noexcept
 {
+    vertices = nullptr;
+
     *this = std::move(other);
 }
 

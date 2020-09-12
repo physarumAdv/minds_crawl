@@ -157,10 +157,18 @@ __host__ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhe
 // `address` CANNOT be pointer to const, because we are trying to edit memory by it's address
 __device__ bool atomicCAS(bool *const address, const bool compare, const bool val)
 {
-    auto addr = (unsigned long long)address;
-    unsigned long long pos = addr & 3U;  // byte position within the int
-    auto *int_addr = (unsigned *)(addr - pos);  // int-aligned address
-    unsigned old = *int_addr, assumed, ival;
+    typedef unsigned long long base_atomic_type;
+
+    static_assert(sizeof(base_atomic_type) > 1, "The local atomicCAS implementation won't work if `base_atomic_type"
+                                                   "type size <= 1");
+    static_assert((sizeof(base_atomic_type) - 1 & sizeof(base_atomic_type)) == 0,
+            "The local atomicCAS implementation won't work if `base_atomic_type` type size is not a power of 2");
+
+    
+    auto addr = (base_atomic_type)address;
+    base_atomic_type pos = addr & (sizeof(base_atomic_type) - 1);  // byte position within the int
+    auto *int_addr = (base_atomic_type *)(addr - pos);  // int-aligned address
+    base_atomic_type old = *int_addr, assumed, ival;
 
     bool current_value;
 
@@ -186,20 +194,18 @@ __device__ bool atomicCAS(bool *const address, const bool compare, const bool va
 // and now why, PLEASE, contact me and tell me
 #if !defined(__CUDA_ARCH__) || __CUDA_ARCH__ >= 600
 #else
-// The following code is from https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html (@kolayne can explain)
+// The following code is from https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#atomic-functions and
+// slightly changed (@kolayne can explain)
 __device__ double atomicAdd(double* address, double val)
 {
-    unsigned long long int* address_as_ull =
-            (unsigned long long int*)address;
+    auto* address_as_ull = (unsigned long long int*)address;
     unsigned long long int old = *address_as_ull, assumed;
 
     do {
         assumed = old;
-        old = atomicCAS(address_as_ull, assumed,
-                        __double_as_longlong(val +
-                                             __longlong_as_double(assumed)));
+        old = atomicCAS(address_as_ull, assumed, __double_as_longlong(val + __longlong_as_double(assumed)));
 
-        // Note: uses integer comparison to avoid hang in case of NaN (since NaN != NaN)
+    // Note: uses integer comparison to avoid hang in case of NaN (since NaN != NaN)
     } while (assumed != old);
 
     return __longlong_as_double(old);

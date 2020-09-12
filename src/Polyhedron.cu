@@ -27,8 +27,6 @@ __host__ __device__ Polyhedron &Polyhedron::operator=(Polyhedron &&other) noexce
 {
     if(this != &other)
     {
-        faces = nullptr;
-
         swap(faces, other.faces);
         swap(n_of_faces, other.n_of_faces);
     }
@@ -38,6 +36,8 @@ __host__ __device__ Polyhedron &Polyhedron::operator=(Polyhedron &&other) noexce
 
 __host__ __device__ Polyhedron::Polyhedron(Polyhedron &&other) noexcept
 {
+    faces = nullptr;
+
     *this = std::move(other);
 }
 
