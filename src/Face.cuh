@@ -67,7 +67,7 @@ public:
     __host__ __device__ Face &operator=(Face &&other) noexcept;
 
     /**
-     * Face` object move constructor
+     * `Face` object move constructor
      *
      * @warning If the being moved `Face`'s field `node` is not `nullptr`, this might mean there is a node pointing
      *      to the `Face` being moved, so moving it will <b>invalidate</b> the pointers set at `*node`

@@ -106,7 +106,7 @@ public:
      * @see Particle::capture
      */
     // This function technically can be made `__host__ __device__`, but it is not made, to meet the declaration
-    // of `Polyhedron::capture`
+    // of `Particle::capture`
     __device__ void release();
 
 

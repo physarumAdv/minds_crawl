@@ -1,10 +1,13 @@
+#include <utility>
+
 #include "MapNode.cuh"
+#include "fucking_shit.cuh"
 #include "Particle.cuh"
 #include "Polyhedron.cuh"
 #include "fucking_shit.cuh"
 
 
-__host__ __device__ MapNode::MapNode(Polyhedron *const polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
+__host__ __device__ MapNode::MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
         trail(0), temp_trail(0), left(nullptr), top(nullptr), right(nullptr), bottom(nullptr), polyhedron(polyhedron),
         polyhedron_face(polyhedron_face), coordinates(coordinates), contains_food(false), particle(nullptr)
 {}
@@ -13,8 +16,6 @@ __host__ __device__ MapNode &MapNode::operator=(MapNode &&other) noexcept
 {
     if(this != &other)
     {
-        particle = nullptr;
-
         swap(polyhedron, other.polyhedron);
         swap(trail, other.trail);
         swap(temp_trail, other.temp_trail);
@@ -33,6 +34,8 @@ __host__ __device__ MapNode &MapNode::operator=(MapNode &&other) noexcept
 
 __host__ __device__ MapNode::MapNode(MapNode &&other) noexcept
 {
+    particle = nullptr;
+
     *this = std::move(other);
 }
 
@@ -55,7 +58,7 @@ __host__ __device__ MapNode::~MapNode()
  *
  * @note This operation is thread-safe when compiled as CUDA code, thread-unsafe when compiled as C++
  */
-__device__ inline bool set_neighbor(MapNode **target, MapNode *value)
+__device__ inline bool set_mapnode_neighbor(MapNode **target, MapNode *value)
 {
     static_assert(sizeof(target) <= sizeof(unsigned long long *), "I think, I can't safely cast `MapNode **` to "
                                                                   "`unsigned long long *`");
@@ -70,22 +73,22 @@ __device__ inline bool set_neighbor(MapNode **target, MapNode *value)
 
 __device__ bool MapNode::set_left(MapNode *value)
 {
-    return set_neighbor(&left, value);
+    return set_mapnode_neighbor(&left, value);
 }
 
 __device__ bool MapNode::set_top(MapNode *value)
 {
-    return set_neighbor(&top, value);
+    return set_mapnode_neighbor(&top, value);
 }
 
 __device__ bool MapNode::set_right(MapNode *value)
 {
-    return set_neighbor(&right, value);
+    return set_mapnode_neighbor(&right, value);
 }
 
 __device__ bool MapNode::set_bottom(MapNode *value)
 {
-    return set_neighbor(&bottom, value);
+    return set_mapnode_neighbor(&bottom, value);
 }
 
 

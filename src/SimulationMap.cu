@@ -1,4 +1,5 @@
 #include <cmath>
+#include <utility>
 
 #include "SimulationMap.cuh"
 #include "Polyhedron.cuh"
@@ -33,14 +34,23 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
     // Direction vector from first node to its top neighbor sets randomly
     SpacePoint direction_vector = relative_point_rotation(start_node_coordinates, start_face->get_vertices()[0],
                                                           start_face->get_normal(), M_PI * 2 * rand0to1());
-    /*
+    /**
      * Array of direction vectors from nodes with the same index
      * as in `SimulationMap::nodes` array to their top neighbors
      */
     auto *nodes_directions = (SpacePoint *)malloc(sizeof(SpacePoint));
     nodes_directions[0] = direction_vector * mapnode_dist / get_distance(direction_vector, origin);
 
-    /*
+    /**
+     * Boolean array where i-th element tells whether the i-th face have nodes or not
+     * `does_face_have_nodes[i]` value corresponds to `polyhedron->faces[i]` face
+     */
+    auto *does_face_have_nodes = (bool *)malloc(sizeof(bool) * polyhedron->get_n_of_faces());
+    does_face_have_nodes[0] = true;
+    for(int i = 1; i < polyhedron->get_n_of_faces(); ++i)
+        does_face_have_nodes[i] = false;
+
+    /**
      * Array of pointers to the `MapNode` member functions
      * Each of them returns the particular neighbor node
      * First array element corresponds to a top neighbor,
@@ -53,7 +63,7 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
             &MapNode::get_right
     };
 
-    /*
+    /**
      * Array of pointers to the `MapNode` member functions
      * Each of them sets the link from current node to the particular neighbor node
      * First array element corresponds to a top neighbor,
@@ -75,14 +85,19 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
         {
             if((current_node.*get_node_neighbors[i])() == nullptr)
             {
-                int neighbor_node_id = get_neighbor_node_id(current_node_id, &nodes_directions,
-                                                            angle, create_new_nodes);
+                int neighbor_node_id = get_neighbor_node_id(current_node_id, &nodes_directions, angle,
+                                                            does_face_have_nodes, create_new_nodes);
                 if(neighbor_node_id != -1)
                 {
                     (current_node.*set_node_neighbors[i])(&nodes[neighbor_node_id]);
                 }
             }
             angle += M_PI_2;
+        }
+
+        if(!create_new_nodes and current_node.get_face()->get_node() == nullptr)
+        {
+            current_node.get_face()->set_node(&current_node, polyhedron);
         }
 
         if(current_node_id == n_of_nodes - 1)
@@ -99,14 +114,15 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
             create_new_nodes = false;
         }
     }
+
+    free(nodes_directions);
+    free(does_face_have_nodes);
 }
 
 __host__ __device__ SimulationMap &SimulationMap::operator=(SimulationMap &&other) noexcept
 {
     if(this != &other)
     {
-        nodes = nullptr;
-
         swap(n_of_nodes, other.n_of_nodes);
         swap(nodes, other.nodes);
         swap(polyhedron, other.polyhedron);
@@ -117,12 +133,23 @@ __host__ __device__ SimulationMap &SimulationMap::operator=(SimulationMap &&othe
 
 __host__ __device__ SimulationMap::SimulationMap(SimulationMap &&other) noexcept
 {
+    nodes = nullptr;
+
     *this = std::move(other);
 }
 
 __device__ SimulationMap::~SimulationMap()
 {
     free(nodes);
+}
+
+
+__device__ int SimulationMap::find_face_index(Face *face) const
+{
+    int index = face - &polyhedron->get_faces()[0];
+    if(0 <= index && index < polyhedron->get_n_of_faces())
+        return index;
+    return -1;
 }
 
 
@@ -188,7 +215,7 @@ __device__ void SimulationMap::set_direction_to_top_neighbor(int current_node_id
 
 
 __device__ int SimulationMap::get_neighbor_node_id(int current_node_id, SpacePoint **nodes_directions, double angle,
-                                                   bool create_new_nodes)
+                                                   bool *does_face_have_nodes, bool create_new_nodes)
 {
     Face *current_face = nodes[current_node_id].get_face();
 
@@ -204,14 +231,17 @@ __device__ int SimulationMap::get_neighbor_node_id(int current_node_id, SpacePoi
         // Neighbor node has already existed
         return nearest_node_id;
     }
-    else if(current_face == next_face || next_face->get_node() == nullptr)
+    else if(current_face == next_face || !does_face_have_nodes[find_face_index(next_face)])
     {
         // Neighbor node does not exist, but it can be created
         nodes = device_realloc(nodes, n_of_nodes, n_of_nodes + 1);
-        *nodes_directions = device_realloc(*nodes_directions, n_of_nodes, n_of_nodes + 1);
         nodes[n_of_nodes] = MapNode(polyhedron, next_face, neighbor_coordinates);
-        next_face->set_node(&nodes[n_of_nodes], polyhedron);
+
+        *nodes_directions = device_realloc(*nodes_directions, n_of_nodes, n_of_nodes + 1);
         set_direction_to_top_neighbor(current_node_id, n_of_nodes, nodes_directions, angle);
+
+        does_face_have_nodes[find_face_index(next_face)] = true;
+
         n_of_nodes++;
         return n_of_nodes - 1;
     }

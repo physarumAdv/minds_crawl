@@ -2,6 +2,11 @@
 #define MIND_S_CRAWL_MAIN_LOGIC_CUH
 
 
+#ifdef COMPILE_FOR_CPU
+#include <initializer_list>
+#include <utility>
+#endif //COMPILE_FOR_CPU
+
 #include <cstdio>
 
 #include "SimulationMap.cuh"
