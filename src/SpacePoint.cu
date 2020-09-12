@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "SpacePoint.cuh"
 
 

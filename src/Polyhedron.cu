@@ -1,3 +1,7 @@
+#include <cmath>
+#include <cstdlib>
+#include <utility>
+
 #include "Polyhedron.cuh"
 #include "common.cuh"
 
