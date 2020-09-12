@@ -157,8 +157,6 @@ __host__ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhe
 // `address` CANNOT be pointer to const, because we are trying to edit memory by it's address
 __device__ bool atomicCAS(bool *const address, const bool compare, const bool val)
 {
-    typedef unsigned long long base_atomic_type;
-
     static_assert(sizeof(base_atomic_type) > 1, "The local atomicCAS implementation won't work if `base_atomic_type"
                                                    "type size <= 1");
     static_assert((sizeof(base_atomic_type) - 1 & sizeof(base_atomic_type)) == 0,
