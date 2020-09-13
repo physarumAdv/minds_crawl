@@ -48,14 +48,19 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-    # If this is not a pull request action, but the commit is from a pull request, then cancel current action
-    - name: Cancelling to avoid duplications
-      uses: andymckay/cancel-action@0.2
+    # If this is not a pull request action, but the commit is from a pull request, then set the cancelling output
+    - name: Cancelling the workflow to avoid duplicated runs
       if: success() && github.event_name == 'push' && steps.findPr.outputs.number
+      id: steps_skiper
+      run: |
+        echo THE WORKFLOW RUN WILL BE SKIPPED, because there is another workflow with the same context
+        echo "::set-output name=SKIP_STEPS::true"
 
     - uses: actions/checkout@v2
+      if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
 
-    - name: Install/Select gcc and g++ 
+    - name: Install/Select gcc and g++
+      if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
       run: |
         sudo apt-get install -y gcc-${{ matrix.gcc }} g++-${{ matrix.gcc }}
         echo "::set-env name=CC::/usr/bin/gcc-${{ matrix.gcc }}"
@@ -63,6 +68,7 @@ jobs:
         echo "::set-env name=CUDAHOSTCXX::/usr/bin/g++-${{ matrix.gcc }}"
 
     - name: Install CUDA
+      if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
       run: |
         ./scripts/actions/install_cuda_${{ matrix.cuda }}.sh
         sudo ln -s /usr/local/cuda* /usr/local/cuda
@@ -71,6 +77,7 @@ jobs:
 
 
     - name: Build project
+      if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
       run: |
         mkdir -p build && cd build
 
