@@ -42,6 +42,17 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+    - uses: jwalton/gh-find-current-pr@v1
+      if: github.event_name == 'push'
+      id: findPr
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    # If this is not a pull request action, but the commit is from a pull request, then cancel current action
+    - name: Cancelling to avoid duplications
+      uses: andymckay/cancel-action@0.2
+      if: success() && github.event_name == 'push' && steps.findPr.outputs.number
+
     - uses: actions/checkout@v2
 
     - name: Install/Select gcc and g++ 
