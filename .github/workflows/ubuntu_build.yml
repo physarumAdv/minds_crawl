@@ -3,13 +3,15 @@ name: Ubuntu build
 on:
   push:
     paths:
-      - "**"
-      - "!.github"
+      - "src/**"
+      - "CMakeLists.txt"
+      - "scripts/actions/**"
       - ".github/workflows/ubuntu_build.yml"
   pull_request:
     paths:
-      - "**"
-      - "!.github"
+      - "src/**"
+      - "CMakeLists.txt"
+      - "scripts/actions/**"
       - ".github/workflows/ubuntu_build.yml"
 
 defaults:
