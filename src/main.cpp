@@ -3,17 +3,6 @@
 #include "main_logic.cuh"
 
 
-void wrapped_init_simulation_objects(SimulationMap *simulation_map, Polyhedron *polyhedron, ...)
-{
-    init_simulation_objects(simulation_map, polyhedron, ...);
-}
-
-void wrapped_init_environment(...)
-{
-    init_environment(...);
-}
-
-
 void wrapped_run_iteration_project_nutrients(SimulationMap *const simulation_map, const int *const iteration_number)
 {
     for(int i = 0; i < simulation_map->get_n_of_nodes(); ++i)
@@ -44,10 +33,12 @@ int main()
     auto *simulation_map = (SimulationMap *)malloc(sizeof(SimulationMap));
     auto *polyhedron = (Polyhedron *)malloc(sizeof(Polyhedron));
 
-    wrapped_init_simulation_objects(simulation_map, polyhedron);
-    wrapped_init_environment(...);
+    *polyhedron = generate_cube();
 
-    int iteration_number = 0;
+    init_simulation_objects(simulation_map, polyhedron);
+    init_environment(simulation_map);
+
+    int iteration_number = 0; // Incremented inside of `run_iteration_cleanup`
 
     RunIterationFunc iteration_runners[] = {(RunIterationFunc)wrapped_run_iteration_project_nutrients,
                                             (RunIterationFunc)wrapped_run_iteration_diffuse_trail,
@@ -59,8 +50,12 @@ int main()
         for(RunIterationFunc f : iteration_runners)
         {
             f(simulation_map, &iteration_number);
-
-            // <redrawing here>
         }
+
+        // <redrawing here>
     }
+
+    destruct_simulation_objects(simulation_map);
+    free(polyhedron);
+    free(simulation_map);
 }

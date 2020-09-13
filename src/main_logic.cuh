@@ -2,16 +2,24 @@
 #define MIND_S_CRAWL_MAIN_LOGIC_CUH
 
 
+#ifdef COMPILE_FOR_CPU
 #include <initializer_list>
+#include <utility>
+#endif //COMPILE_FOR_CPU
+
+#include <cstdio>
 
 #include "SimulationMap.cuh"
 #include "Polyhedron.cuh"
 #include "MapNode.cuh"
 #include "Particle.cuh"
 #include "fucking_shit.cuh"
+#include "random_generator.cuh"
 #include "jones_constants.hpp"
+#include "common.cuh"
 
 namespace jc = jones_constants;
+
 
 #define RUN_ITERATION_SET_SELF(self, i) { \
             if(i >= simulation_map->get_n_of_nodes()) \
@@ -22,25 +30,71 @@ namespace jc = jones_constants;
 typedef void (*RunIterationFunc)(SimulationMap *, int *);
 
 
-// TODO: Add the opposite (destructing) function
 /**
- * Initializes the simulation's objects (simulation map, polyhedron, probably something else)
+ * Initializes the simulation's objects (at the moment only a `SimulationMap`)
  *
- * This function isn't implemented yet, neither it's ready to be implemented, so the description stays empty for now
+ * This function is used to initialize simulation objects on device. It at the moment only initializes `SimulationMap`,
+ * but can be extended to initialize more objects
+ *
+ * @param simulation_map Pointer to `SimulationMap`. A constructed simulation map will be moved there
+ * @param polyhedron Pointer to a polyhedron to be used to initialize `SimulationMap` (constructor's parameter)
+ *
+ * @warning While `polyhedron` parameter must point to a real `Polyhedron` object, `simulation_map` might contain an
+ *      existing map already, but it will be destructed in this case. Note that if the pointer doesn't contain an
+ *      object the destructor will be called anyway, but it should be safe (???)
+ *
+ * @see destruct_simulation_objects
  */
-__device__ inline void init_simulation_objects(SimulationMap *const simulation_map, Polyhedron *const polyhedron, ...)
+__global__ void init_simulation_objects(SimulationMap *const simulation_map, Polyhedron *const polyhedron)
 {
-    // <initialization here>
+#ifndef COMPILE_FOR_CPU
+    STOP_ALL_THREADS_EXCEPT_FIRST;
+#endif
+
+    *simulation_map = SimulationMap(polyhedron);
 }
 
 /**
- * Initializes food on the `SimulationMap`
+ * Initializes environment (food, first particles) of the `SimulationMap`
  *
- * This function isn't implemented yet, neither it's ready to be implemented, so the description stays empty for now
+ * Purpose of this function is to flexibly perform additional configuration of a simulation map such as placing food
+ * and first particles on it. However, at the moment (on the most early stages of development) it performs the most
+ * basic configuration you can't control from outside of the function. Later the function is of course going to take
+ * more parameters
+ *
+ * @param simulation_map Pointer to `SimulationMap` object to be configured
  */
-__device__ inline void init_environment(...)
+__global__ void init_environment(SimulationMap *const simulation_map)
 {
-    // <initialization here>
+#ifndef COMPILE_FOR_CPU
+    STOP_ALL_THREADS_EXCEPT_FIRST;
+#endif
+
+    int random_node_index = (int)(rand0to1() * (simulation_map->get_n_of_nodes() - 1));
+    MapNode *random_node = simulation_map->nodes + random_node_index;
+    if(!create_particle(random_node))
+    {
+        printf("%s:%d - something went REALLY wrong at ", __FILE__, __LINE__);
+    }
+}
+
+/**
+ * The opposite of `init_simulation_objects`
+ *
+ * This function destructs the objects constructed in `init_simulation_objects` (at the moment only a `SimulationMap`)
+ * to let you safely free memory without breaking any invariants etc
+ *
+ * @param simulation_map Pointer to the `SimulationMap` to be destructed
+ *
+ * @see init_simulation_objects
+ */
+__global__ void destruct_simulation_objects(SimulationMap *const simulation_map)
+{
+#ifndef COMPILE_FOR_CPU
+    STOP_ALL_THREADS_EXCEPT_FIRST;
+#endif
+
+    simulation_map->~SimulationMap();
 }
 
 
@@ -199,6 +253,69 @@ __device__ inline void run_iteration_cleanup(SimulationMap *const simulation_map
 
     if(node_index == 0)
         ++*iteration_number;
+}
+
+
+/**
+ * Creates a cube and returns it
+ *
+ * Will be only used in the early stages of development, later will be replaced with a universal function building
+ * arbitrary polyhedrons
+ * 
+ * @param edge_length Length of the cube's edge
+ *
+ * @returns Cube represented wth a `Polyhedron` object
+ */
+__host__ inline Polyhedron generate_cube(double edge_length = 200)
+{
+    SpacePoint vertices1[] = {
+            {0,           0, 0},
+            {0,           0, edge_length},
+            {edge_length, 0, edge_length},
+            {edge_length, 0, 0}
+    };
+    SpacePoint vertices2[] = {
+            {0, 0,           0},
+            {0, edge_length, 0},
+            {0, edge_length, edge_length},
+            {0, 0,           edge_length}
+    };
+    SpacePoint vertices3[] = {
+            {0,           0,           0},
+            {edge_length, 0,           0},
+            {edge_length, edge_length, 0},
+            {0,           edge_length, 0}
+    };
+    SpacePoint vertices4[] = {
+            {edge_length, 0,           edge_length},
+            {edge_length, edge_length, edge_length},
+            {edge_length, edge_length, 0},
+            {edge_length, 0,           0}
+    };
+    SpacePoint vertices5[] = {
+            {0,           0,           edge_length},
+            {0,           edge_length, edge_length},
+            {edge_length, edge_length, edge_length},
+            {edge_length, 0,           edge_length}
+    };
+    SpacePoint vertices6[] = {
+            {edge_length, edge_length, 0},
+            {edge_length, edge_length, edge_length},
+            {0,           edge_length, edge_length},
+            {0,           edge_length, 0}
+    };
+
+    Face faces[] = {
+            Face(vertices1, 4),
+            Face(vertices2, 4),
+            Face(vertices3, 4),
+            Face(vertices4, 4),
+            Face(vertices5, 4),
+            Face(vertices6, 4)
+    };
+
+    Polyhedron cube(std::move(faces), 6);
+    return cube;
 }
 
 

@@ -176,7 +176,6 @@ typedef unsigned long long base_atomic_type;
 
 #ifdef COMPILE_FOR_CPU
 
-
 /**
  * Thread-unsafe version of atomicCAS (for CPU)
  *
@@ -188,15 +187,7 @@ typedef unsigned long long base_atomic_type;
  *
  * @returns Value of `*address` before update (doesn't matter was it really updated)
  */
-base_atomic_type atomicCAS(base_atomic_type *address, const base_atomic_type compare, const base_atomic_type val)
-{
-    base_atomic_type ans = *address;
-
-    if(*address == compare)
-        *address = val;
-
-    return ans;
-}
+base_atomic_type atomicCAS(base_atomic_type *address, const base_atomic_type compare, const base_atomic_type val);
 
 /**
  * Thread-unsafe version of atomicAdd (for CPU)
@@ -206,29 +197,14 @@ base_atomic_type atomicCAS(base_atomic_type *address, const base_atomic_type com
  * @param address Pointer to the variable being updated
  * @param value Value being added to the variable being updated
  */
-base_atomic_type atomicAdd(base_atomic_type *address, base_atomic_type value)
-{
-    base_atomic_type ans = *address;
-
-    *address += value;
-
-    return ans;
-}
+base_atomic_type atomicAdd(base_atomic_type *address, const base_atomic_type value);
 
 /**
  * Thread-unsafe version of atomicAdd (for CPU)
  *
  * @overload atomicAdd
  */
-double atomicAdd(double *address, double value)
-{
-    double ans = *address;
-
-    *address += value;
-
-    return ans;
-}
-
+double atomicAdd(double *address, const double value);
 
 #endif //COMPILE_FOR_CPU
 
