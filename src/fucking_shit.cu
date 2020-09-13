@@ -1,6 +1,9 @@
+#ifdef COMPILE_FOR_CPU
 #include <cmath>
-#include <cstdio>
+#endif //COMPILE_FOR_CPU
+
 #include <initializer_list>
+#include <cstdio>
 
 #include "fucking_shit.cuh"
 #include "random_generator.cuh"
@@ -153,9 +156,36 @@ __host__ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhe
     return find_nearest_mapnode_greedy(dest, dest_face->get_node());
 }
 
+#ifdef COMPILE_FOR_CPU
 
-// The following code is from https://stackoverflow.com/a/62094892/11248508 (@kolayne can explain)
-// `address` CANNOT be pointer to const, because we are trying to edit memory by it's address
+base_atomic_type atomicCAS(base_atomic_type *address, const base_atomic_type compare, const base_atomic_type val)
+{
+    base_atomic_type ans = *address;
+
+    if(*address == compare)
+        *address = val;
+
+    return ans;
+}
+
+base_atomic_type atomicAdd(base_atomic_type *address, const base_atomic_type value)
+{
+    base_atomic_type ans = *address;
+    *address += value;
+    return ans;
+}
+
+double atomicAdd(double *address, const double value)
+{
+    double ans = *address;
+    *address += value;
+    return ans;
+}
+
+#endif //COMPILE_FOR_CPU
+
+// The following code is compied from https://stackoverflow.com/a/62094892/11248508 and modified (@kolayne can explain)
+// `address` CANNOT be pointer to const, because we are trying to edit memory by it's source
 __device__ bool atomicCAS(bool *const address, const bool compare, const bool val)
 {
     static_assert(sizeof(base_atomic_type) > 1, "The local atomicCAS implementation won't work if `base_atomic_type"
@@ -163,28 +193,31 @@ __device__ bool atomicCAS(bool *const address, const bool compare, const bool va
     static_assert((sizeof(base_atomic_type) - 1 & sizeof(base_atomic_type)) == 0,
             "The local atomicCAS implementation won't work if `base_atomic_type` type size is not a power of 2");
 
-    
-    auto addr = (base_atomic_type)address;
-    base_atomic_type pos = addr & (sizeof(base_atomic_type) - 1);  // byte position within the int
-    auto *int_addr = (base_atomic_type *)(addr - pos);  // int-aligned address
-    base_atomic_type old = *int_addr, assumed, ival;
+
+    auto address_num = (unsigned long long)address;
+    unsigned pos = address_num & (sizeof(base_atomic_type) - 1);  // byte position within the `base_atomic_type`
+  
+    auto *address_of_extended = (base_atomic_type *)(address - pos);  // `base_atomic_type`-aligned address
+    base_atomic_type old_extended = *address_of_extended, compare_extended, current_value_extended;
 
     bool current_value;
 
     do
     {
-        current_value = (bool)(old & ((0xFFU) << (8 * pos)));
+        current_value = (bool)(old_extended & ((0xFFU) << (8 * pos)));
 
         if(current_value != compare) // If we expected that bool to be different, then
             break; // stop trying to update it and just return it's current value
 
-        assumed = old;
+        compare_extended = old_extended;
+
         if(val)
-            ival = old | (1U << (8 * pos));
+            current_value_extended = old_extended | (1U << (8 * pos));
         else
-            ival = old & (~((0xFFU) << (8 * pos)));
-        old = atomicCAS(int_addr, assumed, ival);
-    } while(assumed != old);
+            current_value_extended = old_extended & (~((0xFFU) << (8 * pos)));
+
+        old_extended = atomicCAS(address_of_extended, compare_extended, current_value_extended);
+    } while(compare_extended != old_extended);
 
     return current_value;
 }
@@ -209,4 +242,4 @@ __device__ double atomicAdd(double* address, double val)
 
     return __longlong_as_double(old);
 }
-#endif
+#endif // !defined(__CUDA_ARCH__) || __CUDA_ARCH__ >= 600

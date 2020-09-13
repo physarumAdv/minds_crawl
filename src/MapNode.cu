@@ -4,6 +4,7 @@
 #include "fucking_shit.cuh"
 #include "Particle.cuh"
 #include "Polyhedron.cuh"
+#include "fucking_shit.cuh"
 
 
 __host__ __device__ MapNode::MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
@@ -54,6 +55,8 @@ __host__ __device__ MapNode::~MapNode()
  * @param value Neighbor to be set
  *
  * @returns `true`, if the neighbor is updated, otherwise `false`
+ *
+ * @note This operation is thread-safe when compiled as CUDA code, thread-unsafe when compiled as C++
  */
 __device__ inline bool set_mapnode_neighbor(MapNode **target, MapNode *value)
 {
@@ -137,7 +140,7 @@ __host__ __device__ bool MapNode::does_contain_particle() const
 }
 
 
-__device__ bool MapNode::attach_particle(Particle *p)
+[[nodiscard]] __device__ bool MapNode::attach_particle(Particle *p)
 {
     static_assert(sizeof(&particle) <= sizeof(unsigned long long *), "I think, I can't safely cast `Particle **` to "
                                                                      "`unsigned long long *`");

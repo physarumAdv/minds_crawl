@@ -1,26 +1,11 @@
-#include <cstdio>
 #include <ctime>
+#include <iostream>
 
 #include "main_logic.cuh"
 #include "random_generator.cuh"
 
 
 const int cuda_block_size = 256;
-
-
-__global__ void wrapped_init_simulation_objects(SimulationMap *simulation_map, Polyhedron *polyhedron, ...)
-{
-    STOP_ALL_THREADS_EXCEPT_FIRST;
-
-    init_simulation_objects(simulation_map, polyhedron, ...);
-}
-
-__global__ void wrapped_init_environment(...)
-{
-    STOP_ALL_THREADS_EXCEPT_FIRST;
-
-    init_environment(...);
-}
 
 
 __global__ void wrapped_run_iteration_project_nutrients(SimulationMap *const simulation_map,
@@ -65,10 +50,10 @@ __global__ void wrapped_run_iteration_cleanup(SimulationMap *const simulation_ma
  * @param destination Device memory pointer to copy value to
  * @param value Value to be copied
  *
- * @see get_cuda_variable_value
+ * @see get_device_variable_value
  */
 template<class T>
-__host__ inline void set_cuda_variable_value(T *destination, T value)
+__host__ inline void set_device_variable_value(T *destination, T value)
 {
     cudaMemcpy(destination, &value, sizeof(T), cudaMemcpyHostToDevice);
 }
@@ -83,10 +68,10 @@ __host__ inline void set_cuda_variable_value(T *destination, T value)
  *
  * @returns Value from device memory
  *
- * @see set_cuda_variable_value
+ * @see set_device_variable_value
  */
 template<class T>
-__host__ inline T get_cuda_variable_value(T *source)
+__host__ inline T get_device_variable_value(T *source)
 {
     T ans;
     cudaMemcpy(&ans, source, sizeof(T), cudaMemcpyDeviceToHost);
@@ -103,14 +88,16 @@ __host__ int main()
     SimulationMap *simulation_map;
     cudaMallocManaged((void **)&simulation_map, sizeof(SimulationMap));
     Polyhedron *polyhedron;
-    cudaMalloc((void **)&polyhedron, sizeof(Polyhedron));
+    cudaMallocManaged((void **)&polyhedron, sizeof(Polyhedron));
 
-    wrapped_init_simulation_objects<<<1, 1>>>(simulation_map, polyhedron, ...);
-    wrapped_init_environment<<<1, 1>>>(...);
+    *polyhedron = generate_cube();
 
-    int *iteration_number;
+    init_simulation_objects<<<1, 1>>>(simulation_map, polyhedron);
+    init_environment<<<1, 1>>>(simulation_map);
+
+    int *iteration_number; // Incremented inside of `run_iteration_cleanup`
     cudaMalloc((void **)&iteration_number, sizeof(int));
-    set_cuda_variable_value(iteration_number, 0);
+    set_device_variable_value(iteration_number, 0);
 
     // Obtaining `n_of_nodes`
     int n_of_nodes;
@@ -118,7 +105,7 @@ __host__ int main()
         int *_temporary;
         cudaMalloc((void **)&_temporary, sizeof(int));
         get_n_of_nodes<<<1, 1>>>(simulation_map, _temporary);
-        n_of_nodes = get_cuda_variable_value(_temporary);
+        n_of_nodes = get_device_variable_value(_temporary);
         cudaFree(_temporary);
     }
 
@@ -140,17 +127,36 @@ __host__ int main()
 
     const int cuda_grid_size = (n_of_nodes + cuda_block_size - 1) / cuda_block_size;
 
-    while(true)
+    if(cudaPeekAtLastError() == cudaSuccess)
     {
-        // (implicit synchronization)
-        cudaMemcpy((void *)nodes, (void *)nodes_d, sizeof(MapNode) * n_of_nodes, cudaMemcpyDeviceToHost);
-
-        for(RunIterationFunc f : iteration_runners)
+        while(true)
         {
-            f<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map,
-                                                                         iteration_number);
-        }
+            // (implicit synchronization)
+            cudaMemcpy((void *)nodes, (void *)nodes_d, sizeof(MapNode) * n_of_nodes, cudaMemcpyDeviceToHost);
 
-        // <redrawing here>
+            if(cudaPeekAtLastError()) // After synchronization caused by cudaMemcpy
+            {
+                break;
+            }
+
+            for(RunIterationFunc f : iteration_runners)
+            {
+                f<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map, iteration_number);
+            }
+
+            // <redrawing here>
+        }
     }
+
+    cudaError_t error = cudaPeekAtLastError();
+    if(error != cudaSuccess)
+    {
+        std::cout << cudaGetErrorName(error) << ": " << cudaGetErrorString(error) << std::endl;
+    }
+
+    cudaFree(nodes);
+    cudaFree(iteration_number);
+    destruct_simulation_objects<<<1, 1>>>(simulation_map);
+    cudaFree(polyhedron);
+    cudaFree(simulation_map);
 }
