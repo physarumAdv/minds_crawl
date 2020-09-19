@@ -22,6 +22,13 @@ cmake .. -DCOMPILE_FOR_CPU=ON
 cmake --build . -- -j "$(nproc)"
 ```
 
+### Executing
+To run the application, you have to:
+
+1. Start a visualization app (we recommend [this one](https://github.com/physarumAdv/Physarum_webGL))
+
+2. Create a directory `local` in the process's **working directory** with a file `visualization_endpoint.txt` inside it, containing a url which accepts the simulated data (an example is in [local/visualization_endpoint_example.txt](local/visualization_endpoint_example.txt))
+
 ## Authors
 
 > [Nikolay Nechaev](http://t.me/kolayne), [nikolay_nechaev@mail.ru](mailto:nikolay_nechaev@mail.ru)
