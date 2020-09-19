@@ -2,7 +2,6 @@
 #include <cmath>
 #endif //COMPILE_FOR_CPU
 
-#include <initializer_list>
 #include <cstdio>
 
 #include "fucking_shit.cuh"

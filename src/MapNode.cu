@@ -1,10 +1,11 @@
 #include <utility>
 
 #include "MapNode.cuh"
-#include "fucking_shit.cuh"
 #include "Particle.cuh"
 #include "Polyhedron.cuh"
+#ifdef COMPILE_FOR_CPU
 #include "fucking_shit.cuh"
+#endif //COMPILE_FOR_CPU
 
 
 __host__ __device__ MapNode::MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
