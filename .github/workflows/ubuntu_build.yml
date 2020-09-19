@@ -1,0 +1,94 @@
+name: Ubuntu build
+
+on:
+  push:
+    paths:
+      - "src/**"
+      - "CMakeLists.txt"
+      - "scripts/actions/**"
+      - ".github/workflows/ubuntu_build.yml"
+  pull_request:
+    paths:
+      - "src/**"
+      - "CMakeLists.txt"
+      - "scripts/actions/**"
+      - ".github/workflows/ubuntu_build.yml"
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, ubuntu-18.04, ubuntu-16.04]
+        cuda: ["11.0", "10.2", "10.1", "10.0"]
+        gcc: [8, 7, 6]
+        exclude:
+          # Cuda 10.0 doesn't support Ubuntu 20.04
+          - os: ubuntu-20.04
+            cuda: "10.0"
+
+          # Cuda 10.0 only supports gcc 7 and older
+          - cuda: "10.0"
+            gcc: 8
+
+          # gcc 6 is deprecated for Ubuntu 20.04
+          - os: ubuntu-20.04
+            gcc: 6
+    
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: jwalton/gh-find-current-pr@v1
+      if: github.event_name == 'push'
+      id: findPr
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    # If this is not a pull request action, but the commit is from a pull request, then set the cancelling output
+    - name: Cancelling the workflow to avoid duplicated runs
+      if: success() && github.event_name == 'push' && steps.findPr.outputs.number
+      id: steps_skiper
+      run: |
+        echo THE WORKFLOW RUN WILL BE SKIPPED, because there is another workflow with the same context
+        echo "::set-output name=SKIP_STEPS::true"
+
+    - uses: actions/checkout@v2
+      if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
+
+    - name: Install/Select gcc and g++
+      if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
+      run: |
+        sudo apt-get install -y gcc-${{ matrix.gcc }} g++-${{ matrix.gcc }}
+        echo "::set-env name=CC::/usr/bin/gcc-${{ matrix.gcc }}"
+        echo "::set-env name=CXX::/usr/bin/g++-${{ matrix.gcc }}"
+        echo "::set-env name=CUDAHOSTCXX::/usr/bin/g++-${{ matrix.gcc }}"
+
+    - name: Install CUDA
+      if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
+      run: |
+        ./scripts/actions/install_cuda_${{ matrix.cuda }}.sh
+        sudo ln -s /usr/local/cuda* /usr/local/cuda
+        /usr/local/cuda/bin/nvcc -V
+        echo "::add-path::/usr/local/cuda/bin/"
+
+
+    - name: Build project
+      if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
+      run: |
+        mkdir -p build && cd build
+
+        # Using the `for`s instead of matrix above to save time spent on preparing environment (i. e. installing CUDA)
+        for build_type in Release Debug; do
+            for compile_for_cpu_mode in OFF ON; do
+                echo BUILDING AS $build_type WITH COMPILE_FOR_CPU=$compile_for_cpu_mode
+
+                cmake .. -DCMAKE_BUILD_TYPE=$build_type -DCOMPILE_FOR_CPU=$compile_for_cpu_mode
+                cmake --build . --target all --verbose -j `nproc`
+
+                make clean
+            done
+        done
