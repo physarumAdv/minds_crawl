@@ -42,15 +42,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: jwalton/gh-find-current-pr@v1
-      if: github.event_name == 'push'
-      id: findPr
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
 
-    # If this is not a pull request action, but the commit is from a pull request, then set the cancelling output
+    # If this is a pull request action NOT from a fork, then cancel run PR checks, run push checks only
+    # (this is done to avoid double checks on PRs from not forks)
     - name: Cancelling the workflow to avoid duplicated runs
-      if: success() && github.event_name == 'push' && steps.findPr.outputs.number
+      if: success() && github.event_name == 'pull_request' && github.repository != 'physarumAdv/minds_crawl'
       id: steps_skiper
       run: |
         echo THE WORKFLOW RUN WILL BE SKIPPED, because there is another workflow with the same context
