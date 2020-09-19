@@ -80,7 +80,7 @@ private:
      *          <b>only</b> if `face` is a pointer to an element of this array,
      *          not if `face` is a pointer to a copy of array element
      */
-    __device__ int find_face_index(Face *face) const;
+    __device__ long find_face_index(Face *face) const;
 
 
     /**

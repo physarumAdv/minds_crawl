@@ -144,9 +144,9 @@ __device__ SimulationMap::~SimulationMap()
 }
 
 
-__device__ int SimulationMap::find_face_index(Face *face) const
+__device__ long SimulationMap::find_face_index(Face *face) const
 {
-    int index = face - &polyhedron->get_faces()[0];
+    long index = face - &polyhedron->get_faces()[0];
     if(0 <= index && index < polyhedron->get_n_of_faces())
         return index;
     return -1;
