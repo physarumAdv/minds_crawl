@@ -4,12 +4,14 @@ on:
   push:
     paths:
       - "src/**"
+      - "lib/**"
       - "CMakeLists.txt"
       - "scripts/actions/**"
       - ".github/workflows/ubuntu_build.yml"
   pull_request:
     paths:
       - "src/**"
+      - "lib/**"
       - "CMakeLists.txt"
       - "scripts/actions/**"
       - ".github/workflows/ubuntu_build.yml"
@@ -54,6 +56,8 @@ jobs:
 
     - uses: actions/checkout@v2
       if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
+      with:
+        submodules: recursive
 
     - name: Install/Select gcc and g++
       if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'

@@ -125,6 +125,9 @@ __host__ int main()
     cudaStreamCreate(&iterations_stream);
 
 
+    std::string visualization_endpoint = get_visualization_endpoint();
+
+
     const int cuda_grid_size = (n_of_nodes + cuda_block_size - 1) / cuda_block_size;
 
     if(cudaPeekAtLastError() == cudaSuccess)
@@ -132,6 +135,7 @@ __host__ int main()
         while(true)
         {
             // (implicit synchronization)
+            // THIS COPIED ARRAY WILL HAVE ALL THE POINTERS INVALIDATED!!!
             cudaMemcpy((void *)nodes, (void *)nodes_d, sizeof(MapNode) * n_of_nodes, cudaMemcpyDeviceToHost);
 
             if(cudaPeekAtLastError()) // After synchronization caused by cudaMemcpy
@@ -144,7 +148,7 @@ __host__ int main()
                 f<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map, iteration_number);
             }
 
-            // <redrawing here>
+            send_particles_to_visualization(visualization_endpoint, nodes, n_of_nodes);
         }
     }
 
