@@ -15,7 +15,8 @@ cmake ..
 cmake --build . -- -j "$(nproc)"
 ```
 
-Note that there is also a way to produce an executable which will only use CPU for running, however it's highly unrecommended to use this mode for any purposes but debugging:
+Note that there is also a way to produce an executable which will only use CPU for running, however it's highly
+unrecommended to use this mode for any purposes but debugging:
 ```bash
 mkdir cmake-build-debug && cd cmake-build-debug
 cmake .. -DCOMPILE_FOR_CPU=ON
@@ -26,7 +27,10 @@ cmake --build . -- -j "$(nproc)"
 To run the application, you have to:
 
 1.  Start a visualization app (we recommend [this one](https://github.com/physarumAdv/Physarum_webGL))
-2.  Create a directory `config` in the process's **working directory** with a file `visualization_endpoint.txt` inside it, containing a url which accepts the simulated data (an example is in [local/visualization_endpoint_example.txt](config/visualization_endpoint_example.txt))
+
+2.  Create a directory `config` in the process's **working directory** with a file `visualization_endpoint.txt` inside
+it, containing a url which accepts the simulated data (an example is in
+[local/visualization_endpoint_example.txt](config/visualization_endpoint_example.txt))
 
 ## Authors
 
