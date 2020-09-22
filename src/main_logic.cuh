@@ -283,7 +283,7 @@ __host__ std::string vector_double_to_json_array(const std::vector<double> &v)
     return ans;
 }
 
-__host__ void send_particles_to_visualization(const std::string &url, MapNode *nodes, int n_of_nodes)
+__host__ bool send_particles_to_visualization(const std::string &url, MapNode *nodes, int n_of_nodes)
 {
     std::vector<double> x, y, z;
     x.reserve(n_of_nodes);
@@ -308,10 +308,20 @@ __host__ void send_particles_to_visualization(const std::string &url, MapNode *n
 
     http::Request request(url);
 
-    const http::Response response = request.send("POST", body, {"Content-Type: application/json"});
+    try
+    {
+        const http::Response response = request.send("POST", body, {"Content-Type: application/json"});
 
-    if(response.status < 200 || 300 <= response.status)
-        throw http::ResponseError("Response status is not OK");
+        if(response.status < 200 || 300 <= response.status)
+            throw http::ResponseError("Response status is not OK");
+    }
+    catch(const std::exception &e)
+    {
+        std::cerr << "Request failed, error: " << e.what() << std::endl;
+        return false;
+    }
+
+    return true;
 }
 
 

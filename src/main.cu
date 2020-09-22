@@ -148,14 +148,18 @@ __host__ int main()
                 f<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map, iteration_number);
             }
 
-            send_particles_to_visualization(visualization_endpoint, nodes, n_of_nodes);
+            if(!send_particles_to_visualization(visualization_endpoint, nodes, n_of_nodes))
+            {
+                std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
+                break;
+            }
         }
     }
 
     cudaError_t error = cudaPeekAtLastError();
     if(error != cudaSuccess)
     {
-        std::cout << cudaGetErrorName(error) << ": " << cudaGetErrorString(error) << std::endl;
+        std::cerr << cudaGetErrorName(error) << ": " << cudaGetErrorString(error) << std::endl;
     }
 
     cudaFree(nodes);
