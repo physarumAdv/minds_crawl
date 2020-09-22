@@ -82,6 +82,16 @@ __host__ inline T get_device_variable_value(T *source)
 
 __host__ int main()
 {
+    {
+        int count = 0;
+        cudaGetDeviceCount(&count);
+        if(count <= 0)
+        {
+            std::cerr << "No CUDA-capable GPU found. Exiting\n";
+            return cudaErrorNoDevice;
+        }
+    }
+
     // Initializing cuRAND:
     init_rand<<<1, 1>>>(time(nullptr));
 
@@ -139,7 +149,7 @@ __host__ int main()
             // THIS COPIED ARRAY WILL HAVE ALL THE POINTERS INVALIDATED!!!
             cudaMemcpy((void *)nodes, (void *)nodes_d, sizeof(MapNode) * n_of_nodes, cudaMemcpyDeviceToHost);
 
-            if(cudaPeekAtLastError()) // After synchronization caused by cudaMemcpy
+            if(cudaPeekAtLastError() != cudaSuccess) // After synchronization caused by cudaMemcpy
             {
                 break;
             }
@@ -157,15 +167,16 @@ __host__ int main()
         }
     }
 
-    cudaError_t error = cudaPeekAtLastError();
-    if(error != cudaSuccess)
-    {
-        std::cerr << cudaGetErrorName(error) << ": " << cudaGetErrorString(error) << std::endl;
-    }
-
     cudaFree(nodes);
     cudaFree(iteration_number);
     destruct_simulation_objects<<<1, 1>>>(simulation_map);
     cudaFree(polyhedron);
     cudaFree(simulation_map);
+
+    cudaError_t error = cudaPeekAtLastError();
+    if(error != cudaSuccess)
+    {
+        std::cerr << cudaGetErrorName(error) << ": " << cudaGetErrorString(error) << std::endl;
+    }
+    return error;
 }
