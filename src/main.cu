@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "main_logic.cuh"
+#include "visualization_integration.cuh"
 #include "random_generator.cuh"
 
 

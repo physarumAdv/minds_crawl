@@ -2,6 +2,7 @@
 #include <cstdlib>
 
 #include "main_logic.cuh"
+#include "visualization_integration.cuh"
 
 
 void wrapped_run_iteration_project_nutrients(SimulationMap *const simulation_map, const int *const iteration_number)
