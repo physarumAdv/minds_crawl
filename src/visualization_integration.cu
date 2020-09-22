@@ -6,7 +6,7 @@
 
 __host__ std::string get_visualization_endpoint()
 {
-    std::ifstream f("local/visualization_endpoint.txt", std::ios::in);
+    std::ifstream f("config/visualization_endpoint.txt", std::ios::in);
     std::string url;
     getline(f, url);
     return url;

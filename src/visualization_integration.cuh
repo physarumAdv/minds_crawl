@@ -11,7 +11,7 @@
 /**
  * Reads the first line from the file containing the visualization endpoint url and returns it
  *
- * Path to the file (relative to the executable's location) is `local/visualization_endpoint.txt`
+ * Path to the file (relative to the executable's location) is `config/visualization_endpoint.txt`
  *
  * @returns Url to send data to be visualized to
  */

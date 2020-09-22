@@ -138,5 +138,5 @@ _deps
 # End of https://www.gitignore.io/api/c,c++,cuda,cmake,clion (modified)
 
 # Project-level:
-local/**
-!local/**example**
+config/**
+!config/**example**
