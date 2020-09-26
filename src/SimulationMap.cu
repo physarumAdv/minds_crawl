@@ -33,13 +33,16 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
     Face *start_face = &polyhedron->get_faces()[0];
     SpacePoint start_node_coordinates = (start_face->get_vertices()[0] + start_face->get_vertices()[1] +
                                          start_face->get_vertices()[2]) / 3;
+
     nodes = (MapNode *)malloc(sizeof(MapNode) * max_number_of_nodes);
     nodes[0] = MapNode(polyhedron, start_face, start_node_coordinates);
     n_of_nodes = 1;
 
     // Direction vector from first node to its top neighbor sets randomly
     SpacePoint direction_vector = relative_point_rotation(start_node_coordinates, start_face->get_vertices()[0],
-                                                          start_face->get_normal(), M_PI * 2 * rand0to1());
+                                                          start_face->get_normal(), M_PI * 2 * rand0to1())
+                                  - start_node_coordinates;
+
     /**
      * Array of direction vectors from nodes with the same index
      * as in `SimulationMap::nodes` array to their top neighbors

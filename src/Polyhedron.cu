@@ -83,7 +83,8 @@ __host__ __device__ double Polyhedron::calculate_square_of_surface()
     double square = 0;
     for(int i = 0; i < n_of_faces; ++i)
     {
-        for(int j = 1; j < faces[i].get_n_of_vertices() - 1; ++j)
+        // Cause first vertex of face repeats again in the end the condition is `j < faces[i].get_n_of_vertices() - 2`
+        for(int j = 1; j < faces[i].get_n_of_vertices() - 2; ++j)
         {
             SpacePoint a = faces[i].get_vertices()[j] - faces[i].get_vertices()[0];
             SpacePoint b = faces[i].get_vertices()[j + 1] - faces[i].get_vertices()[0];
@@ -152,12 +153,12 @@ __host__ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint
                                                      polyhedron)->get_normal();
     SpacePoint moving_vector = (b - a) / get_distance(a, b);
 
-    double phi_cos = normal_after * normal_before;
+    double phi_cos = (-1) * normal_after * normal_before;
     double phi_sin = sin(acos(phi_cos));
     double alpha_cos = moving_vector * (normal_before % normal_after);
 
     SpacePoint faced_vector_direction = (normal_before + normal_after * phi_cos) * sin(acos(alpha_cos)) / phi_sin +
-            (normal_before % normal_after) * alpha_cos / phi_sin;
+                                        (normal_before % normal_after) * alpha_cos / phi_sin;
 
     // If vector AB does not intersect any edge of face, `intersection` equals `b`,
     // so `faced_vector_direction` does not affect at all
