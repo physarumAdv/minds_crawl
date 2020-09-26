@@ -78,6 +78,24 @@ __host__ __device__ int Polyhedron::get_n_of_faces() const
 }
 
 
+__host__ __device__ double Polyhedron::calculate_square_of_surface()
+{
+    double square = 0;
+    for(int i = 0; i < n_of_faces; ++i)
+    {
+        for(int j = 1; j < faces[i].get_n_of_vertices() - 1; ++j)
+        {
+            SpacePoint a = faces[i].get_vertices()[j] - faces[i].get_vertices()[0];
+            SpacePoint b = faces[i].get_vertices()[j + 1] - faces[i].get_vertices()[0];
+
+            double sign_of_square = (b % a) * faces[i].get_normal() / abs((b % a) * faces[i].get_normal());
+            square += sign_of_square * (a ^ b) / 2;
+        }
+    }
+    return square;
+}
+
+
 __host__ __device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, const Face *face)
 {
     bool flag1 = false, flag2 = false;

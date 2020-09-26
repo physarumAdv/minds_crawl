@@ -22,12 +22,18 @@ __device__ double const mapnode_dist = 2 * jc::speed;
 __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
         polyhedron(polyhedron)
 {
+    /*
+     * Maximum number of nodes
+     * It must be greater or equal than real number of nodes (`n_of_nodes`) after creation node grid
+     */
+    int max_number_of_nodes = 2 * polyhedron->calculate_square_of_surface() / (mapnode_dist * mapnode_dist);
+
     bool create_new_nodes = true;  // New nodes are allowed to be created
 
     Face *start_face = &polyhedron->get_faces()[0];
     SpacePoint start_node_coordinates = (start_face->get_vertices()[0] + start_face->get_vertices()[1] +
                                          start_face->get_vertices()[2]) / 3;
-    nodes = (MapNode *)malloc(sizeof(MapNode));
+    nodes = (MapNode *)malloc(sizeof(MapNode) * max_number_of_nodes);
     nodes[0] = MapNode(polyhedron, start_face, start_node_coordinates);
     n_of_nodes = 1;
 
@@ -38,7 +44,7 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
      * Array of direction vectors from nodes with the same index
      * as in `SimulationMap::nodes` array to their top neighbors
      */
-    auto *nodes_directions = (SpacePoint *)malloc(sizeof(SpacePoint));
+    auto *nodes_directions = (SpacePoint *)malloc(sizeof(SpacePoint) * max_number_of_nodes);
     nodes_directions[0] = direction_vector * mapnode_dist / get_distance(direction_vector, origin);
 
     /**
@@ -79,28 +85,27 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
     // Creating new nodes until it can be done, some nodes may have less neighbors than four
     for(int current_node_id = 0; current_node_id < n_of_nodes; ++current_node_id)
     {
-        MapNode &current_node = nodes[current_node_id];
         double angle = 0;
         for(int i = 0; i < 4; ++i)
         {
-            if((current_node.*get_node_neighbors[i])() == nullptr)
+            if((nodes[current_node_id].*get_node_neighbors[i])() == nullptr)
             {
                 int neighbor_node_id = get_neighbor_node_id(current_node_id, &nodes_directions, angle,
                                                             does_face_have_nodes, create_new_nodes);
                 if(neighbor_node_id != -1)
                 {
-                    (current_node.*set_node_neighbors[i])(&nodes[neighbor_node_id]);
+                    (nodes[current_node_id].*set_node_neighbors[i])(&nodes[neighbor_node_id]);
                 }
             }
             angle += M_PI_2;
         }
 
-        if(!create_new_nodes and current_node.get_face()->get_node() == nullptr)
+        if(!create_new_nodes and nodes[current_node_id].get_face()->get_node() == nullptr)
         {
-            current_node.get_face()->set_node(&current_node, polyhedron);
+            nodes[current_node_id].get_face()->set_node(&nodes[current_node_id], polyhedron);
         }
 
-        if(current_node_id == n_of_nodes - 1)
+        if(create_new_nodes && current_node_id == n_of_nodes - 1)
         {
             /*
              * Starting from this moment: setting all pointers to neighbors that were not set earlier
@@ -226,6 +231,7 @@ __device__ int SimulationMap::get_neighbor_node_id(int current_node_id, SpacePoi
     Face *next_face = polyhedron->find_face_by_point(neighbor_coordinates);
     int nearest_node_id = find_index_of_nearest_node(neighbor_coordinates);
     if(!create_new_nodes || (current_face == nodes[nearest_node_id].get_face() &&
+                             current_face == next_face &&
                              get_distance(nodes[nearest_node_id].get_coordinates(), neighbor_coordinates) < eps))
     {
         // Neighbor node has already existed
@@ -234,10 +240,9 @@ __device__ int SimulationMap::get_neighbor_node_id(int current_node_id, SpacePoi
     else if(current_face == next_face || !does_face_have_nodes[find_face_index(next_face)])
     {
         // Neighbor node does not exist, but it can be created
-        nodes = device_realloc(nodes, n_of_nodes, n_of_nodes + 1);
+        nodes[n_of_nodes].detach_particle();
         nodes[n_of_nodes] = MapNode(polyhedron, next_face, neighbor_coordinates);
 
-        *nodes_directions = device_realloc(*nodes_directions, n_of_nodes, n_of_nodes + 1);
         set_direction_to_top_neighbor(current_node_id, n_of_nodes, nodes_directions, angle);
 
         does_face_have_nodes[find_face_index(next_face)] = true;

@@ -102,6 +102,18 @@ __host__ __device__ double operator*(SpacePoint a, SpacePoint b);
  */
 __host__ __device__ SpacePoint operator%(SpacePoint a, SpacePoint b);
 
+/**
+ * Returns the pseudo-scalar (skew) product of two vectors
+ *
+ * @param a Point in space, vector
+ * @param b Point in space, vector
+ *
+ * @note Pseudo-scalar product is an area of parallelogram defined by two vectors
+ *
+ * @returns Pseudo-scalar product of two vectors in 3D
+ */
+__host__ __device__ double operator^(SpacePoint a, SpacePoint b);
+
 
 /**
  * Rotates point B relative to point A along the face with given normal
