@@ -85,24 +85,25 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
     // Creating new nodes until it can be done, some nodes may have less neighbors than four
     for(int current_node_id = 0; current_node_id < n_of_nodes; ++current_node_id)
     {
+        MapNode &current_node = nodes[current_node_id];
         double angle = 0;
         for(int i = 0; i < 4; ++i)
         {
-            if((nodes[current_node_id].*get_node_neighbors[i])() == nullptr)
+            if((current_node.*get_node_neighbors[i])() == nullptr)
             {
-                int neighbor_node_id = get_neighbor_node_id(current_node_id, &nodes_directions, angle,
+                int neighbor_node_id = get_neighbor_node_id(current_node_id, nodes_directions, angle,
                                                             does_face_have_nodes, create_new_nodes);
                 if(neighbor_node_id != -1)
                 {
-                    (nodes[current_node_id].*set_node_neighbors[i])(&nodes[neighbor_node_id]);
+                    (current_node.*set_node_neighbors[i])(&nodes[neighbor_node_id]);
                 }
             }
             angle += M_PI_2;
         }
 
-        if(!create_new_nodes and nodes[current_node_id].get_face()->get_node() == nullptr)
+        if(!create_new_nodes and current_node.get_face()->get_node() == nullptr)
         {
-            nodes[current_node_id].get_face()->set_node(&nodes[current_node_id], polyhedron);
+            current_node.get_face()->set_node(&current_node, polyhedron);
         }
 
         if(create_new_nodes && current_node_id == n_of_nodes - 1)
@@ -192,21 +193,21 @@ __device__ int SimulationMap::find_index_of_nearest_node(SpacePoint dest) const
 
 
 __device__ void SimulationMap::set_direction_to_top_neighbor(int current_node_id, int neighbor_node_id,
-                                                             SpacePoint **nodes_directions, double angle) const
+                                                             SpacePoint *nodes_directions, double angle) const
 {
     MapNode &neighbor_node = nodes[neighbor_node_id];
     MapNode &current_node = nodes[current_node_id];
 
     if(neighbor_node.get_face() == current_node.get_face())
     {
-        (*nodes_directions)[neighbor_node_id] = (*nodes_directions)[current_node_id];
+        nodes_directions[neighbor_node_id] = nodes_directions[current_node_id];
     }
     else
     {
         SpacePoint new_direction = neighbor_node.get_coordinates() -
                                    find_intersection_with_edge(current_node.get_coordinates(),
                                                                count_neighbor_node_coordinates(current_node_id,
-                                                                                               (*nodes_directions)[current_node_id],
+                                                                                               nodes_directions[current_node_id],
                                                                                                angle, false),
                                                                current_node.get_face());
         new_direction = relative_point_rotation(neighbor_node.get_coordinates(),
@@ -214,24 +215,23 @@ __device__ void SimulationMap::set_direction_to_top_neighbor(int current_node_id
                                                 neighbor_node.get_face()->get_normal(),
                                                 -angle) -
                         neighbor_node.get_coordinates();
-        (*nodes_directions)[neighbor_node_id] = new_direction * mapnode_dist / get_distance(new_direction, origin);
+        nodes_directions[neighbor_node_id] = new_direction * mapnode_dist / get_distance(new_direction, origin);
     }
 }
 
 
-__device__ int SimulationMap::get_neighbor_node_id(int current_node_id, SpacePoint **nodes_directions, double angle,
+__device__ int SimulationMap::get_neighbor_node_id(int current_node_id, SpacePoint *nodes_directions, double angle,
                                                    bool *does_face_have_nodes, bool create_new_nodes)
 {
     Face *current_face = nodes[current_node_id].get_face();
 
     // Hypothetical coordinates of neighbor node counted using direction to the top neighbor and `angle`
     SpacePoint neighbor_coordinates = count_neighbor_node_coordinates(current_node_id,
-                                                                      (*nodes_directions)[current_node_id], angle,
+                                                                      nodes_directions[current_node_id], angle,
                                                                       true);
     Face *next_face = polyhedron->find_face_by_point(neighbor_coordinates);
     int nearest_node_id = find_index_of_nearest_node(neighbor_coordinates);
-    if(!create_new_nodes || (current_face == nodes[nearest_node_id].get_face() &&
-                             current_face == next_face &&
+    if(!create_new_nodes || (next_face == nodes[nearest_node_id].get_face() &&
                              get_distance(nodes[nearest_node_id].get_coordinates(), neighbor_coordinates) < eps))
     {
         // Neighbor node has already existed
