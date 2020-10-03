@@ -1,5 +1,5 @@
 #include "Particle.cuh"
-#include "fucking_shit.cuh"
+#include "MapNode.cuh"
 #include "random_generator.cuh"
 #include "jones_constants.hpp"
 
