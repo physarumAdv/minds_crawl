@@ -59,7 +59,7 @@ __host__ __device__ Face *Polyhedron::find_face_by_point(SpacePoint point) const
     for(int i = 0; i < n_of_faces; ++i)
     {
         Face *face = &faces[i];
-        SpacePoint normal = (face->get_vertices()[1] - face->get_vertices()[0]) % (point - face->get_vertices()[0]);
+        SpacePoint normal = (point - face->get_vertices()[0]) % (face->get_vertices()[1] - face->get_vertices()[0]);
         normal = normal / get_distance(normal, origin);
         if(normal * face->get_normal() >= 1 - eps)
             return face;
@@ -148,9 +148,9 @@ __host__ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint
     int intersection_edge_vertex_id = 0;
     SpacePoint intersection = find_intersection_with_edge(a, b, current_face, &intersection_edge_vertex_id);
 
-    SpacePoint normal_before = current_face->get_normal();
-    SpacePoint normal_after = find_face_next_to_edge(intersection_edge_vertex_id, current_face,
-                                                     polyhedron)->get_normal();
+    SpacePoint normal_before = (-1) * current_face->get_normal();
+    SpacePoint normal_after = (-1) * find_face_next_to_edge(intersection_edge_vertex_id, current_face,
+                                                            polyhedron)->get_normal();
     SpacePoint moving_vector = (b - a) / get_distance(a, b);
 
     double phi_cos = (-1) * normal_after * normal_before;

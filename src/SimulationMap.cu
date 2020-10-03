@@ -37,12 +37,16 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
     nodes = (MapNode *)malloc(sizeof(MapNode) * max_number_of_nodes);
     nodes[0] = MapNode(polyhedron, start_face, start_node_coordinates);
     n_of_nodes = 1;
-
+    /*
     // Direction vector from first node to its top neighbor sets randomly
+    double dir_angle = M_PI / 3;
     SpacePoint direction_vector = relative_point_rotation(start_node_coordinates, start_face->get_vertices()[0],
-                                                          start_face->get_normal(), M_PI * 2 * rand0to1())
+                                                          start_face->get_normal(), M_PI * 2 * rand0to1() * 0 + dir_angle)
                                   - start_node_coordinates;
+    */
 
+    // Direction vector parallel to the vertical edges of cube.
+    SpacePoint direction_vector = {0, 0, 1};
     /**
      * Array of direction vectors from nodes with the same index
      * as in `SimulationMap::nodes` array to their top neighbors
