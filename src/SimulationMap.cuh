@@ -3,7 +3,7 @@
 
 
 #include "MapNode.cuh"
-#include "fucking_shit.cuh"
+#include "simulation_logic.cuh"
 #include "common.cuh"
 
 

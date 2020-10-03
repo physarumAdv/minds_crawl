@@ -4,7 +4,7 @@
 
 #include <cstdio>
 
-#include "fucking_shit.cuh"
+#include "simulation_logic.cuh"
 #include "random_generator.cuh"
 #include "jones_constants.hpp"
 #include "Particle.cuh"

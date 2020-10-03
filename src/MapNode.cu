@@ -4,7 +4,7 @@
 #include "Particle.cuh"
 #include "Polyhedron.cuh"
 #ifdef COMPILE_FOR_CPU
-#include "fucking_shit.cuh"
+#include "simulation_logic.cuh"
 #endif //COMPILE_FOR_CPU
 
 

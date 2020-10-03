@@ -13,7 +13,7 @@
 #include "Polyhedron.cuh"
 #include "MapNode.cuh"
 #include "Particle.cuh"
-#include "fucking_shit.cuh"
+#include "simulation_logic.cuh"
 #include "random_generator.cuh"
 #include "jones_constants.hpp"
 #include "common.cuh"
