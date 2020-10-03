@@ -86,10 +86,11 @@ __host__ __device__ double Polyhedron::calculate_square_of_surface()
         // Cause first vertex of face repeats again in the end the condition is `j < faces[i].get_n_of_vertices() - 2`
         for(int j = 1; j < faces[i].get_n_of_vertices() - 2; ++j)
         {
-            SpacePoint a = faces[i].get_vertices()[j] - faces[i].get_vertices()[0];
-            SpacePoint b = faces[i].get_vertices()[j + 1] - faces[i].get_vertices()[0];
+            SpacePoint a = faces[i].get_vertices()[j + 1] - faces[i].get_vertices()[0];
+            SpacePoint b = faces[i].get_vertices()[j] - faces[i].get_vertices()[0];
 
-            double sign_of_square = (b % a) * faces[i].get_normal() / abs((b % a) * faces[i].get_normal());
+            double sign_of_square = (a % b) * faces[i].get_normal();
+            sign_of_square /= abs(sign_of_square);
             square += sign_of_square * (a ^ b) / 2;
         }
     }
