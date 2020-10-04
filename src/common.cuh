@@ -36,30 +36,6 @@ __host__ __device__ static T *malloc_and_copy(const T *source, int count)
     return new_array;
 }
 
-/**
- * Creates new array with `new_size`, moves source to it, frees up source memory
- *
- * @tparam T Type of the array
- *
- * @param source Pointer to an array to reallocate
- * @param old_size Size of the source array
- * @param new_size Size of new array
- *
- * @note old_size must be less than or equal to new_size
- *
- * @returns Pointer to the created array
- */
-template<class T>
-__host__ __device__ static T *device_realloc(T *source, int old_size, int new_size)
-{
-    T *new_array = (T *)malloc(new_size * sizeof(T));
-    for(int i = 0; i < old_size; ++i)
-    {
-        new_array[i] = std::move(source[i]);
-    }
-    free(source);
-    return new_array;
-}
 
 /**
  * Swaps two given values

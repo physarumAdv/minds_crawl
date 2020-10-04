@@ -50,6 +50,14 @@ __host__ __device__ SpacePoint operator%(SpacePoint a, SpacePoint b)
     return {a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x};
 }
 
+__host__ __device__ double operator^(SpacePoint a, SpacePoint b)
+{
+    double l_a = get_distance(a, origin), l_b = get_distance(b, origin), l_c = get_distance(b - a, origin);
+    double cos_a = (l_a * l_a + l_b * l_b - l_c * l_c) / (2 * l_a * l_b);
+
+    return l_a * l_b * sqrt(1 - cos_a * cos_a);
+}
+
 
 __host__ __device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint b, SpacePoint normal, double angle)
 {
