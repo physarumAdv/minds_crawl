@@ -126,3 +126,56 @@ __device__ void division_test(MapNode *node)
         }
     }
 }
+
+
+__host__ Polyhedron generate_cube(double edge_length)
+{
+    SpacePoint vertices1[] = {
+            {0,           0, 0},
+            {0,           0, edge_length},
+            {edge_length, 0, edge_length},
+            {edge_length, 0, 0}
+    };
+    SpacePoint vertices2[] = {
+            {0, 0,           0},
+            {0, edge_length, 0},
+            {0, edge_length, edge_length},
+            {0, 0,           edge_length}
+    };
+    SpacePoint vertices3[] = {
+            {0,           0,           0},
+            {edge_length, 0,           0},
+            {edge_length, edge_length, 0},
+            {0,           edge_length, 0}
+    };
+    SpacePoint vertices4[] = {
+            {edge_length, 0,           edge_length},
+            {edge_length, edge_length, edge_length},
+            {edge_length, edge_length, 0},
+            {edge_length, 0,           0}
+    };
+    SpacePoint vertices5[] = {
+            {0,           0,           edge_length},
+            {0,           edge_length, edge_length},
+            {edge_length, edge_length, edge_length},
+            {edge_length, 0,           edge_length}
+    };
+    SpacePoint vertices6[] = {
+            {edge_length, edge_length, 0},
+            {edge_length, edge_length, edge_length},
+            {0,           edge_length, edge_length},
+            {0,           edge_length, 0}
+    };
+
+    Face faces[] = {
+            Face(vertices1, 4),
+            Face(vertices2, 4),
+            Face(vertices3, 4),
+            Face(vertices4, 4),
+            Face(vertices5, 4),
+            Face(vertices6, 4)
+    };
+
+    Polyhedron cube(std::move(faces), 6);
+    return cube;
+}

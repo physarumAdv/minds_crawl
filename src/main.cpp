@@ -1,5 +1,6 @@
 #include <cstdlib>
 
+#include "simulation_logic.cuh"
 #include "iterations_wrapper.cuh"
 
 

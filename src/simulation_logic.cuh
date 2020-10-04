@@ -124,4 +124,17 @@ __device__ bool death_test(MapNode *node);
 __device__ void division_test(MapNode *node);
 
 
+/**
+ * Creates a cube and returns it
+ *
+ * Will be only used in the early stages of development, later will be replaced with a universal function building
+ * arbitrary polyhedrons
+ *
+ * @param edge_length Length of the cube's edge
+ *
+ * @returns Cube represented wth a `Polyhedron` object
+ */
+__host__ Polyhedron generate_cube(double edge_length = 200);
+
+
 #endif //MIND_S_CRAWL_FUCKING_SHIT_CUH

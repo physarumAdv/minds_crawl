@@ -1,6 +1,7 @@
 #include <ctime>
 #include <iostream>
 
+#include "simulation_logic.cuh"
 #include "iterations_wrapper.cuh"
 #include "random_generator.cuh"
 
