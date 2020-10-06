@@ -4,9 +4,14 @@
 [![Ubuntu build](https://github.com/physarumAdv/minds_crawl/workflows/Ubuntu%20build/badge.svg)](https://github.com/physarumAdv/minds_crawl/actions?query=workflow%3A%22Ubuntu+build%22)
 
 This is a simulation of Physarum Polycephalum, written in CUDA, but can be compiled for CPU execution with NVCC.
-At the moment, the code is very raw, it is going to be better commented and rearranged in files
 
-### Compiling
+## Compiling
+
+Before compiling the project, clone the repository with the submodules:
+```bash
+git clone https://github.com/physarumAdv/minds_crawl.git --recursive
+cd minds_crawl
+```
 
 To compile (the produced executable will require an NVidia GPU to run):
 ```bash

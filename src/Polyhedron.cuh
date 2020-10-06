@@ -70,6 +70,16 @@ public:
     __host__ __device__ int get_n_of_faces() const;
 
 
+    /**
+     * Calculates square of polyhedron surface using signed areas
+     *
+     * @note Supports all types of polyhedron
+     *
+     * @returns Square of polyhedron surface
+     */
+    __host__ __device__ double calculate_square_of_surface();
+
+
 private:
     /// Pointer-represented array of polyhedron faces
     Face *faces;

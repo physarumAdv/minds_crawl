@@ -174,13 +174,7 @@ __device__ inline void run_iteration_diffuse_trail(SimulationMap *const simulati
     MapNode *self;
     RUN_ITERATION_SET_SELF(self, node_index)
 
-    auto left = self->get_left(), top = self->get_top(), right = self->get_right(), bottom = self->get_bottom();
-
-    double sum = top->get_left()->trail + top->trail + top->get_right()->trail +
-                 left->trail + self->trail + right->trail +
-                 bottom->get_left()->trail + bottom->trail + bottom->get_right()->trail;
-
-    self->temp_trail = (1 - jc::diffdamp) * (sum / 9.0);
+    diffuse_trail(self);
 }
 
 /**
@@ -272,46 +266,52 @@ __host__ inline Polyhedron generate_cube(double edge_length = 200)
             {0,           0, 0},
             {0,           0, edge_length},
             {edge_length, 0, edge_length},
-            {edge_length, 0, 0}
+            {edge_length, 0, 0},
+            {0,           0, 0}
     };
     SpacePoint vertices2[] = {
             {0, 0,           0},
             {0, edge_length, 0},
             {0, edge_length, edge_length},
-            {0, 0,           edge_length}
+            {0, 0,           edge_length},
+            {0, 0,           0}
     };
     SpacePoint vertices3[] = {
             {0,           0,           0},
             {edge_length, 0,           0},
             {edge_length, edge_length, 0},
-            {0,           edge_length, 0}
+            {0,           edge_length, 0},
+            {0,           0,           0}
     };
     SpacePoint vertices4[] = {
             {edge_length, 0,           edge_length},
             {edge_length, edge_length, edge_length},
             {edge_length, edge_length, 0},
-            {edge_length, 0,           0}
+            {edge_length, 0,           0},
+            {edge_length, 0,           edge_length}
     };
     SpacePoint vertices5[] = {
             {0,           0,           edge_length},
             {0,           edge_length, edge_length},
             {edge_length, edge_length, edge_length},
-            {edge_length, 0,           edge_length}
+            {edge_length, 0,           edge_length},
+            {0,           0,           edge_length}
     };
     SpacePoint vertices6[] = {
             {edge_length, edge_length, 0},
             {edge_length, edge_length, edge_length},
             {0,           edge_length, edge_length},
-            {0,           edge_length, 0}
+            {0,           edge_length, 0},
+            {edge_length, edge_length, 0}
     };
 
     Face faces[] = {
-            Face(vertices1, 4),
-            Face(vertices2, 4),
-            Face(vertices3, 4),
-            Face(vertices4, 4),
-            Face(vertices5, 4),
-            Face(vertices6, 4)
+            Face(vertices1, 5),
+            Face(vertices2, 5),
+            Face(vertices3, 5),
+            Face(vertices4, 5),
+            Face(vertices5, 5),
+            Face(vertices6, 5)
     };
 
     Polyhedron cube(std::move(faces), 6);

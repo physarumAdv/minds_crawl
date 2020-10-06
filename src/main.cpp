@@ -7,25 +7,25 @@
 
 void wrapped_run_iteration_project_nutrients(SimulationMap *const simulation_map, const int *const iteration_number)
 {
-    for(int i = 0; i < simulation_map->get_n_of_nodes(); ++i)
+    for(unsigned int i = 0; i < simulation_map->get_n_of_nodes(); ++i)
         run_iteration_project_nutrients(simulation_map, iteration_number, i);
 }
 
 void wrapped_run_iteration_diffuse_trail(SimulationMap *const simulation_map, const int *const iteration_number)
 {
-    for(int i = 0; i < simulation_map->get_n_of_nodes(); ++i)
+    for(unsigned int i = 0; i < simulation_map->get_n_of_nodes(); ++i)
         run_iteration_diffuse_trail(simulation_map, iteration_number, i);
 }
 
 void wrapped_run_iteration_process_particles(SimulationMap *const simulation_map, const int *const iteration_number)
 {
-    for(int i = 0; i < simulation_map->get_n_of_nodes(); ++i)
+    for(unsigned int i = 0; i < simulation_map->get_n_of_nodes(); ++i)
         run_iteration_process_particles(simulation_map, iteration_number, i);
 }
 
 void wrapped_run_iteration_cleanup(SimulationMap *const simulation_map, int *const iteration_number)
 {
-    for(int i = 0; i < simulation_map->get_n_of_nodes(); ++i)
+    for(unsigned int i = 0; i < simulation_map->get_n_of_nodes(); ++i)
         run_iteration_cleanup(simulation_map, iteration_number, i);
 }
 
