@@ -3,9 +3,6 @@
 #include "MapNode.cuh"
 #include "Particle.cuh"
 #include "Polyhedron.cuh"
-#ifdef COMPILE_FOR_CPU
-#include "simulation_logic.cuh"
-#endif //COMPILE_FOR_CPU
 
 
 __host__ __device__ MapNode::MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates) :

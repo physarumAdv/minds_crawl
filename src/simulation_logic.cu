@@ -6,7 +6,6 @@
 
 #include "simulation_logic.cuh"
 #include "random_generator.cuh"
-#include "jones_constants.hpp"
 #include "Particle.cuh"
 #include "jones_constants.hpp"
 

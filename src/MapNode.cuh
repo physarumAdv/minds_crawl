@@ -5,7 +5,6 @@
 #include "common.cuh"
 #include "SpacePoint.cuh"
 #include "Face.cuh"
-#include "SimulationMap.cuh"
 
 class Particle;
 

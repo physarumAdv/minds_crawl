@@ -1,7 +1,3 @@
-/* This file contains all the functions I couldn't place anywhere else.
- * They will be moved somewhere else later
- */
-
 #ifndef MINDS_CRAWL_SIMULATION_LOGIC_CUH
 #define MINDS_CRAWL_SIMULATION_LOGIC_CUH
 
