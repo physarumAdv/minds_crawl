@@ -1,9 +1,9 @@
-#ifndef MIND_S_CRAWL_SIMULATIONMAP_CUH
-#define MIND_S_CRAWL_SIMULATIONMAP_CUH
+#ifndef MINDS_CRAWL_SIMULATIONMAP_CUH
+#define MINDS_CRAWL_SIMULATIONMAP_CUH
 
 
 #include "MapNode.cuh"
-#include "fucking_shit.cuh"
+#include "simulation_logic.cuh"
 #include "common.cuh"
 
 
@@ -159,4 +159,4 @@ private:
     int n_of_nodes;
 };
 
-#endif //MIND_S_CRAWL_SIMULATIONMAP_CUH
+#endif //MINDS_CRAWL_SIMULATIONMAP_CUH

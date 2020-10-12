@@ -84,7 +84,7 @@ __host__ __device__ double Polyhedron::calculate_square_of_surface()
     for(int i = 0; i < n_of_faces; ++i)
     {
         // Cause first vertex of face repeats again in the end the condition is `j < faces[i].get_n_of_vertices() - 2`
-        for(int j = 1; j < faces[i].get_n_of_vertices() - 2; ++j)
+        for(int j = 1; j < faces[i].get_n_of_vertices() - 1; ++j)
         {
             SpacePoint a = faces[i].get_vertices()[j + 1] - faces[i].get_vertices()[0];
             SpacePoint b = faces[i].get_vertices()[j] - faces[i].get_vertices()[0];

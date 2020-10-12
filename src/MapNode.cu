@@ -3,9 +3,6 @@
 #include "MapNode.cuh"
 #include "Particle.cuh"
 #include "Polyhedron.cuh"
-#ifdef COMPILE_FOR_CPU
-#include "fucking_shit.cuh"
-#endif //COMPILE_FOR_CPU
 
 
 __host__ __device__ MapNode::MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
@@ -173,4 +170,44 @@ __device__ bool MapNode::detach_particle(Particle *p)
 __host__ __device__ bool operator==(const MapNode &a, const MapNode &b)
 {
     return a.coordinates == b.coordinates;
+}
+
+
+__host__ __device__ MapNode *find_nearest_mapnode_greedy(const SpacePoint &dest, MapNode *const start)
+{
+    MapNode *current = start;
+    double current_dist = get_distance(dest, current->get_coordinates());
+    while(true)
+    {
+        bool found_better = false;
+        for(auto next : {current->get_left(), current->get_top(), current->get_right(), current->get_bottom()})
+        {
+            double next_dist = get_distance(dest, next->get_coordinates());
+            if(next_dist < current_dist)
+            {
+                current = next;
+                current_dist = next_dist;
+                found_better = true;
+                break;
+            }
+        }
+        if(!found_better)
+            break;
+    }
+    return current;
+}
+
+__host__ __device__ MapNode *find_nearest_mapnode(const Polyhedron *const polyhedron, const SpacePoint &dest,
+                                                  MapNode *const start)
+{
+    Face *dest_face = polyhedron->find_face_by_point(dest);
+
+    if(start != nullptr)
+    {
+        MapNode *ans = find_nearest_mapnode_greedy(dest, start);
+        if(*ans->get_face() == *dest_face)
+            return ans;
+    }
+
+    return find_nearest_mapnode_greedy(dest, dest_face->get_node());
 }

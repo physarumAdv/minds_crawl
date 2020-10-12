@@ -1,5 +1,5 @@
-#ifndef MIND_S_CRAWL_FACE_CUH
-#define MIND_S_CRAWL_FACE_CUH
+#ifndef MINDS_CRAWL_FACE_CUH
+#define MINDS_CRAWL_FACE_CUH
 
 
 #include "SpacePoint.cuh"
@@ -143,4 +143,4 @@ private:
 __host__ __device__ bool operator!=(const Face &a, const Face &b);
 
 
-#endif //MIND_S_CRAWL_FACE_CUH
+#endif //MINDS_CRAWL_FACE_CUH
