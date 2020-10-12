@@ -95,8 +95,8 @@ __host__ __device__ Face *find_face_next_to_edge(int vertex_id, Face *current_fa
 {
     const SpacePoint *point_a = current_face->get_vertices() + vertex_id;
     const SpacePoint *point_b = point_a + 1; // By default it's just the next vertex
-    if(vertex_id + 1 == current_face->get_n_of_vertices()) // But if point_a was the last one
-        point_b = current_face->get_vertices(); // Then point b should be the first one
+    if(vertex_id + 1 == current_face->get_n_of_vertices()) // But if `point_a` was the last one
+        point_b = current_face->get_vertices(); // Then `point_b` should be the first one
 
     for(int i = 0; i < polyhedron->get_n_of_faces(); ++i)
         if(polyhedron->get_faces()[i] != *current_face &&
@@ -109,9 +109,8 @@ __host__ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePo
                                                            int *intersection_edge)
 {
     int n_of_vertices = current_face->get_n_of_vertices();
-    const SpacePoint *vertices = current_face->get_vertices();
 
-    for(int i = 0; i < current_face->get_n_of_vertices(); ++i)
+    for(int i = 0; i < n_of_vertices; ++i)
     {
         SpacePoint intersection = line_intersection(current_face->get_vertices()[i],
                                                     current_face->get_vertices()[(i + 1) % n_of_vertices], a, b);
