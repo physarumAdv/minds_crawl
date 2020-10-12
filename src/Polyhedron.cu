@@ -113,11 +113,14 @@ __host__ __device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, co
 
 __host__ __device__ Face *find_face_next_to_edge(int vertex_id, Face *current_face, Polyhedron *polyhedron)
 {
+    const SpacePoint *point_a = current_face->get_vertices() + vertex_id;
+    const SpacePoint *point_b = point_a + 1; // By default it's just the next vertex
+    if(vertex_id + 1 == current_face->get_n_of_vertices()) // But if `point_a` was the last one
+        point_b = current_face->get_vertices(); // Then `point_b` should be the first one
+
     for(int i = 0; i < polyhedron->get_n_of_faces(); ++i)
         if(polyhedron->get_faces()[i] != *current_face &&
-                does_edge_belong_to_face(current_face->get_vertices()[vertex_id],
-                                         current_face->get_vertices()[vertex_id + 1],
-                                         &polyhedron->get_faces()[i]))
+                does_edge_belong_to_face(*point_a, *point_b, &polyhedron->get_faces()[i]))
             return &polyhedron->get_faces()[i];
     return current_face;
 }
@@ -125,12 +128,15 @@ __host__ __device__ Face *find_face_next_to_edge(int vertex_id, Face *current_fa
 __host__ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePoint b, Face *current_face,
                                                            int *intersection_edge)
 {
-    for(int i = 0; i < current_face->get_n_of_vertices() - 1; ++i)
+    int n_of_vertices = current_face->get_n_of_vertices();
+
+    for(int i = 0; i < n_of_vertices; ++i)
     {
         SpacePoint intersection = line_intersection(current_face->get_vertices()[i],
-                                                    current_face->get_vertices()[i + 1], a, b);
+                                                    current_face->get_vertices()[(i + 1) % n_of_vertices], a, b);
         if(intersection != origin && is_in_segment(a, b, intersection) &&
-                is_in_segment(current_face->get_vertices()[i], current_face->get_vertices()[i + 1], intersection) &&
+                is_in_segment(current_face->get_vertices()[i], current_face->get_vertices()[(i + 1) % n_of_vertices],
+                              intersection) &&
                 get_distance(intersection, a) > eps)
         {
             if(intersection_edge != nullptr)

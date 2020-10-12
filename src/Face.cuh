@@ -35,10 +35,10 @@ public:
      *      Must be ordered in a special way (see note below)
      * @param n_of_vertices Number of vertices on the face
      *
-     * @note The vertices order. Looking on a face <b>from outside</b> the polyhedron, some vertex (let's call it A)
-     * must be saved to vertices[0]. It's neighbour clockwise - vertex B (B is next to A clockwise) must be saved to
-     * vertices[1] and so on. Assuming there are N vertices in total, A's neighbors are B clockwise and
-     * X counterclockwise, X must be saved to vertices[N - 2], and A must be saved <b>again</b> to vertices[N - 1]
+     * @note The vertices order matters: looking on a face <b>from outside</b> the polyhedron, some vertex (let's call
+     * it A) must be saved to `vertices[0]`. It's neighbour clockwise - vertex B (B is next to A clockwise) must be
+     * saved to `vertices[1]` and so on. Assuming there are N vertices in total, A's neighbors are B clockwise and
+     * X counterclockwise, X must be saved to `vertices[N - 1]`
      */
     __host__ __device__ Face(const SpacePoint *vertices, int n_of_vertices);
 
