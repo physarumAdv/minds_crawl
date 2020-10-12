@@ -1,5 +1,5 @@
-#ifndef MIND_S_CRAWL_SPACEPOINT_CUH
-#define MIND_S_CRAWL_SPACEPOINT_CUH
+#ifndef MINDS_CRAWL_SPACEPOINT_CUH
+#define MINDS_CRAWL_SPACEPOINT_CUH
 
 
 /// Object describing a point in 3d space
@@ -160,4 +160,4 @@ __host__ __device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, Spa
 __host__ __device__ bool is_in_segment(SpacePoint a, SpacePoint b, SpacePoint c);
 
 
-#endif //MIND_S_CRAWL_SPACEPOINT_CUH
+#endif //MINDS_CRAWL_SPACEPOINT_CUH

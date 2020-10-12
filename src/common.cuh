@@ -1,5 +1,5 @@
-#ifndef MIND_S_CRAWL_COMMON_CUH
-#define MIND_S_CRAWL_COMMON_CUH
+#ifndef MINDS_CRAWL_COMMON_CUH
+#define MINDS_CRAWL_COMMON_CUH
 
 
 #include <cstdlib>
@@ -155,4 +155,4 @@ __device__ static double atomicAdd(double* address, double val)
 // ----------------------------------------------------
 
 
-#endif //MIND_S_CRAWL_COMMON_CUH
+#endif //MINDS_CRAWL_COMMON_CUH

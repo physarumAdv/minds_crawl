@@ -1,5 +1,5 @@
-#ifndef MIND_S_CRAWL_MAIN_LOGIC_CUH
-#define MIND_S_CRAWL_MAIN_LOGIC_CUH
+#ifndef MINDS_CRAWL_MAIN_LOGIC_CUH
+#define MINDS_CRAWL_MAIN_LOGIC_CUH
 
 
 #ifdef COMPILE_FOR_CPU
@@ -250,4 +250,4 @@ __device__ inline void run_iteration_cleanup(SimulationMap *const simulation_map
 }
 
 
-#endif //MIND_S_CRAWL_MAIN_LOGIC_CUH
+#endif //MINDS_CRAWL_MAIN_LOGIC_CUH

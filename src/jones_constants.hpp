@@ -1,7 +1,7 @@
 #include <cmath>
 
-#ifndef MIND_S_CRAWL_JONES_CONSTANTS_HPP
-#define MIND_S_CRAWL_JONES_CONSTANTS_HPP
+#ifndef MINDS_CRAWL_JONES_CONSTANTS_HPP
+#define MINDS_CRAWL_JONES_CONSTANTS_HPP
 
 /**
  * A namespace containing model-level constants for simulation
@@ -153,4 +153,4 @@ namespace jones_constants
     const int startprojecttime = 0;
 }
 
-#endif //MIND_S_CRAWL_JONES_CONSTANTS_HPP
+#endif //MINDS_CRAWL_JONES_CONSTANTS_HPP

@@ -1,5 +1,5 @@
-#ifndef MIND_S_CRAWL_MAPNODE_CUH
-#define MIND_S_CRAWL_MAPNODE_CUH
+#ifndef MINDS_CRAWL_MAPNODE_CUH
+#define MINDS_CRAWL_MAPNODE_CUH
 
 
 #include "common.cuh"
@@ -321,4 +321,4 @@ __host__ __device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, 
                                                   MapNode *start = nullptr);
 
 
-#endif //MIND_S_CRAWL_MAPNODE_CUH
+#endif //MINDS_CRAWL_MAPNODE_CUH

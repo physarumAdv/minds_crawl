@@ -1,5 +1,5 @@
-#ifndef MIND_S_CRAWL_POLYHEDRON_CUH
-#define MIND_S_CRAWL_POLYHEDRON_CUH
+#ifndef MINDS_CRAWL_POLYHEDRON_CUH
+#define MINDS_CRAWL_POLYHEDRON_CUH
 
 
 #include "SpacePoint.cuh"
@@ -146,4 +146,4 @@ __host__ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint
                                                         Polyhedron *polyhedron);
 
 
-#endif //MIND_S_CRAWL_POLYHEDRON_CUH
+#endif //MINDS_CRAWL_POLYHEDRON_CUH

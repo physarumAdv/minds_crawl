@@ -2,8 +2,8 @@
  * They will be moved somewhere else later
  */
 
-#ifndef MIND_S_CRAWL_FUCKING_SHIT_CUH
-#define MIND_S_CRAWL_FUCKING_SHIT_CUH
+#ifndef MINDS_CRAWL_SIMULATION_LOGIC_CUH
+#define MINDS_CRAWL_SIMULATION_LOGIC_CUH
 
 
 #include "MapNode.cuh"
