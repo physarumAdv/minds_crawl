@@ -1,5 +1,5 @@
-#ifndef MIND_S_CRAWL_RANDOM_GENERATOR_CUH
-#define MIND_S_CRAWL_RANDOM_GENERATOR_CUH
+#ifndef MINDS_CRAWL_RANDOM_GENERATOR_CUH
+#define MINDS_CRAWL_RANDOM_GENERATOR_CUH
 
 
 #ifndef COMPILE_FOR_CPU
@@ -32,4 +32,4 @@ __global__ void init_rand(unsigned long long seed);
 __host__ __device__ double rand0to1();
 
 
-#endif //MIND_S_CRAWL_RANDOM_GENERATOR_CUH
+#endif //MINDS_CRAWL_RANDOM_GENERATOR_CUH

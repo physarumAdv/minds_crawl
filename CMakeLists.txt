@@ -8,8 +8,8 @@ set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_CXX_STANDARD 14)
 
 
-set(SOURCES src/fucking_shit.cu src/random_generator.cu src/SimulationMap.cu src/Polyhedron.cu src/Particle.cu
-        src/MapNode.cu src/SpacePoint.cu src/Face.cu src/visualization_integration.cu)
+set(SOURCES src/simulation_logic.cu src/random_generator.cu src/SimulationMap.cu src/Polyhedron.cu src/Particle.cu
+        src/MapNode.cu src/SpacePoint.cu src/Face.cu  src/visualization_integration.cu)
 
 option(COMPILE_FOR_CPU "Make produced executable run on CPU instead of GPU" OFF)
 

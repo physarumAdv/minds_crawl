@@ -1,5 +1,5 @@
-#ifndef MIND_S_CRAWL_PARTICLE_CUH
-#define MIND_S_CRAWL_PARTICLE_CUH
+#ifndef MINDS_CRAWL_PARTICLE_CUH
+#define MINDS_CRAWL_PARTICLE_CUH
 
 
 #include "Face.cuh"
@@ -144,4 +144,4 @@ private:
     bool is_captured = false;
 };
 
-#endif //MIND_S_CRAWL_PARTICLE_CUH
+#endif //MINDS_CRAWL_PARTICLE_CUH

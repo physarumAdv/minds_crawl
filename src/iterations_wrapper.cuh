@@ -1,5 +1,5 @@
-#ifndef MIND_S_CRAWL_MAIN_LOGIC_CUH
-#define MIND_S_CRAWL_MAIN_LOGIC_CUH
+#ifndef MINDS_CRAWL_MAIN_LOGIC_CUH
+#define MINDS_CRAWL_MAIN_LOGIC_CUH
 
 
 #ifdef COMPILE_FOR_CPU
@@ -13,7 +13,7 @@
 #include "Polyhedron.cuh"
 #include "MapNode.cuh"
 #include "Particle.cuh"
-#include "fucking_shit.cuh"
+#include "simulation_logic.cuh"
 #include "random_generator.cuh"
 #include "jones_constants.hpp"
 #include "common.cuh"
@@ -250,73 +250,4 @@ __device__ inline void run_iteration_cleanup(SimulationMap *const simulation_map
 }
 
 
-/**
- * Creates a cube and returns it
- *
- * Will be only used in the early stages of development, later will be replaced with a universal function building
- * arbitrary polyhedrons
- * 
- * @param edge_length Length of the cube's edge
- *
- * @returns Cube represented wth a `Polyhedron` object
- */
-__host__ inline Polyhedron generate_cube(double edge_length = 200)
-{
-    SpacePoint vertices1[] = {
-            {0,           0, 0},
-            {0,           0, edge_length},
-            {edge_length, 0, edge_length},
-            {edge_length, 0, 0},
-            {0,           0, 0}
-    };
-    SpacePoint vertices2[] = {
-            {0, 0,           0},
-            {0, edge_length, 0},
-            {0, edge_length, edge_length},
-            {0, 0,           edge_length},
-            {0, 0,           0}
-    };
-    SpacePoint vertices3[] = {
-            {0,           0,           0},
-            {edge_length, 0,           0},
-            {edge_length, edge_length, 0},
-            {0,           edge_length, 0},
-            {0,           0,           0}
-    };
-    SpacePoint vertices4[] = {
-            {edge_length, 0,           edge_length},
-            {edge_length, edge_length, edge_length},
-            {edge_length, edge_length, 0},
-            {edge_length, 0,           0},
-            {edge_length, 0,           edge_length}
-    };
-    SpacePoint vertices5[] = {
-            {0,           0,           edge_length},
-            {0,           edge_length, edge_length},
-            {edge_length, edge_length, edge_length},
-            {edge_length, 0,           edge_length},
-            {0,           0,           edge_length}
-    };
-    SpacePoint vertices6[] = {
-            {edge_length, edge_length, 0},
-            {edge_length, edge_length, edge_length},
-            {0,           edge_length, edge_length},
-            {0,           edge_length, 0},
-            {edge_length, edge_length, 0}
-    };
-
-    Face faces[] = {
-            Face(vertices1, 5),
-            Face(vertices2, 5),
-            Face(vertices3, 5),
-            Face(vertices4, 5),
-            Face(vertices5, 5),
-            Face(vertices6, 5)
-    };
-
-    Polyhedron cube(std::move(faces), 6);
-    return cube;
-}
-
-
-#endif //MIND_S_CRAWL_MAIN_LOGIC_CUH
+#endif //MINDS_CRAWL_MAIN_LOGIC_CUH

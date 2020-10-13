@@ -1,5 +1,5 @@
-#ifndef MIND_S_CRAWL_POLYHEDRON_CUH
-#define MIND_S_CRAWL_POLYHEDRON_CUH
+#ifndef MINDS_CRAWL_POLYHEDRON_CUH
+#define MINDS_CRAWL_POLYHEDRON_CUH
 
 
 #include "SpacePoint.cuh"
@@ -103,7 +103,7 @@ __host__ __device__ bool does_edge_belong_to_face(SpacePoint a, SpacePoint b, co
 
 /**
  * Finds a face adjacent to the given face along the edge represented by vertices
- * with indexes `vertex_id` and `vertex_id + 1` in `Face::vertices` array
+ * with indexes `vertex_id` and `(vertex_id + 1) % current_face->get_n_of_vertices()` in `Face::vertices` array
  *
  * @param vertex_id Index of edge vertex in `Face::vertices` array
  * @param current_face Pointer to the face to search next to
@@ -146,4 +146,4 @@ __host__ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint
                                                         Polyhedron *polyhedron);
 
 
-#endif //MIND_S_CRAWL_POLYHEDRON_CUH
+#endif //MINDS_CRAWL_POLYHEDRON_CUH

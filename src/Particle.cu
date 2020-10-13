@@ -1,5 +1,5 @@
 #include "Particle.cuh"
-#include "fucking_shit.cuh"
+#include "MapNode.cuh"
 #include "random_generator.cuh"
 #include "jones_constants.hpp"
 
@@ -37,8 +37,19 @@ __device__ void Particle::do_motor_behaviours()
         rotate(rand0to1() * 2 * M_PI);
     }
 
-    SpacePoint end = get_projected_vector_end(coordinates, coordinates + direction_vector,
-                                              map_node->get_face(), map_node->get_polyhedron());
+    SpacePoint end = coordinates + direction_vector; // New coordinates if particle doesn't change face
+    MapNode *node_neighbors[] = {map_node->get_left(), map_node->get_top(), map_node->get_right(),
+                                 map_node->get_bottom()};
+    for(MapNode *neighbor : node_neighbors)
+    {
+        if(neighbor->get_face() != map_node->get_face()) // If any of the neighbor nodes is on a different face
+        {
+            // Then particle might move to a different face, so project coordinates to the polyhedron's surface
+            end = get_projected_vector_end(coordinates, end, map_node->get_face(), map_node->get_polyhedron());
+            break;
+        }
+    }
+
     MapNode *new_node = find_nearest_mapnode(map_node->get_polyhedron(), end, map_node);
     if(new_node->attach_particle(this)) // If can reattach myself to that node
     {
