@@ -7,21 +7,19 @@
 #include "../jones_constants.hpp"
 #include "../external/random_generator.cuh"
 
-
-typedef bool(MapNode::*SetNodeMethod)(MapNode *);
-
-typedef MapNode *(MapNode::*GetNodeMethod)() const;
-
-
 namespace jc = jones_constants;
 
 
-__device__ double const mapnode_dist = 2 * jc::speed;
+__device__ const double mapnode_dist = 2 * jc::speed;
 
 
 __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
         polyhedron(polyhedron)
 {
+    typedef bool(MapNode::*SetNodeMethod)(MapNode *);
+    typedef MapNode *(MapNode::*GetNodeMethod)() const;
+
+
     /*
      * Maximum number of nodes
      * It must be greater than or equal to the real number of nodes (`n_of_nodes`) after creation node grid
