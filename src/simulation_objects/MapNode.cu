@@ -2,7 +2,7 @@
 
 #include "MapNode.cuh"
 #include "Particle.cuh"
-#include "Polyhedron.cuh"
+#include "geometric/Polyhedron.cuh"
 
 
 __host__ __device__ MapNode::MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates) :

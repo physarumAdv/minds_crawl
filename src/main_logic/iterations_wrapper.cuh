@@ -9,14 +9,14 @@
 
 #include <cstdio>
 
-#include "SimulationMap.cuh"
-#include "Polyhedron.cuh"
-#include "MapNode.cuh"
-#include "Particle.cuh"
+#include "../simulation_objects/SimulationMap.cuh"
+#include "../simulation_objects/geometric/Polyhedron.cuh"
+#include "../simulation_objects/MapNode.cuh"
+#include "../simulation_objects/Particle.cuh"
 #include "simulation_logic.cuh"
-#include "random_generator.cuh"
-#include "jones_constants.hpp"
-#include "common.cuh"
+#include "../external/random_generator.cuh"
+#include "../jones_constants.hpp"
+#include "../common.cuh"
 
 namespace jc = jones_constants;
 

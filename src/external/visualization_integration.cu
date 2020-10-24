@@ -3,7 +3,7 @@
 #include <string>
 
 #include "visualization_integration.cuh"
-#include "Particle.cuh"
+#include "../simulation_objects/Particle.cuh"
 
 
 __host__ std::string get_visualization_endpoint()

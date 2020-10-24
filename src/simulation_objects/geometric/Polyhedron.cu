@@ -6,7 +6,7 @@
 #include <utility>
 
 #include "Polyhedron.cuh"
-#include "common.cuh"
+#include "../../common.cuh"
 
 
 __host__ __device__ Polyhedron::Polyhedron(Face *faces, int n_of_faces) :

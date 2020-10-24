@@ -3,8 +3,8 @@
 
 #include "simulation_logic.cuh"
 #include "iterations_wrapper.cuh"
-#include "visualization_integration.cuh"
-#include "random_generator.cuh"
+#include "../external/visualization_integration.cuh"
+#include "../external/random_generator.cuh"
 
 
 const int cuda_block_size = 256;

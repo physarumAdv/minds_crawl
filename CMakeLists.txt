@@ -8,19 +8,21 @@ set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_CXX_STANDARD 14)
 
 
-set(SOURCES src/simulation_logic.cu src/random_generator.cu src/SimulationMap.cu src/Polyhedron.cu src/Particle.cu
-        src/MapNode.cu src/SpacePoint.cu src/Face.cu  src/visualization_integration.cu)
+set(SOURCES src/main_logic/simulation_logic.cu src/external/random_generator.cu src/simulation_objects/SimulationMap.cu
+        src/simulation_objects/geometric/Polyhedron.cu src/simulation_objects/Particle.cu
+        src/simulation_objects/MapNode.cu src/simulation_objects/geometric/SpacePoint.cu
+        src/simulation_objects/geometric/Face.cu src/external/visualization_integration.cu)
 
 option(COMPILE_FOR_CPU "Make produced executable run on CPU instead of GPU" OFF)
 
 if(COMPILE_FOR_CPU)
-    list(APPEND SOURCES src/main.cpp)
+    list(APPEND SOURCES src/main_logic/main.cpp)
 
     set_source_files_properties(${SOURCES} PROPERTIES LANGUAGE CXX)
     add_definitions(-x c++)
     add_definitions(-DCOMPILE_FOR_CPU -D__host__= -D__device__= -D__global__=)
 else()
-    list(APPEND SOURCES src/main.cu)
+    list(APPEND SOURCES src/main_logic/main.cu)
 endif()
 
 add_executable(minds_crawl ${SOURCES})

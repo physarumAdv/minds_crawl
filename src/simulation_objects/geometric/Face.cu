@@ -1,9 +1,9 @@
 #include <utility>
 
 #include "Face.cuh"
-#include "MapNode.cuh"
+#include "../MapNode.cuh"
 #include "Polyhedron.cuh"
-#include "common.cuh"
+#include "../../common.cuh"
 
 
 __host__ __device__ SpacePoint calculate_normal(const SpacePoint *vertices)

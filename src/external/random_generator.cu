@@ -10,7 +10,7 @@ std::uniform_real_distribution<double> distribution(0., 1.);
 
 
 #include "curand_kernel.h"
-#include "common.cuh"
+#include "../common.cuh"
 
 #include "random_generator.cuh"
 

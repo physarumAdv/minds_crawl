@@ -3,7 +3,7 @@
 
 #include "simulation_logic.cuh"
 #include "iterations_wrapper.cuh"
-#include "visualization_integration.cuh"
+#include "../external/visualization_integration.cuh"
 
 
 void wrapped_run_iteration_project_nutrients(SimulationMap *const simulation_map, const int *const iteration_number)
