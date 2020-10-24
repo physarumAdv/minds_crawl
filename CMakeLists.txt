@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(SOURCES src/main_logic/simulation_logic.cu src/external/random_generator.cu src/simulation_objects/SimulationMap.cu
         src/simulation_objects/geometric/Polyhedron.cu src/simulation_objects/Particle.cu
         src/simulation_objects/MapNode.cu src/simulation_objects/geometric/SpacePoint.cu
-        src/simulation_objects/geometric/Face.cu src/external/visualization_integration.cu)
+        src/simulation_objects/geometric/Face.cu src/external/visualization_integration.cu src/external/HashSet.cuh)
 
 option(COMPILE_FOR_CPU "Make produced executable run on CPU instead of GPU" OFF)
 
