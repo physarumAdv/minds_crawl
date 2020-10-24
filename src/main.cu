@@ -3,6 +3,7 @@
 
 #include "simulation_logic.cuh"
 #include "iterations_wrapper.cuh"
+#include "visualization_integration.cuh"
 #include "random_generator.cuh"
 
 
@@ -82,6 +83,16 @@ __host__ inline T get_device_variable_value(T *source)
 
 __host__ int main()
 {
+    {
+        int count = 0;
+        cudaGetDeviceCount(&count);
+        if(count <= 0)
+        {
+            std::cerr << "No CUDA-capable GPU found. Exiting\n";
+            return cudaErrorNoDevice;
+        }
+    }
+
     // Initializing cuRAND:
     init_rand<<<1, 1>>>(time(nullptr));
 
@@ -126,6 +137,9 @@ __host__ int main()
     cudaStreamCreate(&iterations_stream);
 
 
+    std::string visualization_endpoint = get_visualization_endpoint();
+
+
     const int cuda_grid_size = (n_of_nodes + cuda_block_size - 1) / cuda_block_size;
 
     if(cudaPeekAtLastError() == cudaSuccess)
@@ -133,9 +147,10 @@ __host__ int main()
         while(true)
         {
             // (implicit synchronization)
+            // THIS COPIED ARRAY WILL HAVE ALL THE POINTERS INVALIDATED!!!
             cudaMemcpy((void *)nodes, (void *)nodes_d, sizeof(MapNode) * n_of_nodes, cudaMemcpyDeviceToHost);
 
-            if(cudaPeekAtLastError()) // After synchronization caused by cudaMemcpy
+            if(cudaPeekAtLastError() != cudaSuccess) // After synchronization caused by cudaMemcpy
             {
                 break;
             }
@@ -145,14 +160,12 @@ __host__ int main()
                 f<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map, iteration_number);
             }
 
-            // <redrawing here>
+            if(!send_particles_to_visualization(visualization_endpoint, nodes, n_of_nodes))
+            {
+                std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
+                break;
+            }
         }
-    }
-
-    cudaError_t error = cudaPeekAtLastError();
-    if(error != cudaSuccess)
-    {
-        std::cout << cudaGetErrorName(error) << ": " << cudaGetErrorString(error) << std::endl;
     }
 
     cudaFree(nodes);
@@ -160,4 +173,11 @@ __host__ int main()
     destruct_simulation_objects<<<1, 1>>>(simulation_map);
     cudaFree(polyhedron);
     cudaFree(simulation_map);
+
+    cudaError_t error = cudaPeekAtLastError();
+    if(error != cudaSuccess)
+    {
+        std::cerr << cudaGetErrorName(error) << ": " << cudaGetErrorString(error) << std::endl;
+    }
+    return error;
 }

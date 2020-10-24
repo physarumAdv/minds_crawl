@@ -1,7 +1,9 @@
+#include <iostream>
 #include <cstdlib>
 
 #include "simulation_logic.cuh"
 #include "iterations_wrapper.cuh"
+#include "visualization_integration.cuh"
 
 
 void wrapped_run_iteration_project_nutrients(SimulationMap *const simulation_map, const int *const iteration_number)
@@ -46,6 +48,10 @@ int main()
                                             (RunIterationFunc)wrapped_run_iteration_process_particles,
                                             wrapped_run_iteration_cleanup};
 
+
+    std::string visualization_endpoint = get_visualization_endpoint();
+
+
     while(true)
     {
         for(RunIterationFunc f : iteration_runners)
@@ -53,7 +59,12 @@ int main()
             f(simulation_map, &iteration_number);
         }
 
-        // <redrawing here>
+        if(!send_particles_to_visualization(visualization_endpoint, simulation_map->nodes,
+                                            simulation_map->get_n_of_nodes()))
+        {
+            std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
+            break;
+        }
     }
 
     destruct_simulation_objects(simulation_map);
