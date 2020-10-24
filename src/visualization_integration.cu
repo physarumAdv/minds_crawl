@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 
 #include "visualization_integration.cuh"
+#include "Particle.cuh"
 
 
 __host__ std::string get_visualization_endpoint()
@@ -39,10 +41,10 @@ __host__ bool send_particles_to_visualization(const std::string &url, MapNode *n
         if(!nodes[i].does_contain_particle())
             continue;
 
-        SpacePoint coords = nodes[i].get_coordinates();
-        x.push_back(coords.x);
-        y.push_back(coords.y);
-        z.push_back(coords.z);
+        Particle *p = nodes[i].get_particle();
+        x.push_back(p->coordinates.x);
+        y.push_back(p->coordinates.y);
+        z.push_back(p->coordinates.z);
     }
 
     std::string body = "{";
