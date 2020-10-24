@@ -2,10 +2,10 @@
 #include <utility>
 
 #include "SimulationMap.cuh"
-#include "Polyhedron.cuh"
-#include "Face.cuh"
-#include "jones_constants.hpp"
-#include "random_generator.cuh"
+#include "geometric/Polyhedron.cuh"
+#include "geometric/Face.cuh"
+#include "../jones_constants.hpp"
+#include "../external/random_generator.cuh"
 
 
 typedef bool(MapNode::*SetNodeMethod)(MapNode *);

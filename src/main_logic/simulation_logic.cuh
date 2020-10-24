@@ -2,9 +2,9 @@
 #define MINDS_CRAWL_SIMULATION_LOGIC_CUH
 
 
-#include "MapNode.cuh"
-#include "SimulationMap.cuh"
-#include "common.cuh"
+#include "../simulation_objects/MapNode.cuh"
+#include "../simulation_objects/SimulationMap.cuh"
+#include "../common.cuh"
 
 
 /**

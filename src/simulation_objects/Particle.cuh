@@ -2,9 +2,9 @@
 #define MINDS_CRAWL_PARTICLE_CUH
 
 
-#include "Face.cuh"
-#include "Polyhedron.cuh"
-#include "SpacePoint.cuh"
+#include "geometric/Face.cuh"
+#include "geometric/Polyhedron.cuh"
+#include "geometric/SpacePoint.cuh"
 
 class MapNode;
 

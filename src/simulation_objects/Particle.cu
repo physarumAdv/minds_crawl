@@ -1,7 +1,7 @@
 #include "Particle.cuh"
 #include "MapNode.cuh"
-#include "random_generator.cuh"
-#include "jones_constants.hpp"
+#include "../external/random_generator.cuh"
+#include "../jones_constants.hpp"
 
 namespace jc = jones_constants;
 

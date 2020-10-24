@@ -2,9 +2,9 @@
 #define MINDS_CRAWL_VISUALIZATION_INTEGRATION_CUH
 
 
-#include "../lib/HTTPRequest/include/HTTPRequest.hpp"
+#include "../../lib/HTTPRequest/include/HTTPRequest.hpp"
 
-#include "MapNode.cuh"
+#include "../simulation_objects/MapNode.cuh"
 #include <string>
 
 

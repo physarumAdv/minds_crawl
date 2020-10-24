@@ -3,8 +3,8 @@
 
 
 #include "MapNode.cuh"
-#include "simulation_logic.cuh"
-#include "common.cuh"
+#include "../main_logic/simulation_logic.cuh"
+#include "../common.cuh"
 
 
 /// Object describing a simulation's map

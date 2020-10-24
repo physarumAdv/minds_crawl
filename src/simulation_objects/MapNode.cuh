@@ -2,9 +2,9 @@
 #define MINDS_CRAWL_MAPNODE_CUH
 
 
-#include "common.cuh"
-#include "SpacePoint.cuh"
-#include "Face.cuh"
+#include "../common.cuh"
+#include "geometric/SpacePoint.cuh"
+#include "geometric/Face.cuh"
 
 class Particle;
 

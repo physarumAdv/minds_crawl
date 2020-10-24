@@ -5,9 +5,9 @@
 #include <cstdio>
 
 #include "simulation_logic.cuh"
-#include "random_generator.cuh"
-#include "Particle.cuh"
-#include "jones_constants.hpp"
+#include "../external/random_generator.cuh"
+#include "../simulation_objects/Particle.cuh"
+#include "../jones_constants.hpp"
 
 namespace jc = jones_constants;
 
