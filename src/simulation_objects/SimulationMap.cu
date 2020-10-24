@@ -12,6 +12,8 @@ namespace jc = jones_constants;
 
 __device__ const double mapnode_dist = 2 * jc::speed;
 
+__host__ __device__ static unsigned long long hash(const SpacePoint &value);
+
 
 __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
         polyhedron(polyhedron)
@@ -262,4 +264,28 @@ __global__ void get_n_of_nodes(const SimulationMap *const simulation_map, int *r
     STOP_ALL_THREADS_EXCEPT_FIRST;
 
     *return_value = simulation_map->get_n_of_nodes();
+}
+
+
+__host__ __device__ static unsigned long long hash(const double &value)
+{
+    static_assert(sizeof(double) == sizeof(unsigned long long),
+                  "Hash function implementation won't work correctly if `sizeof(double)` is not equal to "
+                  "`sizeof(unsigned long long)`");
+
+    union
+    {
+        double d;
+        unsigned long long ull;
+    } hasher{value};
+    return hasher.ull;
+}
+
+__host__ __device__ static unsigned long long hash(const SpacePoint &value)
+{
+    unsigned long long ans = 17;
+    ans = ans * 31 + hash(value.x);
+    ans = ans * 31 + hash(value.y);
+    ans = ans * 31 + hash(value.z);
+    return ans;
 }
