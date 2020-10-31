@@ -132,12 +132,13 @@ __host__ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePo
 
     for(int i = 0; i < n_of_vertices; ++i)
     {
-        SpacePoint intersection = line_intersection(current_face->get_vertices()[i],
-                                                    current_face->get_vertices()[(i + 1) % n_of_vertices], a, b);
-        if(intersection != origin && is_in_segment(a, b, intersection) &&
-                is_in_segment(current_face->get_vertices()[i], current_face->get_vertices()[(i + 1) % n_of_vertices],
-                              intersection) &&
-                get_distance(intersection, a) > eps)
+        SpacePoint intersection = origin;
+        bool is_parallel = line_intersection(current_face->get_vertices()[i],
+                                             current_face->get_vertices()[(i + 1) % n_of_vertices],
+                                             a, b, &intersection);
+        if(!is_parallel && is_in_segment(a, b, intersection) &&
+           is_in_segment(current_face->get_vertices()[i], current_face->get_vertices()[(i + 1) % n_of_vertices],
+                         intersection) && get_distance(intersection, a) > eps)
         {
             if(intersection_edge != nullptr)
             {
