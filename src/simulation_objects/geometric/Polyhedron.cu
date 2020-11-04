@@ -133,9 +133,9 @@ __host__ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePo
     for(int i = 0; i < n_of_vertices; ++i)
     {
         SpacePoint intersection = origin;
-        bool is_parallel = line_intersection(current_face->get_vertices()[i],
-                                             current_face->get_vertices()[(i + 1) % n_of_vertices],
-                                             a, b, &intersection);
+        bool is_parallel = do_lines_intersect(current_face->get_vertices()[i],
+                                              current_face->get_vertices()[(i + 1) % n_of_vertices],
+                                              a, b, &intersection);
         if(!is_parallel && is_in_segment(a, b, intersection) &&
            is_in_segment(current_face->get_vertices()[i], current_face->get_vertices()[(i + 1) % n_of_vertices],
                          intersection) && get_distance(intersection, a) > eps)
@@ -150,11 +150,9 @@ __host__ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePo
     return b;
 }
 
-__host__ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, Face *current_face,
-                                                        Polyhedron *polyhedron)
+__host__ __device__ SpacePoint get_projected_vector_end(SpacePoint vector_start, SpacePoint vector_end,
+                                                        Face *current_face, Polyhedron *polyhedron)
 {
-    SpacePoint vector_start = a;
-    SpacePoint vector_end = b;
     int intersection_edge_vertex_id = 0;
     SpacePoint intersection = find_intersection_with_edge(vector_start, vector_end, current_face,
                                                           &intersection_edge_vertex_id);

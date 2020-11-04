@@ -1,7 +1,8 @@
 #ifdef COMPILE_FOR_CPU
 #include <cmath>
-#include <utility>
 #endif //COMPILE_FOR_CPU
+
+#include <utility>
 
 #include "SpacePoint.cuh"
 
@@ -65,7 +66,7 @@ __host__ __device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint 
     double angle_cos = cos(angle);
     SpacePoint radius = b - a;
     return (1 - angle_cos) * (normal * radius) * normal + angle_cos * radius +
-            sin(angle) * (normal % radius) + a;
+           sin(angle) * (normal % radius) + a;
 }
 
 
@@ -74,8 +75,8 @@ __host__ __device__ double get_distance(SpacePoint a, SpacePoint b)
     return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z));
 }
 
-__host__ __device__ bool line_intersection(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d,
-                                           SpacePoint *intersection)
+__host__ __device__ bool do_lines_intersect(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d,
+                                            SpacePoint *intersection)
 {
     SpacePoint direction_vectorAB = (b - a) / get_distance(b - a, origin);
     SpacePoint direction_vectorCD = (d - c) / get_distance(d - c, origin);

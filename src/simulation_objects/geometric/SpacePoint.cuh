@@ -2,8 +2,6 @@
 #define MINDS_CRAWL_SPACEPOINT_CUH
 
 
-#include <utility>
-
 /// Object describing a point in 3d space
 struct SpacePoint
 {
@@ -152,8 +150,8 @@ __host__ __device__ double get_distance(SpacePoint a, SpacePoint b);
  *
  * @returns `true` if lines are parallel, `false` otherwise
  */
-__host__ __device__ bool line_intersection(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d,
-                                           SpacePoint *intersection);
+__host__ __device__ bool do_lines_intersect(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d,
+                                            SpacePoint *intersection);
 
 /**
  * Checks if the point C is in segment AB
