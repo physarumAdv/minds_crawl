@@ -150,7 +150,7 @@ __host__ __device__ double get_distance(SpacePoint a, SpacePoint b);
  *
  * @returns `true` if lines are parallel, `false` otherwise
  */
-__host__ __device__ bool do_lines_intersect(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d,
+__host__ __device__ bool are_lines_parallel(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d,
                                             SpacePoint *intersection);
 
 /**

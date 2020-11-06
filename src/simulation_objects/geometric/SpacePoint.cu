@@ -2,8 +2,6 @@
 #include <cmath>
 #endif //COMPILE_FOR_CPU
 
-#include <utility>
-
 #include "SpacePoint.cuh"
 
 
@@ -75,7 +73,7 @@ __host__ __device__ double get_distance(SpacePoint a, SpacePoint b)
     return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z));
 }
 
-__host__ __device__ bool do_lines_intersect(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d,
+__host__ __device__ bool are_lines_parallel(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d,
                                             SpacePoint *intersection)
 {
     SpacePoint direction_vectorAB = (b - a) / get_distance(b - a, origin);
