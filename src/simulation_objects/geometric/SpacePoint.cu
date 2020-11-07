@@ -64,7 +64,7 @@ __host__ __device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint 
     double angle_cos = cos(angle);
     SpacePoint radius = b - a;
     return (1 - angle_cos) * (normal * radius) * normal + angle_cos * radius +
-            sin(angle) * (normal % radius) + a;
+           sin(angle) * (normal % radius) + a;
 }
 
 
@@ -73,7 +73,8 @@ __host__ __device__ double get_distance(SpacePoint a, SpacePoint b)
     return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z));
 }
 
-__host__ __device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d)
+__host__ __device__ bool are_lines_parallel(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d,
+                                            SpacePoint *intersection)
 {
     SpacePoint direction_vectorAB = (b - a) / get_distance(b - a, origin);
     SpacePoint direction_vectorCD = (d - c) / get_distance(d - c, origin);
@@ -85,14 +86,15 @@ __host__ __device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, Spa
     double k_origin_dist = get_distance(k, origin);
 
     if(h_origin_dist < eps || k_origin_dist < eps)
-        return origin;
+        return true;
     else
     {
         SpacePoint l = direction_vectorAB * h_origin_dist / k_origin_dist;
         if((h * k) / (h_origin_dist * k_origin_dist) > 0)
-            return a + l;
+            *intersection = a + l;
         else
-            return a - l;
+            *intersection = a - l;
+        return false;
     }
 }
 

@@ -139,16 +139,19 @@ __host__ __device__ SpacePoint relative_point_rotation(SpacePoint a, SpacePoint 
 __host__ __device__ double get_distance(SpacePoint a, SpacePoint b);
 
 /**
- * Returns the point of lines AB and CD intersection or origin if they are parallel
+ * Checks whether lines AB and CD are parallel or not
+ * Saves point of two lines intersection to `intersection` if lines are not parallel
  *
  * @param a Point A belongs to the line AB
  * @param b Point B belongs to the line AB
  * @param c Point C belongs to the line CD
  * @param d Point D belongs to the line CD
+ * @param intersection Pointer to `SpacePoint` where the point of lines intersection save to
  *
- * @returns The point of two lines intersection or origin if they are parallel
+ * @returns `true` if lines are parallel, `false` otherwise
  */
-__host__ __device__ SpacePoint line_intersection(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d);
+__host__ __device__ bool are_lines_parallel(SpacePoint a, SpacePoint b, SpacePoint c, SpacePoint d,
+                                            SpacePoint *intersection);
 
 /**
  * Checks if the point C is in segment AB
