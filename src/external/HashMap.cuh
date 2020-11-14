@@ -39,6 +39,13 @@ public:
             sizes_of_buckets[i] = 0;
     }
 
+    __host__ __device__ ~HashMap()
+    {
+        free(sizes_of_buckets);
+        free(keys);
+        free(values);
+    }
+
     /**
      * Set value in container by its key. If element with the given key is not in the container, it is created
      *
