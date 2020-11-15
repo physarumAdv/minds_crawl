@@ -24,9 +24,7 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
      * Maximum number of nodes
      * It must be greater than or equal to the real number of nodes (`n_of_nodes`) after the node grid creation
      */
-    int max_number_of_nodes = 2 * polyhedron->calculate_square_of_surface() / (mapnode_dist * mapnode_dist);
-
-    bool create_new_nodes = true;  // New nodes are allowed to be created
+    const int max_number_of_nodes = 2 * polyhedron->calculate_square_of_surface() / (mapnode_dist * mapnode_dist);
 
     Face *start_face = &polyhedron->get_faces()[0];
     SpacePoint start_node_coordinates = (start_face->get_vertices()[0] + start_face->get_vertices()[1] +
@@ -82,6 +80,8 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
             &MapNode::set_bottom,
             &MapNode::set_right
     };
+
+    bool create_new_nodes = true;  // New nodes are allowed to be created
 
     // Creating new nodes while it is possible, some nodes may have less neighbors than four
     for(int current_node_id = 0; current_node_id < n_of_nodes; ++current_node_id)
@@ -151,6 +151,19 @@ __device__ SimulationMap::~SimulationMap()
 }
 
 
+__device__ int SimulationMap::get_n_of_nodes() const
+{
+    return this->n_of_nodes;
+}
+
+__global__ void get_n_of_nodes(const SimulationMap *const simulation_map, int *return_value)
+{
+    STOP_ALL_THREADS_EXCEPT_FIRST;
+
+    *return_value = simulation_map->get_n_of_nodes();
+}
+
+
 __device__ long SimulationMap::find_face_index(Face *face) const
 {
     long index = face - &polyhedron->get_faces()[0];
@@ -181,12 +194,15 @@ __device__ SpacePoint SimulationMap::calculate_neighbor_node_coordinates(int cur
 __device__ int SimulationMap::find_index_of_nearest_node(SpacePoint dest) const
 {
     int nearest_mapnode_id = 0;
-    for(int neighbor = 0; neighbor < n_of_nodes; ++neighbor)
+    double best_distance = get_distance(nodes[0].get_coordinates(), dest);
+
+    for(int neighbor = 2; neighbor < n_of_nodes; ++neighbor)
     {
-        if(get_distance(nodes[neighbor].get_coordinates(), dest) <
-           get_distance(nodes[nearest_mapnode_id].get_coordinates(), dest))
+        double current_distance = get_distance(nodes[neighbor].get_coordinates(), dest);
+        if(current_distance < best_distance)
         {
             nearest_mapnode_id = neighbor;
+            best_distance = current_distance;
         }
     }
     return nearest_mapnode_id;
@@ -249,21 +265,7 @@ __device__ int SimulationMap::get_neighbor_node_id(int current_node_id, SpacePoi
 
         does_face_have_nodes[find_face_index(next_face)] = true;
 
-        n_of_nodes++;
-        return n_of_nodes - 1;
+        return n_of_nodes++;
     }
     return -1;
-}
-
-
-__device__ int SimulationMap::get_n_of_nodes() const
-{
-    return this->n_of_nodes;
-}
-
-__global__ void get_n_of_nodes(const SimulationMap *const simulation_map, int *return_value)
-{
-    STOP_ALL_THREADS_EXCEPT_FIRST;
-
-    *return_value = simulation_map->get_n_of_nodes();
 }

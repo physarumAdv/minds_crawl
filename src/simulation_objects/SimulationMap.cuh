@@ -113,7 +113,8 @@ private:
 
 
     /**
-     * Counts direction vector from neighbor of current node to its top neighbor and sets it to `nodes_direction` array
+     * Calculates direction vector from neighbor of current node to its top neighbor and stores it in the
+     * `nodes_direction` array
      *
      * @param current_node_id Index of the node whose neighbor was searched
      * @param neighbor_node_id Index of neighbor node
