@@ -114,11 +114,12 @@ private:
 
     /**
      * Calculates direction vector from neighbor of current node to its top neighbor and stores it in the
-     * `nodes_direction` array
+     * `top_neighbor_directions_for_faces` array, unless it is already calculated
      *
      * @param current_node_id Index of the node whose neighbor was searched
      * @param neighbor_node_id Index of neighbor node
-     * @param top_neighbor_directions_for_faces Array of direction vectors to the top neighbor node from each node
+     * @param top_neighbor_directions_for_faces Array of direction vectors to top neighbor nodes for each
+     *      polyhedron face
      * @param angle Angle between the top neighbor node and the neighbor node whose index is searched
      *              relative to current node, clockwise is positive direction
      */
@@ -140,7 +141,8 @@ private:
      * Returns `-1` if node cannot be created and `create_new_nodes` is `true`
      *
      * @param current_node_id Index of the node whose neighbor is searched
-     * @param top_neighbor_directions_for_faces Array of direction vectors to the top neighbor node from each node
+     * @param top_neighbor_directions_for_faces Array of direction vectors to top neighbor nodes for each
+     *      polyhedron face
      * @param angle Angle between the top neighbor node and the neighbor node whose index is searched
      *              relative to current node, clockwise is positive direction
      * @param does_face_have_nodes Boolean array whether the faces have nodes or not
@@ -148,8 +150,8 @@ private:
      *
      * @returns The index of neighbor node if it has existed or was created, `-1` otherwise
      */
-    __device__ int get_neighbor_node_id(int current_node_id, SpacePoint *top_neighbor_directions_for_faces, double angle,
-                                        bool *does_face_have_nodes, bool create_new_nodes);
+    __device__ int get_neighbor_node_id(int current_node_id, SpacePoint *top_neighbor_directions_for_faces,
+                                        double angle, bool *does_face_have_nodes, bool create_new_nodes);
 
 
     /// Pointer to the polyhedron simulation is running on
