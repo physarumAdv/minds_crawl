@@ -74,11 +74,11 @@ private:
      * @param face Pointer to a`Face` to find index of
      *
      * @returns Index of given face in `SimulationMap::polyhedron->faces` array or
-     *          `-1` if `face` is not a pointer to an element of `SimulationMap::polyhedron->faces` array
+     *      `-1` if `face` is not a pointer to an element of `SimulationMap::polyhedron->faces` array
      *
      * @warning This function will find the index of given face in `SimulationMap::polyhedron->faces` array
-     *          <b>only</b> if `face` is a pointer to an element of this array,
-     *          not if `face` is a pointer to a copy of array element
+     *      <b>only</b> if `face` is a pointer to an element of this array,
+     *      not if `face` is a pointer to a copy of array element
      */
     __device__ long find_face_index(Face *face) const;
 
@@ -88,12 +88,14 @@ private:
      *
      * @param current_node_id Index of the node whose neighbor is searched
      * @param top_direction Direction vector from current node to its top neighbor
-     * @param angle Angle between the top neighbor node and the neighbor node whose index is searched
-     *              relative to current node, clockwise is positive direction
+     * @param angle Angle between two vectors, both having the initial point at current node's coordinates,
+     *      the first vector having the terminal point at the potential top neighbor node's coordinates and
+     *      the other vector having the terminal point at the potential neighbor node's coordinates,
+     *      clockwise is positive direction
      * @param do_projection If `true`, counted coordinates will be projected on polyhedron, otherwise they will not
      *
      * @returns Coordinates of neighbor node projected on polyhedron if `do_projection` is `true`,
-     *          coordinates of neighbor node without projection on polyhedron otherwise
+     *      coordinates of neighbor node without projection on polyhedron otherwise
      */
     __device__ SpacePoint calculate_neighbor_node_coordinates(int current_node_id, SpacePoint top_direction,
                                                               double angle, bool do_projection) const;
@@ -114,14 +116,16 @@ private:
 
     /**
      * Calculates direction vector from neighbor of current node to its top neighbor and stores it in the
-     * `top_neighbor_directions_for_faces` array, unless it is already calculated
+     * `top_neighbor_directions_for_faces` array, unless it is already stored there
      *
-     * @param current_node_id Index of the node whose neighbor was searched
-     * @param neighbor_node_id Index of neighbor node
+     * @param current_node_id Index of current node
+     * @param neighbor_node_id Index of node neighboring to current
      * @param top_neighbor_directions_for_faces Array of direction vectors to top neighbor nodes for each
      *      polyhedron face
-     * @param angle Angle between the top neighbor node and the neighbor node whose index is searched
-     *              relative to current node, clockwise is positive direction
+     * @param angle Angle between two vectors, both having the initial point at current node's coordinates,
+     *      the first vector having the terminal point at the potential top neighbor node's coordinates and
+     *      the other vector having the terminal point at the given neighbor node's coordinates,
+     *      clockwise is positive direction
      */
     __device__ void set_direction_to_top_neighbor(int current_node_id, int neighbor_node_id,
                                                   SpacePoint *top_neighbor_directions_for_faces, double angle) const;
@@ -143,8 +147,10 @@ private:
      * @param current_node_id Index of the node whose neighbor is searched
      * @param top_neighbor_directions_for_faces Array of direction vectors to top neighbor nodes for each
      *      polyhedron face
-     * @param angle Angle between the top neighbor node and the neighbor node whose index is searched
-     *              relative to current node, clockwise is positive direction
+     * @param angle Angle between two vectors, both having the initial point at current node's coordinates,
+     *      the first vector having the terminal point at the potential top neighbor node's coordinates and
+     *      the other vector having the terminal point at the potential neighbor node's coordinates,
+     *      clockwise is positive direction
      * @param does_face_have_nodes Boolean array whether the faces have nodes or not
      * @param create_new_nodes `true` if new node is allowed to be created, `false` otherwise
      *
