@@ -7,12 +7,6 @@
 #include "../jones_constants.hpp"
 #include "../external/random_generator.cuh"
 
-
-typedef bool(MapNode::*SetNodeMethod)(MapNode *);
-
-typedef MapNode *(MapNode::*GetNodeMethod)() const;
-
-
 namespace jc = jones_constants;
 
 
@@ -22,9 +16,13 @@ __device__ double const mapnode_dist = 2 * jc::speed;
 __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
         polyhedron(polyhedron)
 {
-    /*
+    typedef bool(MapNode::*SetNodeMethod)(MapNode *);
+    typedef MapNode *(MapNode::*GetNodeMethod)() const;
+
+
+    /**
      * Maximum number of nodes
-     * It must be greater than or equal to the real number of nodes (`n_of_nodes`) after creation node grid
+     * It must be greater than or equal to the real number of nodes (`n_of_nodes`) after the node grid creation
      */
     int max_number_of_nodes = 2 * polyhedron->calculate_square_of_surface() / (mapnode_dist * mapnode_dist);
 
@@ -85,7 +83,7 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
             &MapNode::set_right
     };
 
-    // Creating new nodes until it can be done, some nodes may have less neighbors than four
+    // Creating new nodes while it is possible, some nodes may have less neighbors than four
     for(int current_node_id = 0; current_node_id < n_of_nodes; ++current_node_id)
     {
         MapNode &current_node = nodes[current_node_id];
@@ -162,8 +160,8 @@ __device__ long SimulationMap::find_face_index(Face *face) const
 }
 
 
-__device__ SpacePoint SimulationMap::count_neighbor_node_coordinates(int current_node_id, SpacePoint top_direction,
-                                                                     double angle, bool do_projection) const
+__device__ SpacePoint SimulationMap::calculate_neighbor_node_coordinates(int current_node_id, SpacePoint top_direction,
+                                                                         double angle, bool do_projection) const
 {
     MapNode &current_node = nodes[current_node_id];
     Face *current_face = current_node.get_face();
@@ -209,9 +207,10 @@ __device__ void SimulationMap::set_direction_to_top_neighbor(int current_node_id
     {
         SpacePoint new_direction = neighbor_node.get_coordinates() -
                                    find_intersection_with_edge(current_node.get_coordinates(),
-                                                               count_neighbor_node_coordinates(current_node_id,
-                                                                                               nodes_directions[current_node_id],
-                                                                                               angle, false),
+                                                               calculate_neighbor_node_coordinates(
+                                                                       current_node_id,
+                                                                       nodes_directions[current_node_id],
+                                                                       angle, false),
                                                                current_node.get_face());
         new_direction = relative_point_rotation(neighbor_node.get_coordinates(),
                                                 neighbor_node.get_coordinates() + new_direction,
@@ -229,9 +228,9 @@ __device__ int SimulationMap::get_neighbor_node_id(int current_node_id, SpacePoi
     Face *current_face = nodes[current_node_id].get_face();
 
     // Hypothetical coordinates of neighbor node counted using direction to the top neighbor and `angle`
-    SpacePoint neighbor_coordinates = count_neighbor_node_coordinates(current_node_id,
-                                                                      nodes_directions[current_node_id], angle,
-                                                                      true);
+    SpacePoint neighbor_coordinates = calculate_neighbor_node_coordinates(current_node_id,
+                                                                          nodes_directions[current_node_id], angle,
+                                                                          true);
     Face *next_face = polyhedron->find_face_by_point(neighbor_coordinates);
     int nearest_node_id = find_index_of_nearest_node(neighbor_coordinates);
     if(!create_new_nodes || (next_face == nodes[nearest_node_id].get_face() &&

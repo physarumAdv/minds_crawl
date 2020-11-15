@@ -95,9 +95,8 @@ private:
      * @returns Coordinates of neighbor node projected on polyhedron if `do_projection` is `true`,
      *          coordinates of neighbor node without projection on polyhedron otherwise
      */
-    __device__ SpacePoint count_neighbor_node_coordinates(int current_node_id, SpacePoint top_direction, double angle,
-                                                          bool do_projection) const;
-
+    __device__ SpacePoint calculate_neighbor_node_coordinates(int current_node_id, SpacePoint top_direction,
+                                                              double angle, bool do_projection) const;
 
     /**
      * Returns the index of the nearest node to the given point in `nodes` array
