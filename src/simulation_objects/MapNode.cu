@@ -121,6 +121,7 @@ __host__ __device__ Polyhedron *MapNode::get_polyhedron() const
     return polyhedron;
 }
 
+// TODO: would be cool to also have `get_face_id` (useful for `SimulationMap`)
 __host__ __device__ Face *MapNode::get_face() const
 {
     return polyhedron_face;
