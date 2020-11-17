@@ -137,7 +137,7 @@ __host__ int main()
     cudaStreamCreate(&iterations_stream);
 
 
-    std::string visualization_endpoint = get_visualization_endpoint();
+    std::vector<std::string> visualization_endpoint = get_visualization_endpoint();
 
 
     const int cuda_grid_size = (n_of_nodes + cuda_block_size - 1) / cuda_block_size;
@@ -160,7 +160,7 @@ __host__ int main()
                 f<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map, iteration_number);
             }
 
-            if(!send_particles_to_visualization(visualization_endpoint, nodes, n_of_nodes))
+            if(!send_particles_to_visualization(visualization_endpoint, nodes, n_of_nodes, polyhedron, polyhedron->get_n_of_faces()))
             {
                 std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
                 break;
