@@ -4,14 +4,17 @@
 
 #include "visualization_integration.cuh"
 #include "../simulation_objects/Particle.cuh"
+#include "../../../../../../../usr/include/c++/9/string"
+#include "../../../../../../../usr/include/c++/9/vector"
 
 
-__host__ std::string get_visualization_endpoint()
+__host__ std::vector<std::string> get_visualization_endpoint()
 {
     std::ifstream f("config/visualization_endpoint.txt", std::ios::in);
-    std::string url;
-    getline(f, url);
-    return url;
+    std::string particles_url, poly_url;
+    getline(f, particles_url);
+    getline(f, poly_url);
+    return {particles_url, poly_url};
 }
 
 __host__ std::string vector_double_to_json_array(const std::vector<double> &v)
@@ -29,9 +32,11 @@ __host__ std::string vector_double_to_json_array(const std::vector<double> &v)
     return ans;
 }
 
-__host__ bool send_particles_to_visualization(const std::string &url, MapNode *nodes, int n_of_nodes)
+__host__ bool send_particles_to_visualization(const std::vector<std::string> &urls, MapNode *nodes, int n_of_nodes,
+                                              Polyhedron *polyhedron, int n_of_faces)
 {
-    std::vector<double> x, y, z;
+    std::vector<double> x, y, z, polyhedron_vertices, polyhedron_faces;
+    std::vector<std::vector<double>> poly;
     x.reserve(n_of_nodes);
     y.reserve(n_of_nodes);
     z.reserve(n_of_nodes);
@@ -52,11 +57,46 @@ __host__ bool send_particles_to_visualization(const std::string &url, MapNode *n
             ",\"y\":" + vector_double_to_json_array(y) +
             ",\"z\":" + vector_double_to_json_array(z) + "}";
 
-    http::Request request(url);
+
+    http::Request particles_request(urls[0]);
 
     try
     {
-        const http::Response response = request.send("POST", body, {"Content-Type: application/json"});
+        const http::Response response = particles_request.send("POST", body, {"Content-Type: application/json"});
+
+        if(response.status < 200 || 300 <= response.status)
+            throw http::ResponseError("Response status is not OK");
+    }
+    catch(const std::exception &e)
+    {
+        std::cerr << "Request failed, error: " << e.what() << std::endl;
+        return false;
+    }
+
+
+
+    for(int i = 0; i < n_of_faces; ++i)
+    {
+        for(int j = 0; j < polyhedron->get_faces()[i].get_n_of_vertices(); ++j)
+        {
+            SpacePoint v = polyhedron->get_faces()[i].get_vertices()[j];
+            poly.push_back({v.x, v.y, v.z});
+        }
+    }
+
+    body = "[ ";
+    for(int i = 0; i < poly.size(); ++i)
+    {
+        body += vector_double_to_json_array(poly[i]);
+        if (i != poly.size() - 1) { body += ", "; }
+    }
+    body += " ]";
+
+    http::Request poly_request(urls[1]);
+
+    try
+    {
+        const http::Response response = poly_request.send("POST",  body, {"Content-Type: application/json"});
 
         if(response.status < 200 || 300 <= response.status)
             throw http::ResponseError("Response status is not OK");

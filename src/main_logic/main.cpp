@@ -48,8 +48,7 @@ int main()
                                             (RunIterationFunc)wrapped_run_iteration_process_particles,
                                             wrapped_run_iteration_cleanup};
 
-
-    std::string visualization_endpoint = get_visualization_endpoint();
+    std::vector<std::string> visualization_endpoints = get_visualization_endpoint();
 
 
     while(true)
@@ -59,8 +58,8 @@ int main()
             f(simulation_map, &iteration_number);
         }
 
-        if(!send_particles_to_visualization(visualization_endpoint, simulation_map->nodes,
-                                            simulation_map->get_n_of_nodes()))
+        if(!send_particles_to_visualization(visualization_endpoints, simulation_map->nodes,
+                                            simulation_map->get_n_of_nodes(), polyhedron, polyhedron->get_n_of_faces()))
         {
             std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
             break;
