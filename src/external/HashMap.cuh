@@ -2,14 +2,13 @@
 #define MINDS_CRAWL_HASHMAP_CUH
 
 
-#include <functional>
-
 #include "../simulation_objects/SimulationMap.cuh"
 
 
 /**
  * Very simple (and pretty ugly :( ) implementation of hash map (which should, among other things, consume memory as
- * hell because of using same number of keys per bucket)
+ * hell because it preallocates all the buckets and is unable to increase their sizes, so you have to specify the
+ * maximum possible size of a bucket)
  *
  * Implementation of hash map which only supports adding key-value pairs and retrieving a value by key. Uses same bucket
  * size for each bucket. Undefined behaviour if trying to add more than `max_bucket_size` keys to one bucket
@@ -35,7 +34,7 @@ public:
               values((ValueT *)malloc(buckets_count * max_bucket_size * sizeof(ValueT))),
               max_bucket_size(max_bucket_size), buckets_count(buckets_count), hasher(hasher_func)
     {
-        for(int i = 0; i < buckets_count; ++i)
+        for(size_t i = 0; i < buckets_count; ++i)
             sizes_of_buckets[i] = 0;
     }
 
