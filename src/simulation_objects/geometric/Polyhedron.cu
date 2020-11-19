@@ -10,7 +10,7 @@
 
 
 __host__ __device__ Polyhedron::Polyhedron(Face *faces, int n_of_faces) :
-        faces(malloc_and_copy(faces, n_of_faces)), n_of_faces(n_of_faces)
+        faces(newalloc_and_copy(faces, n_of_faces)), n_of_faces(n_of_faces)
 {
 
 }
@@ -19,7 +19,7 @@ __host__ __device__ Polyhedron &Polyhedron::operator=(const Polyhedron &other)
 {
     if(this != &other)
     {
-        faces = malloc_and_copy(other.faces, other.n_of_faces);
+        faces = newalloc_and_copy(other.faces, other.n_of_faces);
         n_of_faces = other.n_of_faces;
     }
     return *this;
@@ -55,7 +55,7 @@ __host__ __device__ Polyhedron::Polyhedron()
 
 __host__ __device__ Polyhedron::~Polyhedron()
 {
-    free((void *)faces);
+    delete[] faces;
 }
 
 
