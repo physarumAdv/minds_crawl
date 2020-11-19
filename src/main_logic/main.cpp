@@ -33,12 +33,13 @@ void wrapped_run_iteration_cleanup(SimulationMap *const simulation_map, int *con
 
 int main()
 {
-    auto *simulation_map = (SimulationMap *)malloc(sizeof(SimulationMap));
+    // `malloc`s and `free`s are not replaced with `new`/`delete`s in this function to make it as similar with the
+    // main function from main.cu as possible
+
     auto *polyhedron = (Polyhedron *)malloc(sizeof(Polyhedron));
+    auto *simulation_map = (SimulationMap *)malloc(sizeof(SimulationMap));
 
-    *polyhedron = generate_cube();
-
-    init_simulation_objects(simulation_map, polyhedron);
+    init_simulation_objects(polyhedron, simulation_map);
     init_environment(simulation_map);
 
     int iteration_number = 0; // Incremented inside of `run_iteration_cleanup`

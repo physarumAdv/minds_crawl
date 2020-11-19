@@ -36,21 +36,25 @@ typedef void (*RunIterationFunc)(SimulationMap *, int *);
  * This function is used to initialize simulation objects on device. It at the moment only initializes `SimulationMap`,
  * but can be extended to initialize more objects
  *
- * @param simulation_map Pointer to `SimulationMap`. A constructed simulation map will be moved there
  * @param polyhedron Pointer to a polyhedron to be used to initialize `SimulationMap` (constructor's parameter)
+ * @param simulation_map Pointer to `SimulationMap`. A constructed simulation map will be moved there
  *
- * @warning While `polyhedron` parameter must point to a real `Polyhedron` object, `simulation_map` might contain an
- *      existing map already, but it will be destructed in this case. Note that if the pointer doesn't contain an
- *      object the destructor will be called anyway, but it should be safe (???)
+ * @warning Both `polyhedron` and `simulation_map` must point to an allocated memory area, not initialized with
+ *      anything. If they are pointing to constructed objects, no destructors will be called, so a memory leak will
+ *      occur.
  *
  * @see destruct_simulation_objects
  */
-__global__ void init_simulation_objects(SimulationMap *const simulation_map, Polyhedron *const polyhedron)
+__global__ void init_simulation_objects(Polyhedron *const polyhedron, SimulationMap *const simulation_map)
 {
 #ifndef COMPILE_FOR_CPU
     STOP_ALL_THREADS_EXCEPT_FIRST;
 #endif
 
+    polyhedron->_reset_destructively();
+    simulation_map->_reset_destructively();
+
+    *polyhedron = generate_cube();
     *simulation_map = SimulationMap(polyhedron);
 }
 

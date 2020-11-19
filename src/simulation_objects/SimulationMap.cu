@@ -148,12 +148,18 @@ __host__ __device__ SimulationMap::SimulationMap(SimulationMap &&other) noexcept
 
 __host__ __device__ SimulationMap::SimulationMap()
 {
-    nodes = nullptr;
+    _reset_destructively();
 }
 
 __device__ SimulationMap::~SimulationMap()
 {
     delete[] nodes;
+}
+
+
+__host__ __device__ void SimulationMap::_reset_destructively()
+{
+    nodes = nullptr;
 }
 
 

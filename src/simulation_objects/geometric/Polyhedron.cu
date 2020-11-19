@@ -50,12 +50,18 @@ __host__ __device__ Polyhedron::Polyhedron(Polyhedron &&other) noexcept
 
 __host__ __device__ Polyhedron::Polyhedron()
 {
-    faces = nullptr;
+    _reset_destructively();
 }
 
 __host__ __device__ Polyhedron::~Polyhedron()
 {
     delete[] faces;
+}
+
+
+__host__ __device__ void Polyhedron::_reset_destructively()
+{
+    faces = nullptr;
 }
 
 

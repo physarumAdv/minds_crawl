@@ -97,14 +97,12 @@ __host__ int main()
     init_rand<<<1, 1>>>(time(nullptr));
 
     // Initializing simulation objects
+    Polyhedron *polyhedron;
+    cudaMalloc((void **)&polyhedron, sizeof(Polyhedron));
     SimulationMap *simulation_map;
     cudaMallocManaged((void **)&simulation_map, sizeof(SimulationMap));
-    Polyhedron *polyhedron;
-    cudaMallocManaged((void **)&polyhedron, sizeof(Polyhedron));
 
-    *polyhedron = generate_cube();
-
-    init_simulation_objects<<<1, 1>>>(simulation_map, polyhedron);
+    init_simulation_objects<<<1, 1>>>(polyhedron, simulation_map);
     init_environment<<<1, 1>>>(simulation_map);
 
     int *iteration_number; // Incremented inside of `run_iteration_cleanup`
