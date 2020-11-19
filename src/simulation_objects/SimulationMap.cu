@@ -146,6 +146,11 @@ __host__ __device__ SimulationMap::SimulationMap(SimulationMap &&other) noexcept
     *this = std::move(other);
 }
 
+__host__ __device__ SimulationMap::SimulationMap()
+{
+    nodes = nullptr;
+}
+
 __device__ SimulationMap::~SimulationMap()
 {
     free(nodes);

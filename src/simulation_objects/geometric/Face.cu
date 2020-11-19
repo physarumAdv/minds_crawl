@@ -57,6 +57,11 @@ __host__ __device__ Face::Face(Face &&other) noexcept
     *this = std::move(other);
 }
 
+__host__ __device__ Face::Face()
+{
+    vertices = nullptr;
+}
+
 __host__ __device__ Face::~Face()
 {
     free((void *)vertices);

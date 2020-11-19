@@ -42,6 +42,17 @@ public:
     /// `SimulationMap` object move constructor
     __host__ __device__ SimulationMap(SimulationMap &&other) noexcept;
 
+    /**
+     * Creates a <b>fake</b> `SimulationMap` object
+     *
+     * Creates a `SimulationMap` object such that it can be destructed safely, but must not be used for any purposes.
+     * All the fields, which don't take part in the destruction, stay uninitialized.
+     *
+     * @warning The behaviour is undefined if you use the object constructed with this constructor in any way but
+     *      destructing it (the object can be destructed safely)
+     */
+    __host__ __device__ SimulationMap();
+
     /// Destructs a `SimulationMap` object
     __device__ ~SimulationMap();
 

@@ -37,6 +37,11 @@ __host__ __device__ MapNode::MapNode(MapNode &&other) noexcept
     *this = std::move(other);
 }
 
+__host__ __device__ MapNode::MapNode()
+{
+    particle = nullptr;
+}
+
 __host__ __device__ MapNode::~MapNode()
 {
     delete particle;

@@ -48,6 +48,11 @@ __host__ __device__ Polyhedron::Polyhedron(Polyhedron &&other) noexcept
     *this = std::move(other);
 }
 
+__host__ __device__ Polyhedron::Polyhedron()
+{
+    faces = nullptr;
+}
+
 __host__ __device__ Polyhedron::~Polyhedron()
 {
     free((void *)faces);
