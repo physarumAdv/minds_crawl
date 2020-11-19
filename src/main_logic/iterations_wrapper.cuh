@@ -85,20 +85,22 @@ __global__ void init_environment(SimulationMap *const simulation_map)
 /**
  * The opposite of `init_simulation_objects`
  *
- * This function destructs the objects constructed in `init_simulation_objects` (at the moment only a `SimulationMap`)
- * to let you safely free memory without breaking any invariants etc
+ * This function destructs the objects constructed in `init_simulation_objects` to let you safely free memory without
+ * breaking any invariants, causing memory leaks etc
  *
- * @param simulation_map Pointer to the `SimulationMap` to be destructed
+ * @param polyhedron Pointer to a `Polyhedron` object to be destructed
+ * @param simulation_map Pointer to a `SimulationMap` object to be destructed
  *
  * @see init_simulation_objects
  */
-__global__ void destruct_simulation_objects(SimulationMap *const simulation_map)
+__global__ void destruct_simulation_objects(Polyhedron *const polyhedron, SimulationMap *const simulation_map)
 {
 #ifndef COMPILE_FOR_CPU
     STOP_ALL_THREADS_EXCEPT_FIRST;
 #endif
 
     simulation_map->~SimulationMap();
+    polyhedron->~Polyhedron();
 }
 
 

@@ -168,7 +168,7 @@ __host__ int main()
 
     cudaFree(nodes);
     cudaFree(iteration_number);
-    destruct_simulation_objects<<<1, 1>>>(simulation_map);
+    destruct_simulation_objects<<<1, 1>>>(polyhedron, simulation_map);
     cudaFree(polyhedron);
     cudaFree(simulation_map);
 

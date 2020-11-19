@@ -68,7 +68,7 @@ int main()
         }
     }
 
-    destruct_simulation_objects(simulation_map);
+    destruct_simulation_objects(polyhedron, simulation_map);
     free(polyhedron);
     free(simulation_map);
 }
