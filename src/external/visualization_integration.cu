@@ -1,14 +1,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include "visualization_integration.cuh"
 #include "../simulation_objects/Particle.cuh"
-#include "../../../../../../../usr/include/c++/9/string"
-#include "../../../../../../../usr/include/c++/9/vector"
 
 
-__host__ std::vector<std::string> get_visualization_endpoint()
+__host__ std::pair<std::string, std::string> get_visualization_endpoint()
 {
     std::ifstream f("config/visualization_endpoint.txt", std::ios::in);
     std::string particles_url, poly_url;
@@ -32,7 +31,7 @@ __host__ std::string vector_double_to_json_array(const std::vector<double> &v)
     return ans;
 }
 
-__host__ bool send_particles_to_visualization(const std::vector<std::string> &urls, MapNode *nodes, int n_of_nodes,
+__host__ bool send_particles_to_visualization(const std::pair<std::string, std::string> &urls, MapNode *nodes, int n_of_nodes,
                                               Polyhedron *polyhedron, int n_of_faces)
 {
     std::vector<double> x, y, z, polyhedron_vertices, polyhedron_faces;
@@ -58,7 +57,7 @@ __host__ bool send_particles_to_visualization(const std::vector<std::string> &ur
             ",\"z\":" + vector_double_to_json_array(z) + "}";
 
 
-    http::Request particles_request(urls[0]);
+    http::Request particles_request(urls.first);
 
     try
     {
@@ -92,7 +91,7 @@ __host__ bool send_particles_to_visualization(const std::vector<std::string> &ur
     }
     body += " ]";
 
-    http::Request poly_request(urls[1]);
+    http::Request poly_request(urls.second);
 
     try
     {

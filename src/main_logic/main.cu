@@ -137,7 +137,7 @@ __host__ int main()
     cudaStreamCreate(&iterations_stream);
 
 
-    std::vector<std::string> visualization_endpoint = get_visualization_endpoint();
+    std::pair<std::string, std::string> visualization_endpoint = get_visualization_endpoint();
 
 
     const int cuda_grid_size = (n_of_nodes + cuda_block_size - 1) / cuda_block_size;

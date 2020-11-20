@@ -3,11 +3,10 @@
 
 
 #include "../../lib/HTTPRequest/include/HTTPRequest.hpp"
+#include <string>
+#include <vector>
 
 #include "../simulation_objects/MapNode.cuh"
-#include "../../../../../../../usr/include/c++/9/string"
-#include "../../../../../../../usr/include/c++/9/vector"
-#include <string>
 
 
 /**
@@ -17,7 +16,7 @@
  *
  * @returns Url to send data to be visualized to
  */
-__host__ std::vector<std::string> get_visualization_endpoint();
+__host__ std::pair<std::string, std::string> get_visualization_endpoint();
 
 /**
  * Converts a `vector` of `double` to a JSON array
@@ -54,7 +53,7 @@ __host__ std::string vector_double_to_json_array(const std::vector<double> &v);
  *      duplication (because there are two main functions for cpp and cuda), which might mean for you that you don't
  *      want to use this function but want to write your own request sender
  */
-__host__ bool send_particles_to_visualization(const std::vector<std::string> &urls, MapNode *nodes, int n_of_nodes,
+__host__ bool send_particles_to_visualization(const std::pair<std::string, std::string> &urls, MapNode *nodes, int n_of_nodes,
                                               Polyhedron *polyhedron, int n_of_faces);
 
 

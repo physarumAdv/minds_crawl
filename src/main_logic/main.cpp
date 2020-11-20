@@ -48,7 +48,7 @@ int main()
                                             (RunIterationFunc)wrapped_run_iteration_process_particles,
                                             wrapped_run_iteration_cleanup};
 
-    std::vector<std::string> visualization_endpoints = get_visualization_endpoint();
+    std::pair<std::string, std::string> visualization_endpoints = get_visualization_endpoint();
 
 
     while(true)
