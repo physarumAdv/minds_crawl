@@ -135,15 +135,15 @@ __host__ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePo
  * If vector AB completely lies on the current face of polyhedron, coordinates of point B are returned
  * If vector AB crosses the edge of current face, the end of overlay on the next face to edge is returned
  *
- * @param a The beginning of vector AB, point A
- * @param b The end of vector AB, point B
+ * @param vector_start The beginning of vector AB, point A
+ * @param vector_end The end of vector AB, point B
  * @param current_face Pointer to the face point A belongs to
  * @param polyhedron The polyhedron in simulation
  *
  * @returns Coordinates of the end of AB vector's overlay
  */
-__host__ __device__ SpacePoint get_projected_vector_end(SpacePoint a, SpacePoint b, Face *current_face,
-                                                        Polyhedron *polyhedron);
+__host__ __device__ SpacePoint get_projected_vector_end(SpacePoint vector_start, SpacePoint vector_end,
+                                                        Face *current_face, Polyhedron *polyhedron);
 
 
 #endif //MINDS_CRAWL_POLYHEDRON_CUH
