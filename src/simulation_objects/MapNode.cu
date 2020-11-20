@@ -5,9 +5,9 @@
 #include "geometric/Polyhedron.cuh"
 
 
-__host__ __device__ MapNode::MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates) :
+__host__ __device__ MapNode::MapNode(Polyhedron *polyhedron, int polyhedron_face_index, SpacePoint coordinates) :
         trail(0), temp_trail(0), left(nullptr), top(nullptr), right(nullptr), bottom(nullptr), polyhedron(polyhedron),
-        polyhedron_face(polyhedron_face), coordinates(coordinates), contains_food(false), particle(nullptr)
+        polyhedron_face_index(polyhedron_face_index), coordinates(coordinates), contains_food(false), particle(nullptr)
 {}
 
 __host__ __device__ MapNode &MapNode::operator=(MapNode &&other) noexcept
@@ -21,7 +21,7 @@ __host__ __device__ MapNode &MapNode::operator=(MapNode &&other) noexcept
         swap(top, other.top);
         swap(right, other.right);
         swap(bottom, other.bottom);
-        swap(polyhedron_face, other.polyhedron_face);
+        swap(polyhedron_face_index, other.polyhedron_face_index);
         swap(coordinates, other.coordinates);
         swap(contains_food, other.contains_food);
         swap(particle, other.particle);
@@ -121,10 +121,14 @@ __host__ __device__ Polyhedron *MapNode::get_polyhedron() const
     return polyhedron;
 }
 
-// TODO: would be cool to also have `get_face_id` (useful for `SimulationMap`)
+__host__ __device__ int MapNode::get_face_index() const
+{
+    return polyhedron_face_index;
+}
+
 __host__ __device__ Face *MapNode::get_face() const
 {
-    return polyhedron_face;
+    return get_polyhedron()->get_faces() + get_face_index();
 }
 
 

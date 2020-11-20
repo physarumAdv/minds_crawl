@@ -24,10 +24,10 @@ public:
      * Creates a `MapNode` object
      *
      * @param polyhedron Pointer to the polyhedron to create node on
-     * @param polyhedron_face The polyhedron's face to create node on
+     * @param polyhedron_face_index Index of the polyhedron's face to create node on
      * @param coordinates Coordinates of node to create node at
      */
-    __host__ __device__ MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates);
+    __host__ __device__ MapNode(Polyhedron *polyhedron, int polyhedron_face_index, SpacePoint coordinates);
 
     /**
      * `MapNode` object copy assignment operator (deleted)
@@ -162,11 +162,22 @@ public:
     __host__ __device__ Polyhedron *get_polyhedron() const;
 
     /**
+     * Returns index of the face the node is laying on in the `polyhedron.get_faces()` array
+     *
+     * @returns Index of the face the node belongs to
+     *
+     * @note The return-value of this method never ever changes during the existence of the object
+     */
+    __host__ __device__ int get_face_index() const;
+
+    /**
      * Returns pointer to the face the node is laying on
      *
      * @returns Pointer to the face the node belongs to
      *
-     * @note This parameter is never ever changed during the existence of the object
+     * @note The return-value of this method never ever changes during the existence of the object
+     *
+     * @note `node->get_face()` is just a shortcut for `&node->get_polyhedron()->get_faces()[node->get_face_index()]`
      */
     __host__ __device__ Face *get_face() const;
 
@@ -257,8 +268,8 @@ private:
     /// Polyhedron containing the node
     Polyhedron *polyhedron;
 
-    /// Pointer to the polyhedron's face the node is located on
-    Face *polyhedron_face;
+    /// Index of the polyhedron's face the node is located at
+    int polyhedron_face_index;
 
     /// The node's coordinates
     SpacePoint coordinates;

@@ -31,7 +31,7 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
                                          start_face->get_vertices()[2]) / 3;
 
     nodes = (MapNode *)malloc(sizeof(MapNode) * max_number_of_nodes);
-    nodes[0] = MapNode(polyhedron, start_face, start_node_coordinates);
+    nodes[0] = MapNode(polyhedron, 0, start_node_coordinates); // 0 is the index of `start_face`
     n_of_nodes = 1;
 
     // Direction vector of the first node to the top neighbor
@@ -264,7 +264,7 @@ __device__ int SimulationMap::get_neighbor_node_id(int current_node_id, SpacePoi
     {
         // Neighbor node does not exist, but it can be created
         nodes[n_of_nodes].detach_particle();
-        nodes[n_of_nodes] = MapNode(polyhedron, next_face, neighbor_coordinates);
+        nodes[n_of_nodes] = MapNode(polyhedron, find_face_index(next_face), neighbor_coordinates);
 
         set_direction_to_top_neighbor(current_node_id, n_of_nodes, top_neighbor_directions_for_faces, angle);
 
