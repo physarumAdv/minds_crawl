@@ -31,7 +31,7 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
                                          start_face->get_vertices()[2]) / 3;
 
     nodes = (MapNode *)malloc(sizeof(MapNode) * max_number_of_nodes);
-    nodes[0] = MapNode(polyhedron, 0, start_node_coordinates); // 0 is the index of `start_face`
+    nodes[0] = MapNode(polyhedron, 0, start_node_coordinates); // `0` is the index of `start_face`
     n_of_nodes = 1;
 
     // Direction vector of the first node to the top neighbor

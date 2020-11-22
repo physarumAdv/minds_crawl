@@ -128,7 +128,7 @@ __host__ __device__ int MapNode::get_face_index() const
 
 __host__ __device__ Face *MapNode::get_face() const
 {
-    return get_polyhedron()->get_faces() + get_face_index();
+    return &get_polyhedron()->get_faces()[get_face_index()];
 }
 
 
