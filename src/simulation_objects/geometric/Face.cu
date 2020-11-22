@@ -14,7 +14,7 @@ __host__ __device__ SpacePoint calculate_normal(const SpacePoint *vertices)
 
 
 __host__ __device__ Face::Face(const SpacePoint *vertices, int n_of_vertices) :
-        vertices(malloc_and_copy(vertices, n_of_vertices)), n_of_vertices(n_of_vertices),
+        vertices(newalloc_and_copy(vertices, n_of_vertices)), n_of_vertices(n_of_vertices),
         normal(calculate_normal(vertices)), node(nullptr)
 {
 
@@ -24,7 +24,7 @@ __host__ __device__ Face &Face::operator=(const Face &other)
 {
     if(this != &other)
     {
-        vertices = malloc_and_copy(other.vertices, other.n_of_vertices);
+        vertices = newalloc_and_copy(other.vertices, other.n_of_vertices);
         n_of_vertices = other.n_of_vertices;
         normal = other.normal;
         node = nullptr;
@@ -57,9 +57,14 @@ __host__ __device__ Face::Face(Face &&other) noexcept
     *this = std::move(other);
 }
 
+__host__ __device__ Face::Face()
+{
+    vertices = nullptr;
+}
+
 __host__ __device__ Face::~Face()
 {
-    free((void *)vertices);
+    delete[] vertices;
 }
 
 
