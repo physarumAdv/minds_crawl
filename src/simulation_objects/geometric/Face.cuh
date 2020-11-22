@@ -74,6 +74,17 @@ public:
      */
     __host__ __device__ Face(Face &&other) noexcept;
 
+    /**
+     * Creates a <b>fake</b> `Face` object
+     *
+     * Creates a `Face` object such that it can be destructed safely, but must not be used for any purposes. All the
+     * fields, which don't take part in the destruction, stay uninitialized.
+     *
+     * @warning The behaviour is undefined if you use the object constructed with this constructor in any way but
+     *      destructing it (the object can be destructed safely)
+     */
+    __host__ __device__ Face();
+
     /// Destructs a `Face` object
     __host__ __device__ ~Face();
 
