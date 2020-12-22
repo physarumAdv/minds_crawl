@@ -11,7 +11,7 @@ class Particle;
 class Polyhedron;
 
 
-// TODO: add @see to the modified model description to the following docstring
+// TODO: tell, what `MapNode`s are used for
 /**
  * Object describing a node of `SimulationMap`
  *
@@ -24,10 +24,10 @@ public:
      * Creates a `MapNode` object
      *
      * @param polyhedron Pointer to the polyhedron to create node on
-     * @param polyhedron_face The polyhedron's face to create node on
+     * @param polyhedron_face_index Index of the polyhedron's face to create node on
      * @param coordinates Coordinates of node to create node at
      */
-    __host__ __device__ MapNode(Polyhedron *polyhedron, Face *polyhedron_face, SpacePoint coordinates);
+    __host__ __device__ MapNode(Polyhedron *polyhedron, int polyhedron_face_index, SpacePoint coordinates);
 
     /**
      * `MapNode` object copy assignment operator (deleted)
@@ -55,7 +55,23 @@ public:
     /// `MapNode` object move constructor
     __host__ __device__ MapNode(MapNode &&other) noexcept;
 
-    /// Destructs a `MapNode` object
+    /**
+     * Creates a <b>fake</b> `MapNode` object
+     *
+     * Creates a `MapNode` object such that it can be destructed safely, but must not be used for any purposes. All the
+     * fields, which don't take part in the destruction, stay uninitialized.
+     *
+     * @warning The behaviour is undefined if you use the object constructed with this constructor in any way but
+     *      destructing it (the object can be destructed safely)
+     */
+    __host__ __device__ MapNode();
+
+    /**
+     * Destructs a `MapNode` object
+     *
+     * @warning `MapNode` destruction will cause the `Particle` attached to it to be `delete`d. Use
+     *      `MapNode::detach_particle` before the node will be destructed if you want to prevent this behaviour
+     */
     __host__ __device__ ~MapNode();
 
 
@@ -162,11 +178,22 @@ public:
     __host__ __device__ Polyhedron *get_polyhedron() const;
 
     /**
+     * Returns index of the face the node is laying on in the `polyhedron.get_faces()` array
+     *
+     * @returns Index of the face the node belongs to
+     *
+     * @note The return-value of this method never ever changes during the existence of the object
+     */
+    __host__ __device__ int get_face_index() const;
+
+    /**
      * Returns pointer to the face the node is laying on
      *
      * @returns Pointer to the face the node belongs to
      *
-     * @note This parameter is never ever changed during the existence of the object
+     * @note The return-value of this method never ever changes during the existence of the object
+     *
+     * @note `node->get_face()` is just a shortcut for `&node->get_polyhedron()->get_faces()[node->get_face_index()]`
      */
     __host__ __device__ Face *get_face() const;
 
@@ -205,15 +232,16 @@ public:
     /**
      * Marks the node as not occupied (not containing a particle) / Detaches particle from the node
      *
-     * @note The operation is thread-safe
-     *
      * @warning Detaching particle from a map node <b>does not</b> free memory, allocated for `Particle`, so if you want
      *      to free memory, you have to firstly obtain a pointer to the `Particle` if you don't have it yet (can be done
      *      via `get_particle()`), then detach the particle from it's node (call `detach_particle()`), and then free
      *      memory.
      *
-     * @warning Remember about thread-safety: `MapNode` does not guarantee that the `Particle` being removed didn't change
-     *      since calling `get_particle()`
+     * @warning Remember about thread-safety: `MapNode` does not guarantee that the `Particle` being removed didn't
+     *      change since calling `get_particle()`. If you want to be sure about what particle you are detaching, do
+     *      something like `p = node.get_particle(); node.detach_particle(p);`
+     *
+     * @note If the node does not contain a particle, nothing happens
      *
      * @see MapNode::attach_particle, MapNode::get_particle
      */
@@ -226,8 +254,6 @@ public:
      *
      * @returns `true`, if the given `Particle` was attached to the node (which means it was successfully removed),
      *      otherwise `false`
-     *
-     * @note This operation is thread-safe
      */
     __device__ bool detach_particle(Particle *p);
 
@@ -257,8 +283,8 @@ private:
     /// Polyhedron containing the node
     Polyhedron *polyhedron;
 
-    /// Pointer to the polyhedron's face the node is located on
-    Face *polyhedron_face;
+    /// Index of the polyhedron's face the node is located at
+    int polyhedron_face_index;
 
     /// The node's coordinates
     SpacePoint coordinates;

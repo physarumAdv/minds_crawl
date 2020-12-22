@@ -33,12 +33,13 @@ void wrapped_run_iteration_cleanup(SimulationMap *const simulation_map, int *con
 
 int main()
 {
-    auto *simulation_map = (SimulationMap *)malloc(sizeof(SimulationMap));
+    // `malloc`s and `free`s are not replaced with `new`/`delete`s in this function to make it as similar with the
+    // main function from main.cu as possible
+
     auto *polyhedron = (Polyhedron *)malloc(sizeof(Polyhedron));
+    auto *simulation_map = (SimulationMap *)malloc(sizeof(SimulationMap));
 
-    *polyhedron = generate_cube(5);
-
-    init_simulation_objects(simulation_map, polyhedron);
+    init_simulation_objects(polyhedron, simulation_map);
     init_environment(simulation_map);
 
     int iteration_number = 0; // Incremented inside of `run_iteration_cleanup`
@@ -50,31 +51,28 @@ int main()
 
     std::pair<std::string, std::string> visualization_endpoints = get_visualization_endpoints();
 
+    bool modelDispatchFail = false;
     if(!send_model_to_visualization(visualization_endpoints, polyhedron))
     {
         std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
-        destruct_simulation_objects(simulation_map);
-        free(polyhedron);
-        free(simulation_map);
-        return 0;
+        modelDispatchFail = true;
     }
 
-    while(true)
-    {
-        for(RunIterationFunc f : iteration_runners)
-        {
-            f(simulation_map, &iteration_number);
-        }
+    if(!modelDispatchFail) {
+        while (true) {
+            for (RunIterationFunc f : iteration_runners) {
+                f(simulation_map, &iteration_number);
+            }
 
-        if(!send_particles_to_visualization(visualization_endpoints, simulation_map->nodes,
-                                            simulation_map->get_n_of_nodes()))
-        {
-            std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
-            break;
+            if (!send_particles_to_visualization(visualization_endpoints, simulation_map->nodes,
+                                                 simulation_map->get_n_of_nodes())) {
+                std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
+                break;
+            }
         }
     }
 
-    destruct_simulation_objects(simulation_map);
+    destruct_simulation_objects(polyhedron, simulation_map);
     free(polyhedron);
     free(simulation_map);
 }

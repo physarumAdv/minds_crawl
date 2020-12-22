@@ -16,19 +16,19 @@
 
 
 /**
- * Returns pointer to a copied array
+ * Allocates a new array of size `count` of type `T` with the operator `new`
  *
  * @tparam T Type of an array
  *
- * @param source Pointer-represented array to copy
+ * @param source Copied pointer-represented array
  * @param count Number of elements to copy
  *
  * @returns Pointer to a copied array
  */
 template<class T>
-__host__ __device__ static T *malloc_and_copy(const T *source, int count)
+__host__ __device__ static T *newalloc_and_copy(const T *source, int count)
 {
-    T *new_array = (T *)malloc(count * sizeof(T));
+    T *new_array = new T[count];
     for(int i = 0; i < count; ++i)
     {
         new_array[i] = source[i];
