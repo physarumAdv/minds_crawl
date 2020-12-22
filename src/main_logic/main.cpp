@@ -36,7 +36,7 @@ int main()
     auto *simulation_map = (SimulationMap *)malloc(sizeof(SimulationMap));
     auto *polyhedron = (Polyhedron *)malloc(sizeof(Polyhedron));
 
-    *polyhedron = generate_cube();
+    *polyhedron = generate_cube(5);
 
     init_simulation_objects(simulation_map, polyhedron);
     init_environment(simulation_map);
@@ -48,8 +48,16 @@ int main()
                                             (RunIterationFunc)wrapped_run_iteration_process_particles,
                                             wrapped_run_iteration_cleanup};
 
-    std::pair<std::string, std::string> visualization_endpoints = get_visualization_endpoint();
+    std::pair<std::string, std::string> visualization_endpoints = get_visualization_endpoints();
 
+    if(!send_model_to_visualization(visualization_endpoints, polyhedron))
+    {
+        std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
+        destruct_simulation_objects(simulation_map);
+        free(polyhedron);
+        free(simulation_map);
+        return 0;
+    }
 
     while(true)
     {
@@ -59,7 +67,7 @@ int main()
         }
 
         if(!send_particles_to_visualization(visualization_endpoints, simulation_map->nodes,
-                                            simulation_map->get_n_of_nodes(), polyhedron, polyhedron->get_n_of_faces()))
+                                            simulation_map->get_n_of_nodes()))
         {
             std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
             break;

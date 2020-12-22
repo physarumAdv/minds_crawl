@@ -137,12 +137,19 @@ __host__ int main()
     cudaStreamCreate(&iterations_stream);
 
 
-    std::pair<std::string, std::string> visualization_endpoint = get_visualization_endpoint();
+    std::pair<std::string, std::string> visualization_endpoint = get_visualization_endpoints();
 
 
     const int cuda_grid_size = (n_of_nodes + cuda_block_size - 1) / cuda_block_size;
 
-    if(cudaPeekAtLastError() == cudaSuccess)
+    bool modelDispatchFail = false;
+    if(!send_model_to_visualization(visualization_endpoints, polyhedron))
+    {
+        std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
+        modelDispatchFail = true;
+    }
+
+    if(cudaPeekAtLastError() == cudaSuccess && !modelDispatchFail)
     {
         while(true)
         {
@@ -160,7 +167,7 @@ __host__ int main()
                 f<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map, iteration_number);
             }
 
-            if(!send_particles_to_visualization(visualization_endpoint, nodes, n_of_nodes, polyhedron, polyhedron->get_n_of_faces()))
+            if(!send_particles_to_visualization(visualization_endpoint, nodes, n_of_nodes))
             {
                 std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
                 break;
