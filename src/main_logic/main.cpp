@@ -51,14 +51,14 @@ int main()
 
     std::pair<std::string, std::string> visualization_endpoints = get_visualization_endpoints();
 
-    bool modelDispatchFail = false;
+    bool modelDispatchFailed = false;
     if(!send_model_to_visualization(visualization_endpoints, polyhedron))
     {
         std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
-        modelDispatchFail = true;
+        modelDispatchFailed = true;
     }
 
-    if(!modelDispatchFail) {
+    if(!modelDispatchFailed) {
         while (true) {
             for (RunIterationFunc f : iteration_runners) {
                 f(simulation_map, &iteration_number);

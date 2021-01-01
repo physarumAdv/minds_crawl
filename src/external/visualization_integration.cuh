@@ -10,7 +10,8 @@
 
 
 /**
- * Reads the first line from the file containing the visualization endpoint url and returns it
+ * Reads the first 2 lines from the file containing the visualization endpoint urls and returns it
+ * We have 2 urls (one in each line), one for sending particles to and other for sending model to
  *
  * Path to the file (relative to the executable's location) is `config/visualization_endpoint.txt`
  *
@@ -53,9 +54,9 @@ __host__ std::string vector_double_to_json_array(const std::vector<double> &v);
  *      duplication (because there are two main functions for cpp and cuda), which might mean for you that you don't
  *      want to use this function but want to write your own request sender
  */
-__host__ bool send_model_to_visualization(const std::pair<std::string, std::string> &urls, Polyhedron *polyhedron);
+__host__ bool send_model_to_visualization(const std::pair<std::string, std::string> &urls, const Polyhedron *polyhedron);
 
-__host__ bool send_particles_to_visualization(const std::pair<std::string, std::string> &urls, MapNode *nodes,
+__host__ bool send_particles_to_visualization(const std::pair<std::string, std::string> &urls, const MapNode *nodes,
                                               int n_of_nodes);
 
 

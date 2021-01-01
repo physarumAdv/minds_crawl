@@ -31,7 +31,7 @@ __host__ std::string vector_double_to_json_array(const std::vector<double> &v)
     return ans;
 }
 
-__host__ bool send_model_to_visualization(const std::pair<std::string, std::string> &urls, Polyhedron *polyhedron)
+__host__ bool send_model_to_visualization(const std::pair<std::string, std::string> &urls, const Polyhedron *polyhedron)
 {
     std::vector<double> polyhedron_vertices, polyhedron_faces;
     std::vector<std::vector<double>> poly;
@@ -45,14 +45,14 @@ __host__ bool send_model_to_visualization(const std::pair<std::string, std::stri
         }
     }
 
-    std::string body = "[ ";
+    std::string body = "[";
     for(int i = 0; i < poly.size(); ++i)
     {
         body += vector_double_to_json_array(poly[i]);
         if (i != poly.size() - 1)
             body += ',';
     }
-    body += " ]";
+    body += "]";
 
     http::Request poly_request(urls.second);
 
@@ -72,7 +72,7 @@ __host__ bool send_model_to_visualization(const std::pair<std::string, std::stri
     return true;
 }
 
-__host__ bool send_particles_to_visualization(const std::pair<std::string, std::string> &urls, MapNode *nodes,
+__host__ bool send_particles_to_visualization(const std::pair<std::string, std::string> &urls, const MapNode *nodes,
                                               int n_of_nodes)
 {
     std::vector<double> x, y, z;

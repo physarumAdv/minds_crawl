@@ -140,14 +140,14 @@ __host__ int main()
 
     const int cuda_grid_size = (n_of_nodes + cuda_block_size - 1) / cuda_block_size;
 
-    bool modelDispatchFail = false;
+    bool modelDispatchFailed = false;
     if(!send_model_to_visualization(visualization_endpoints, polyhedron))
     {
         std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
-        modelDispatchFail = true;
+        modelDispatchFailed = true;
     }
 
-    if(cudaPeekAtLastError() == cudaSuccess && !modelDispatchFail)
+    if(cudaPeekAtLastError() == cudaSuccess && !modelDispatchFailed)
     {
         while(true)
         {
