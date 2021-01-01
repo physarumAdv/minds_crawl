@@ -16,19 +16,23 @@ __host__ std::pair<std::string, std::string> get_visualization_endpoints()
     return {particles_url, poly_url};
 }
 
-__host__ std::string vector_double_to_json_array(const std::vector<double> &v)
+template<class T>
+__host__ std::string to_string_extended(const T &v)
 {
-    if(v.empty())
-        return "[]";
+    return std::to_string(v);
+}
 
-    std::string ans = "[";
-    for(double i : v)
+template<class T>
+__host__ std::string to_string_extended(const std::vector<T> &v)
+{
+    std::string body = "[";
+    for(int i = 0; i < v.size(); ++i)
     {
-        ans += std::to_string(i) + ',';
+        body += to_string_extended(v[i]) + ',';
     }
-    ans.back() = ']';
+    body.back() = ']';
 
-    return ans;
+    return body;
 }
 
 __host__ bool send_model_to_visualization(const std::pair<std::string, std::string> &urls, const Polyhedron *polyhedron)
@@ -45,14 +49,7 @@ __host__ bool send_model_to_visualization(const std::pair<std::string, std::stri
         }
     }
 
-    std::string body = "[";
-    for(int i = 0; i < poly.size(); ++i)
-    {
-        body += vector_double_to_json_array(poly[i]);
-        if (i != poly.size() - 1)
-            body += ',';
-    }
-    body += "]";
+    std::string body = to_string_extended(poly);
 
     http::Request poly_request(urls.second);
 
@@ -92,9 +89,9 @@ __host__ bool send_particles_to_visualization(const std::pair<std::string, std::
     }
 
     std::string body = "{";
-    body += "\"x\":" + vector_double_to_json_array(x) +
-            ",\"y\":" + vector_double_to_json_array(y) +
-            ",\"z\":" + vector_double_to_json_array(z) + "}";
+    body += "\"x\":" + to_string_extended(x) +
+            ",\"y\":" + to_string_extended(y) +
+            ",\"z\":" + to_string_extended(z) + "}";
 
 
     http::Request particles_request(urls.first);
