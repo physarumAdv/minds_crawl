@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, ubuntu-18.04, ubuntu-16.04]
-        cuda: ["11.1", "11.0", "10.2", "10.1", "10.0"]
+        cuda: ["11.2", "11.1", "11.0", "10.2", "10.1", "10.0"]
         gcc: [8, 7, 6]
         exclude:
           # Cuda 10.0 doesn't support Ubuntu 20.04
