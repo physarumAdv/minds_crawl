@@ -54,7 +54,7 @@ __host__ std::string vector_double_to_json_array(const std::vector<double> &v);
  *      duplication (because there are two main functions for cpp and cuda), which might mean for you that you don't
  *      want to use this function but want to write your own request sender
  */
-__host__ bool send_model_to_visualization(const std::pair<std::string, std::string> &urls, const Polyhedron *polyhedron);
+__host__ bool send_poly_to_visualization(const std::pair<std::string, std::string> &urls, const Polyhedron *polyhedron);
 
 __host__ bool send_particles_to_visualization(const std::pair<std::string, std::string> &urls, const MapNode *nodes,
                                               int n_of_nodes);

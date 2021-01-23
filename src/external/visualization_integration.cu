@@ -35,14 +35,22 @@ __host__ std::string to_string_extended(const std::vector<T> &v)
     return body;
 }
 
-__host__ bool send_model_to_visualization(const std::pair<std::string, std::string> &urls, const Polyhedron *polyhedron)
+__host__ bool send_poly_to_visualization(const std::pair<std::string, std::string> &urls, const Polyhedron *polyhedron)
 {
     std::vector<double> polyhedron_vertices, polyhedron_faces;
     std::vector<std::vector<double>> poly;
 
-    for(int i = 0; i < polyhedron->get_n_of_faces(); ++i)
+    int n_faces = polyhedron->get_n_of_faces();
+    int n_vertices_on_face[n_faces];
+    Face* poly_faces = polyhedron->get_faces();
+
+    for (int i = 0; i < n_faces; ++i) {
+        n_vertices_on_face[i] = poly_faces[i].get_n_of_vertices();
+    }
+
+    for(int i = 0; i < n_faces; ++i)
     {
-        for(int j = 0; j < polyhedron->get_faces()[i].get_n_of_vertices(); ++j)
+        for(int j = 0; j < n_vertices_on_face[i]; ++j)
         {
             SpacePoint v = polyhedron->get_faces()[i].get_vertices()[j];
             poly.push_back({v.x, v.y, v.z});
