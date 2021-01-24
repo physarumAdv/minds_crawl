@@ -40,19 +40,16 @@ __host__ bool send_poly_to_visualization(const std::pair<std::string, std::strin
     std::vector<double> polyhedron_vertices, polyhedron_faces;
     std::vector<std::vector<double>> poly;
 
-    int n_faces = polyhedron->get_n_of_faces();
-    int n_vertices_on_face[n_faces];
-    Face* poly_faces = polyhedron->get_faces();
+    int n_of_faces = polyhedron->get_n_of_faces();
+    Face *faces = polyhedron->get_faces();
 
-    for (int i = 0; i < n_faces; ++i) {
-        n_vertices_on_face[i] = poly_faces[i].get_n_of_vertices();
-    }
 
-    for(int i = 0; i < n_faces; ++i)
+    for(int i = 0; i < n_of_faces; ++i)
     {
-        for(int j = 0; j < n_vertices_on_face[i]; ++j)
+        const SpacePoint *current_vertices_of_face = faces[i].get_vertices();
+        for(int j = 0; j < faces[i].get_n_of_vertices(); ++j)
         {
-            SpacePoint v = polyhedron->get_faces()[i].get_vertices()[j];
+            SpacePoint v = current_vertices_of_face[j];
             poly.push_back({v.x, v.y, v.z});
         }
     }

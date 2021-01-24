@@ -58,7 +58,8 @@ int main()
         polyhedronDispatchFailed = true;
     }
 
-    if(!polyhedronDispatchFailed) {
+    if(!polyhedronDispatchFailed)
+    {
         while (true) {
             for (RunIterationFunc f : iteration_runners) {
                 f(simulation_map, &iteration_number);
