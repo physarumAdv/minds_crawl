@@ -1,1 +1,2 @@
-http://example.com:80/url
+http://example.com/add_frame
+http://example.com:80/polyhedron

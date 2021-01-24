@@ -49,22 +49,27 @@ int main()
                                             (RunIterationFunc)wrapped_run_iteration_process_particles,
                                             wrapped_run_iteration_cleanup};
 
+    std::pair<std::string, std::string> visualization_endpoints = get_visualization_endpoints();
 
-    std::string visualization_endpoint = get_visualization_endpoint();
-
-
-    while(true)
+    bool polyhedronDispatchFailed = false;
+    if(!send_poly_to_visualization(visualization_endpoints, polyhedron))
     {
-        for(RunIterationFunc f : iteration_runners)
-        {
-            f(simulation_map, &iteration_number);
-        }
+        std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
+        polyhedronDispatchFailed = true;
+    }
 
-        if(!send_particles_to_visualization(visualization_endpoint, simulation_map->nodes,
-                                            simulation_map->get_n_of_nodes()))
-        {
-            std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
-            break;
+    if(!polyhedronDispatchFailed)
+    {
+        while (true) {
+            for (RunIterationFunc f : iteration_runners) {
+                f(simulation_map, &iteration_number);
+            }
+
+            if (!send_particles_to_visualization(visualization_endpoints, simulation_map->nodes,
+                                                 simulation_map->get_n_of_nodes())) {
+                std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
+                break;
+            }
         }
     }
 

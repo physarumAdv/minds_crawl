@@ -3,19 +3,21 @@
 
 
 #include "../../lib/HTTPRequest/include/HTTPRequest.hpp"
+#include <string>
+#include <vector>
 
 #include "../simulation_objects/MapNode.cuh"
-#include <string>
 
 
 /**
- * Reads the first line from the file containing the visualization endpoint url and returns it
+ * Reads the first 2 lines from the file containing the visualization endpoint urls and returns it
+ * We have 2 urls (one in each line), one for sending particles to and other for sending model to
  *
  * Path to the file (relative to the executable's location) is `config/visualization_endpoint.txt`
  *
- * @returns Url to send data to be visualized to
+ * @returns std::pair<std::string, std::string> with each string being a url to send data to be visualized to
  */
-__host__ std::string get_visualization_endpoint();
+__host__ std::pair<std::string, std::string> get_visualization_endpoints();
 
 /**
  * Converts a `vector` of `double` to a JSON array
@@ -38,7 +40,7 @@ __host__ std::string vector_double_to_json_array(const std::vector<double> &v);
  * JSON is generated: `{"x": [0.000000, 0.500000], "y": [0.000000, 1.000000], "z": [0.000000, 2.000000]}`. Then it is
  * sent to the given url as an HTTP POST request with `Content-Type: application/json`
  *
- * @param url HTTP url to send data to (protocols different from http are not supported)
+ * @param urls HTTP two urls each to send data to. One for particles array and one for polyhedron. (protocols different from http are not supported)
  * @param nodes Pointer-represented array of nodes from the simulation (probably) containing particles
  * @param n_of_nodes Number of elements in the `nodes` array
  *
@@ -52,7 +54,10 @@ __host__ std::string vector_double_to_json_array(const std::vector<double> &v);
  *      duplication (because there are two main functions for cpp and cuda), which might mean for you that you don't
  *      want to use this function but want to write your own request sender
  */
-__host__ bool send_particles_to_visualization(const std::string &url, MapNode *nodes, int n_of_nodes);
+__host__ bool send_poly_to_visualization(const std::pair<std::string, std::string> &urls, const Polyhedron *polyhedron);
+
+__host__ bool send_particles_to_visualization(const std::pair<std::string, std::string> &urls, const MapNode *nodes,
+                                              int n_of_nodes);
 
 
 #endif //MINDS_CRAWL_VISUALIZATION_INTEGRATION_CUH

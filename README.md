@@ -34,7 +34,7 @@ To run the application, you have to:
 1.  Start a visualization app (we recommend [this one](https://github.com/physarumAdv/Physarum_webGL))
 
 2.  Create a directory `config` in the process's **working directory** with a file `visualization_endpoint.txt` inside
-it, containing a url which accepts the simulated data (an example is in
+it, containing 2 urls which accepts the simulated data (One url for particles and one for polyhedron. An example is in
 [local/visualization_endpoint_example.txt](config/visualization_endpoint_example.txt))
 
 ## Authors
