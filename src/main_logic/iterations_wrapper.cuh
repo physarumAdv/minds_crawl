@@ -210,8 +210,8 @@ __device__ inline void run_iteration_process_particles(SimulationMap *const simu
     if(!self->does_contain_particle() || !self->get_particle()->capture())
         return;
 
-    self->get_particle()->do_motor_behaviours();
     self->get_particle()->do_sensory_behaviours();
+    self->get_particle()->do_motor_behaviours();
 
     if(*iteration_number % jc::division_test_frequency == 0)
         division_test(self);
