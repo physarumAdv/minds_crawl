@@ -11,8 +11,10 @@ __host__ std::pair<std::string, std::string> get_visualization_endpoints()
 {
     std::ifstream f("config/visualization_endpoint.txt", std::ios::in);
     std::string particles_url, poly_url;
-    getline(f, particles_url);
-    getline(f, poly_url);
+    if(!getline(f, particles_url) || !getline(f, poly_url))
+    {
+        throw std::runtime_error("File config/visualization_endpoint.txt does not exist");
+    }
     return {particles_url, poly_url};
 }
 
