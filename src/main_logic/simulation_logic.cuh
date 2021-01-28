@@ -130,7 +130,7 @@ __device__ void division_test(MapNode *node);
  *
  * @returns Cube represented wth a `Polyhedron` object
  */
-__device__ Polyhedron generate_cube(double edge_length = 200);
+__device__ Polyhedron generate_cube(double edge_length = 4);
 
 
 #endif //MIND_S_CRAWL_FUCKING_SHIT_CUH

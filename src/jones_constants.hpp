@@ -48,7 +48,7 @@ namespace jones_constants
      *
      * @warning The `speed` value <b>MUST</b> be <b>AT MOST</b> half of <b>minimal</b> distance between two `MapNode`s
      */
-    const double speed = 0.5;
+    const double speed = 0.2;
 
 
     /// Whether we have to run random death test

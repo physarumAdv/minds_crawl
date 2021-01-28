@@ -45,7 +45,8 @@ __device__ void Particle::do_motor_behaviours()
         if(neighbor->get_face() != map_node->get_face()) // If any of the neighbor nodes is on a different face
         {
             // Then particle might move to a different face, so project coordinates to the polyhedron's surface
-            end = get_projected_vector_end(coordinates, end, map_node->get_face(), map_node->get_polyhedron());
+            end = get_projected_vector_end(coordinates, end, map_node->get_face(),
+                                           map_node->get_polyhedron(), &direction_vector);
             break;
         }
     }

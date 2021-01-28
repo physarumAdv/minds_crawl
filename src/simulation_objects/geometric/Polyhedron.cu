@@ -162,7 +162,8 @@ __host__ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePo
 }
 
 __host__ __device__ SpacePoint get_projected_vector_end(SpacePoint vector_start, SpacePoint vector_end,
-                                                        Face *current_face, Polyhedron *polyhedron)
+                                                        Face *current_face, Polyhedron *polyhedron,
+                                                        SpacePoint *direction_vector)
 {
     int intersection_edge_vertex_id = 0;
     SpacePoint intersection = find_intersection_with_edge(vector_start, vector_end, current_face,
@@ -181,6 +182,10 @@ __host__ __device__ SpacePoint get_projected_vector_end(SpacePoint vector_start,
         SpacePoint faced_vector_direction = (normal_before + normal_after * phi_cos) * sin(acos(alpha_cos)) / phi_sin +
                                             (normal_before % normal_after) * alpha_cos / phi_sin;
 
+        // changing direction vector of particle
+        if(direction_vector != nullptr)
+            *direction_vector = faced_vector_direction;
+
         vector_end = intersection + faced_vector_direction * (get_distance(vector_start, vector_end) -
                                                               get_distance(intersection, vector_start));
         vector_start = intersection;
@@ -191,4 +196,14 @@ __host__ __device__ SpacePoint get_projected_vector_end(SpacePoint vector_start,
 
     // If vector AB does not intersect any edge of face, `vector_end` equals `b`
     return vector_end;
+}
+
+
+__host__ __device__ bool do_belong_to_cube(SpacePoint a, int cube_size)
+{
+    if(a.x < 0 || a.y < 0 || a.z < 0 || a.x > cube_size || a.y > cube_size || a.z > cube_size)
+    {
+        return false;
+    }
+    return true;
 }

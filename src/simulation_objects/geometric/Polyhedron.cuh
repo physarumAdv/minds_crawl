@@ -160,11 +160,16 @@ __host__ __device__ SpacePoint find_intersection_with_edge(SpacePoint a, SpacePo
  * @param vector_end The end of vector AB, point B
  * @param current_face Pointer to the face point A belongs to
  * @param polyhedron The polyhedron in simulation
+ * @param direction_vector
  *
  * @returns Coordinates of the end of AB vector's overlay
  */
 __host__ __device__ SpacePoint get_projected_vector_end(SpacePoint vector_start, SpacePoint vector_end,
-                                                        Face *current_face, Polyhedron *polyhedron);
+                                                        Face *current_face, Polyhedron *polyhedron,
+                                                        SpacePoint *direction_vector = nullptr);
+
+
+__host__ __device__ bool do_belong_to_cube(SpacePoint a, int cube_size);
 
 
 #endif //MINDS_CRAWL_POLYHEDRON_CUH
