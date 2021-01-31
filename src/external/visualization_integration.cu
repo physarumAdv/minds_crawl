@@ -62,7 +62,7 @@ __host__ bool send_poly_to_visualization(const std::pair<std::string, std::strin
     {
         const http::Response response = poly_request.send("POST", body, {"Content-Type: application/json"});
 
-        if(response.status < 200 || 300 <= response.status)
+        if(response.status != 200)
             throw http::ResponseError("Response status is not OK");
     }
     catch(const std::exception &e)
@@ -105,7 +105,7 @@ __host__ bool send_particles_to_visualization(const std::pair<std::string, std::
     {
         const http::Response response = particles_request.send("POST", body, {"Content-Type: application/json"});
 
-        if(response.status < 200 || 300 <= response.status)
+        if(response.status != 200)
             throw http::ResponseError("Response status is not OK");
     }
     catch(const std::exception &e)
