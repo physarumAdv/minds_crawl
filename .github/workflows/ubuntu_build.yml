@@ -25,9 +25,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-18.04, ubuntu-16.04]
-        cuda: ["11.2", "11.1", "11.0", "10.2", "10.1", "10.0"]
-        gcc: [8, 7, 6]
+        os: [ ubuntu-20.04, ubuntu-18.04, ubuntu-16.04 ]
+        cuda: [ "11.2", "11.1", "11.0", "10.2", "10.1", "10.0" ]
+        gcc: [ 8, 7, 6 ]
         exclude:
           # Cuda 10.0 doesn't support Ubuntu 20.04
           - os: ubuntu-20.04
@@ -40,55 +40,55 @@ jobs:
           # gcc 6 is deprecated for Ubuntu 20.04
           - os: ubuntu-20.04
             gcc: 6
-    
+
     runs-on: ${{ matrix.os }}
 
     steps:
 
-    # If this is a pull request action NOT from a fork, then cancel run PR checks, run push checks only
-    # (this is done to avoid double checks on PRs from not forks)
-    - name: Cancelling the workflow to avoid duplicated runs
-      if: success() && github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
-      id: steps_skiper
-      run: |
-        echo THE WORKFLOW RUN WILL BE SKIPPED, because there is another workflow with the same context
-        echo "::set-output name=SKIP_STEPS::true"
+      # If this is a pull request action NOT from a fork, then cancel run PR checks, run push checks only
+      # (this is done to avoid double checks on PRs from not forks)
+      - name: Cancelling the workflow to avoid duplicated runs
+        if: success() && github.event_name == 'pull_request' && github.repository == github.event.pull_request.head.repo.full_name
+        id: steps_skiper
+        run: |
+          echo THE WORKFLOW RUN WILL BE SKIPPED, because there is another workflow with the same context
+          echo "::set-output name=SKIP_STEPS::true"
 
-    - uses: actions/checkout@v2
-      if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
-      with:
-        submodules: recursive
+      - uses: actions/checkout@v2
+        if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
+        with:
+          submodules: recursive
 
-    - name: Install/Select gcc and g++
-      if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
-      run: |
-        sudo apt-get install -y gcc-${{ matrix.gcc }} g++-${{ matrix.gcc }}
-        echo "CC=/usr/bin/gcc-${{ matrix.gcc }}" >> $GITHUB_ENV
-        echo "CXX=/usr/bin/g++-${{ matrix.gcc }}" >> $GITHUB_ENV
-        echo "CUDAHOSTCXX=/usr/bin/g++-${{ matrix.gcc }}" >> $GITHUB_ENV
+      - name: Install/Select gcc and g++
+        if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
+        run: |
+          sudo apt-get install -y gcc-${{ matrix.gcc }} g++-${{ matrix.gcc }}
+          echo "CC=/usr/bin/gcc-${{ matrix.gcc }}" >> $GITHUB_ENV
+          echo "CXX=/usr/bin/g++-${{ matrix.gcc }}" >> $GITHUB_ENV
+          echo "CUDAHOSTCXX=/usr/bin/g++-${{ matrix.gcc }}" >> $GITHUB_ENV
 
-    - name: Install CUDA
-      if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
-      run: |
-        ./scripts/actions/install_cuda_${{ matrix.cuda }}.sh
-        sudo ln -s /usr/local/cuda* /usr/local/cuda
-        /usr/local/cuda/bin/nvcc -V
-        echo "/usr/local/cuda/bin/" >> $GITHUB_PATH
+      - name: Install CUDA
+        if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
+        run: |
+          ./scripts/actions/install_cuda_${{ matrix.cuda }}.sh
+          sudo ln -s /usr/local/cuda* /usr/local/cuda
+          /usr/local/cuda/bin/nvcc -V
+          echo "/usr/local/cuda/bin/" >> $GITHUB_PATH
 
 
-    - name: Build project
-      if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
-      run: |
-        mkdir -p build && cd build
+      - name: Build project
+        if: success() && steps.steps_skiper.outputs.SKIP_STEPS != 'true'
+        run: |
+          mkdir -p build && cd build
 
-        # Using the `for`s instead of matrix above to save time spent on preparing environment (i. e. installing CUDA)
-        for build_type in Release Debug; do
-            for compile_for_cpu_mode in OFF ON; do
-                echo BUILDING AS $build_type WITH COMPILE_FOR_CPU=$compile_for_cpu_mode
+          # Using the `for`s instead of matrix above to save time spent on preparing environment (i. e. installing CUDA)
+          for build_type in Release Debug; do
+              for compile_for_cpu_mode in OFF ON; do
+                  echo BUILDING AS $build_type WITH COMPILE_FOR_CPU=$compile_for_cpu_mode
 
-                cmake .. -DCMAKE_BUILD_TYPE=$build_type -DCOMPILE_FOR_CPU=$compile_for_cpu_mode
-                cmake --build . --target all --verbose -j `nproc`
+                  cmake .. -DCMAKE_BUILD_TYPE=$build_type -DCOMPILE_FOR_CPU=$compile_for_cpu_mode
+                  cmake --build . --target all --verbose -j `nproc`
 
-                make clean
-            done
-        done
+                  make clean
+              done
+          done
