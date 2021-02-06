@@ -27,6 +27,9 @@ __host__ std::string to_string_extended(const T &v)
 template<class T>
 __host__ std::string to_string_extended(const std::vector<T> &v)
 {
+    if(v.empty())
+        return "[]";
+
     std::string body = "[";
     for(int i = 0; i < v.size(); ++i)
     {
