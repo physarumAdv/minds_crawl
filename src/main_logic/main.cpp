@@ -51,6 +51,10 @@ int main()
 
     int iteration_number = 0; // Incremented inside of `run_iteration_cleanup`
 
+    int n_of_nodes = simulation_map->get_n_of_nodes();
+    auto *mapnodes_reflections = (MapNodeReflection *)malloc(n_of_nodes * sizeof(MapNodeReflection));
+
+
     RunIterationFunc iteration_runners[] = {(RunIterationFunc)wrapped_run_iteration_project_nutrients,
                                             (RunIterationFunc)wrapped_run_iteration_diffuse_trail,
                                             (RunIterationFunc)wrapped_run_iteration_process_particles,
@@ -68,12 +72,14 @@ int main()
     if(!polyhedronDispatchFailed)
     {
         while (true) {
+            get_mapnodes_reflections(simulation_map, mapnodes_reflections);
+
             for (RunIterationFunc f : iteration_runners) {
                 f(simulation_map, &iteration_number);
             }
 
-            if (!send_particles_to_visualization(visualization_endpoints, simulation_map->nodes,
-                                                 simulation_map->get_n_of_nodes())) {
+            if(!send_particles_to_visualization(visualization_endpoints, mapnodes_reflections, n_of_nodes))
+            {
                 std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
                 break;
             }
