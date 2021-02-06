@@ -41,6 +41,14 @@ __global__ void wrapped_run_iteration_cleanup(SimulationMap *const simulation_ma
     run_iteration_cleanup(simulation_map, iteration_number, i);
 }
 
+// The result is stored in the `reflections` array
+__global__ void get_mapnodes_reflections(const SimulationMap *const simulation_map, MapNodeReflection *reflections)
+{
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    reflections[i] = get_mapnode_reflection(simulation_map, i);
+}
+
 
 /**
  * Sets a device-allocated variable to a given value from host code

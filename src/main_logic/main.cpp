@@ -30,6 +30,13 @@ void wrapped_run_iteration_cleanup(SimulationMap *const simulation_map, int *con
         run_iteration_cleanup(simulation_map, iteration_number, i);
 }
 
+// The result is stored in the `reflections` array
+void get_mapnodes_reflections(SimulationMap *const simulation_map, MapNodeReflection *reflections)
+{
+    for(unsigned int i = 0; i < simulation_map->get_n_of_nodes(); ++i)
+        reflections[i] = get_mapnode_reflection(simulation_map, i);
+}
+
 
 int main()
 {

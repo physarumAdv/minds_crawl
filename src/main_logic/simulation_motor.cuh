@@ -264,4 +264,44 @@ __device__ inline void run_iteration_cleanup(SimulationMap *const simulation_map
 }
 
 
+/**
+ * Object describing a state of a `MapNode` in the simulation. It has no methods or private fields and does not point to
+ * any memory area, which allows to freely copy or move the object, including between host and device memory
+ */
+struct MapNodeReflection
+{
+    /// Trail value
+    double trail;
+
+    /// Coordinates of the node
+    SpacePoint node_coordinates;
+
+    /// Whether the node contains a particle or not
+    bool contains_particle;
+
+    /// The particle's coordinates if there is any (if `.contains_particle`), undefined otherwise
+    SpacePoint particle_coordinates;
+};
+
+/**
+ * Reflects a `MapNode` with the given index and returns a `MapNodeReflection` object
+ *
+ * @param simulation_map `SimulationMap` object to get a node from
+ * @param node_index Index of the `MapNode` to reflect
+ * @returns Reflection of the node
+ */
+__device__ inline MapNodeReflection get_mapnode_reflection(const SimulationMap *const simulation_map,
+                                                           const unsigned int node_index)
+{
+    MapNode &node = simulation_map->nodes[node_index];
+
+    MapNodeReflection reflection{.trail = node.trail, .node_coordinates = node.get_coordinates(),
+            .contains_particle = node.does_contain_particle()};
+    if(reflection.contains_particle)
+        reflection.particle_coordinates = node.get_particle()->coordinates;
+
+    return reflection;
+}
+
+
 #endif //MINDS_CRAWL_MAIN_LOGIC_CUH
