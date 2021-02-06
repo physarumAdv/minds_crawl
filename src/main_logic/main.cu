@@ -45,6 +45,8 @@ __global__ void wrapped_run_iteration_cleanup(SimulationMap *const simulation_ma
 __global__ void get_mapnodes_reflections(const SimulationMap *const simulation_map, MapNodeReflection *reflections)
 {
     unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if(i >= simulation_map->get_n_of_nodes())
+        return;
 
     reflections[i] = get_mapnode_reflection(simulation_map, i);
 }
@@ -159,7 +161,8 @@ __host__ int main()
         while(true)
         {
             // Reflect `MapNode`s (in fact, defer to previous stream operations completion)
-            get_mapnodes_reflections<<<1, 1, 0, iterations_stream>>>(simulation_map, mapnodes_reflections);
+            get_mapnodes_reflections<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map,
+                                                                                                mapnodes_reflections);
 
             // Wait for all the operations in the stream to finish
             if(cudaStreamSynchronize(iterations_stream) != cudaSuccess)
