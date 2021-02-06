@@ -1,3 +1,13 @@
+/**
+ * The file contains functions initializing a simulation and its environment and functions from the run_iteration kernel
+ * which is a set of functions which together perform an iteration in the simulation. It might contain other functions
+ * related to a similar functionality and behaving in a similar way.
+ *
+ * Each of the run_iteration functions defined here only works with one node by its index, so you'll need to wrap them
+ * and call them for each node
+ */
+
+
 #ifndef MINDS_CRAWL_MAIN_LOGIC_CUH
 #define MINDS_CRAWL_MAIN_LOGIC_CUH
 

@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "simulation_logic.cuh"
-#include "iterations_wrapper.cuh"
+#include "simulation_motor.cuh"
 #include "../external/visualization_integration.cuh"
 #include "../external/random_generator.cuh"
 
