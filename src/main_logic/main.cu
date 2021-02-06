@@ -150,10 +150,18 @@ __host__ int main()
     cudaMallocManaged(&mapnodes_reflections, n_of_nodes * sizeof(MapNodeReflection));
 
     bool modelDispatchFailed = false;
-    if(!send_poly_to_visualization(visualization_endpoints, polyhedron))
     {
-        std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
-        modelDispatchFailed = true;
+        // Please, pay attention! This is a very ugly and temporary solution for
+        // https://github.com/physarumAdv/minds_crawl/issues/47. I know some ways to implement it much better, but
+        // I don't want to loose time on doing this now, because it's still unclear for me how we're going to import
+        // polyhedrons in future, so the way to send polyhedron I might have chosen could be incompatible with the way
+        // we import polyhedrons. That's why now I just create another cube and send it instead of the original one
+        Polyhedron temp_poly = generate_cube();
+        if(!send_poly_to_visualization(visualization_endpoints, &temp_poly))
+        {
+            std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
+            modelDispatchFailed = true;
+        }
     }
 
     if(cudaPeekAtLastError() == cudaSuccess && !modelDispatchFailed)
