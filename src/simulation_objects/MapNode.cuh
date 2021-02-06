@@ -346,4 +346,24 @@ __host__ __device__ MapNode *find_nearest_mapnode(const Polyhedron *polyhedron, 
                                                   MapNode *start = nullptr);
 
 
+/**
+ * Object describing a state of a `MapNode` in the simulation. It has no methods or private fields and does not point to
+ * any memory area, which allows to freely copy or move the object, including between host and device memory
+ */
+struct MapNodeReflection
+{
+    /// Trail value
+    double trail;
+
+    /// Coordinates of the node
+    SpacePoint node_coordinates;
+
+    /// Whether the node contains a particle or not
+    bool contains_particle;
+
+    /// The particle's coordinates if there is any (if `.contains_particle`), undefined otherwise
+    SpacePoint particle_coordinates;
+};
+
+
 #endif //MINDS_CRAWL_MAPNODE_CUH

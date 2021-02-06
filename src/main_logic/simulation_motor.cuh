@@ -1,7 +1,9 @@
 /**
  * The file contains functions initializing a simulation and its environment and functions from the run_iteration kernel
  * which is a set of functions which together perform an iteration in the simulation. It might contain other functions
- * related to a similar functionality and behaving in a similar way.
+ * related to things main should do when running the simulation. It shouldn't, however, for example, contain any
+ * structures or functions any other file may want: this file should only be included to main.cpp and main.cu and used
+ * for things which are common for these two files, so we take it out here to reduce code duplication
  *
  * Each of the run_iteration functions defined here only works with one node by its index, so you'll need to wrap them
  * and call them for each node
@@ -263,25 +265,6 @@ __device__ inline void run_iteration_cleanup(SimulationMap *const simulation_map
         ++*iteration_number;
 }
 
-
-/**
- * Object describing a state of a `MapNode` in the simulation. It has no methods or private fields and does not point to
- * any memory area, which allows to freely copy or move the object, including between host and device memory
- */
-struct MapNodeReflection
-{
-    /// Trail value
-    double trail;
-
-    /// Coordinates of the node
-    SpacePoint node_coordinates;
-
-    /// Whether the node contains a particle or not
-    bool contains_particle;
-
-    /// The particle's coordinates if there is any (if `.contains_particle`), undefined otherwise
-    SpacePoint particle_coordinates;
-};
 
 /**
  * Reflects a `MapNode` with the given index and returns a `MapNodeReflection` object
