@@ -1,5 +1,7 @@
 #ifdef COMPILE_FOR_CPU
+
 #include <cmath>
+
 #endif //COMPILE_FOR_CPU
 
 #include "SpacePoint.cuh"

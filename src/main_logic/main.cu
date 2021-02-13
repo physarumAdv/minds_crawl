@@ -164,9 +164,9 @@ __host__ int main()
         }
     }
 
-    if(cudaPeekAtLastError() == cudaSuccess && !modelDispatchFailed)
+    if(!modelDispatchFailed)
     {
-        while(true)
+        while(cudaPeekAtLastError() == cudaSuccess)
         {
             // Reflect `MapNode`s (in fact, defer to previous stream operations completion)
             get_mapnodes_reflections<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map,

@@ -15,8 +15,10 @@
 
 
 #ifdef COMPILE_FOR_CPU
+
 #include <initializer_list>
 #include <utility>
+
 #endif //COMPILE_FOR_CPU
 
 #include <cstdio>
