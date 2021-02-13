@@ -147,9 +147,9 @@ __host__ int main()
         modelDispatchFailed = true;
     }
 
-    if(cudaPeekAtLastError() == cudaSuccess && !modelDispatchFailed)
+    if(!modelDispatchFailed)
     {
-        while(true)
+        while(cudaPeekAtLastError() == cudaSuccess)
         {
             // (implicit synchronization)
             // THIS COPIED ARRAY WILL HAVE ALL THE POINTERS INVALIDATED!!!
