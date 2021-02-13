@@ -60,13 +60,16 @@ int main()
 
     if(!polyhedronDispatchFailed)
     {
-        while (true) {
-            for (RunIterationFunc f : iteration_runners) {
+        while(true)
+        {
+            for(RunIterationFunc f : iteration_runners)
+            {
                 f(simulation_map, &iteration_number);
             }
 
-            if (!send_particles_to_visualization(visualization_endpoints, simulation_map->nodes,
-                                                 simulation_map->get_n_of_nodes())) {
+            if(!send_particles_to_visualization(visualization_endpoints, simulation_map->nodes,
+                                                simulation_map->get_n_of_nodes()))
+            {
                 std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
                 break;
             }

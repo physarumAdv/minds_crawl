@@ -11,8 +11,10 @@ __host__ std::pair<std::string, std::string> get_visualization_endpoints()
 {
     std::ifstream f("config/visualization_endpoint.txt", std::ios::in);
     std::string particles_url, poly_url;
-    getline(f, particles_url);
-    getline(f, poly_url);
+    if(!getline(f, particles_url) || !getline(f, poly_url))
+    {
+        throw std::runtime_error("File config/visualization_endpoint.txt does not exist");
+    }
     return {particles_url, poly_url};
 }
 
@@ -25,6 +27,9 @@ __host__ std::string to_string_extended(const T &v)
 template<class T>
 __host__ std::string to_string_extended(const std::vector<T> &v)
 {
+    if(v.empty())
+        return "[]";
+
     std::string body = "[";
     for(int i = 0; i < v.size(); ++i)
     {
@@ -62,7 +67,7 @@ __host__ bool send_poly_to_visualization(const std::pair<std::string, std::strin
     {
         const http::Response response = poly_request.send("POST", body, {"Content-Type: application/json"});
 
-        if(response.status < 200 || 300 <= response.status)
+        if(response.status != 200)
             throw http::ResponseError("Response status is not OK");
     }
     catch(const std::exception &e)
@@ -105,7 +110,7 @@ __host__ bool send_particles_to_visualization(const std::pair<std::string, std::
     {
         const http::Response response = particles_request.send("POST", body, {"Content-Type: application/json"});
 
-        if(response.status < 200 || 300 <= response.status)
+        if(response.status != 200)
             throw http::ResponseError("Response status is not OK");
     }
     catch(const std::exception &e)

@@ -51,7 +51,8 @@ __device__ void Particle::do_motor_behaviours()
     }
 
     MapNode *new_node = find_nearest_mapnode(map_node->get_polyhedron(), end, map_node);
-    if(new_node->attach_particle(this)) // If can reattach myself to that node
+    // If can reattach myself to that node (won't enter if `new_node` is the same as `map_node`)
+    if(new_node->attach_particle(this))
     {
         map_node->detach_particle(this);
         map_node = new_node;

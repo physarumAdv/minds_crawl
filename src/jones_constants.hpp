@@ -47,6 +47,7 @@ namespace jones_constants
      * Step size of a particle. How far does particle move on each step
      *
      * @warning The `speed` value <b>MUST</b> be <b>AT MOST</b> half of <b>minimal</b> distance between two `MapNode`s
+     *      located on the same face
      */
     const double speed = 0.5;
 
