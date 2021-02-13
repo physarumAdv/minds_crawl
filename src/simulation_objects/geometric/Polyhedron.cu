@@ -1,5 +1,7 @@
 #ifdef COMPILE_FOR_CPU
+
 #include <cmath>
+
 #endif //COMPILE_FOR_CPU
 
 #include <cstdlib>
@@ -131,7 +133,7 @@ __host__ __device__ Face *find_face_next_to_edge(int vertex_id, Face *current_fa
 
     for(int i = 0; i < polyhedron->get_n_of_faces(); ++i)
         if(polyhedron->get_faces()[i] != *current_face &&
-                does_edge_belong_to_face(*point_a, *point_b, &polyhedron->get_faces()[i]))
+           does_edge_belong_to_face(*point_a, *point_b, &polyhedron->get_faces()[i]))
             return &polyhedron->get_faces()[i];
     return current_face;
 }

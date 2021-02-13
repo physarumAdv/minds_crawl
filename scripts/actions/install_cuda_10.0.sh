@@ -2,11 +2,11 @@
 set -e
 
 UBUNTU_VERSION="$(lsb_release -sr)"
-UBUNTU_VERSION="${UBUNTU_VERSION//.}"
+UBUNTU_VERSION="${UBUNTU_VERSION//./}"
 
 if [[ "$UBUNTU_VERSION" == "2004" ]]; then
-    echo "Cuda 10.0 does not support Ubuntu 20.04"
-    exit 1
+  echo "Cuda 10.0 does not support Ubuntu 20.04"
+  exit 1
 fi
 
 wget -q "https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda-repo-ubuntu$UBUNTU_VERSION-10-0-local-10.0.130-410.48_1.0-1_amd64" -O cuda-repo.deb
