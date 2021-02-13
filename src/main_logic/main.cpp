@@ -2,7 +2,7 @@
 #include <cstdlib>
 
 #include "simulation_logic.cuh"
-#include "iterations_wrapper.cuh"
+#include "simulation_motor.cuh"
 #include "../external/visualization_integration.cuh"
 
 
@@ -30,6 +30,13 @@ void wrapped_run_iteration_cleanup(SimulationMap *const simulation_map, int *con
         run_iteration_cleanup(simulation_map, iteration_number, i);
 }
 
+// The result is stored in the `reflections` array
+void get_mapnodes_reflections(SimulationMap *const simulation_map, MapNodeReflection *reflections)
+{
+    for(unsigned int i = 0; i < simulation_map->get_n_of_nodes(); ++i)
+        reflections[i] = get_mapnode_reflection(simulation_map, i);
+}
+
 
 int main()
 {
@@ -43,6 +50,10 @@ int main()
     init_environment(simulation_map);
 
     int iteration_number = 0; // Incremented inside of `run_iteration_cleanup`
+
+    int n_of_nodes = simulation_map->get_n_of_nodes();
+    auto *mapnodes_reflections = (MapNodeReflection *)malloc(n_of_nodes * sizeof(MapNodeReflection));
+
 
     RunIterationFunc iteration_runners[] = {(RunIterationFunc)wrapped_run_iteration_project_nutrients,
                                             (RunIterationFunc)wrapped_run_iteration_diffuse_trail,
@@ -60,15 +71,15 @@ int main()
 
     if(!polyhedronDispatchFailed)
     {
-        while(true)
-        {
-            for(RunIterationFunc f : iteration_runners)
-            {
+        while (true)
+	{
+            get_mapnodes_reflections(simulation_map, mapnodes_reflections);
+
+            for (RunIterationFunc f : iteration_runners) {
                 f(simulation_map, &iteration_number);
             }
 
-            if(!send_particles_to_visualization(visualization_endpoints, simulation_map->nodes,
-                                                simulation_map->get_n_of_nodes()))
+            if(!send_particles_to_visualization(visualization_endpoints, mapnodes_reflections, n_of_nodes))
             {
                 std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
                 break;

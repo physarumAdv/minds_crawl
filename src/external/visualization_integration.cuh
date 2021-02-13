@@ -56,8 +56,8 @@ __host__ std::string vector_double_to_json_array(const std::vector<double> &v);
  */
 __host__ bool send_poly_to_visualization(const std::pair<std::string, std::string> &urls, const Polyhedron *polyhedron);
 
-__host__ bool send_particles_to_visualization(const std::pair<std::string, std::string> &urls, const MapNode *nodes,
-                                              int n_of_nodes);
+__host__ bool send_particles_to_visualization(const std::pair<std::string, std::string> &urls,
+                                              const MapNodeReflection *nodes, int n_of_nodes);
 
 
 #endif //MINDS_CRAWL_VISUALIZATION_INTEGRATION_CUH

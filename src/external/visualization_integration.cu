@@ -79,8 +79,8 @@ __host__ bool send_poly_to_visualization(const std::pair<std::string, std::strin
     return true;
 }
 
-__host__ bool send_particles_to_visualization(const std::pair<std::string, std::string> &urls, const MapNode *nodes,
-                                              int n_of_nodes)
+__host__ bool send_particles_to_visualization(const std::pair<std::string, std::string> &urls,
+                                              const MapNodeReflection *nodes, int n_of_nodes)
 {
     std::vector<double> x, y, z;
     x.reserve(n_of_nodes);
@@ -89,13 +89,13 @@ __host__ bool send_particles_to_visualization(const std::pair<std::string, std::
 
     for(int i = 0; i < n_of_nodes; ++i)
     {
-        if(!nodes[i].does_contain_particle())
+        if(!nodes[i].contains_particle)
             continue;
 
-        Particle *p = nodes[i].get_particle();
-        x.push_back(p->coordinates.x);
-        y.push_back(p->coordinates.y);
-        z.push_back(p->coordinates.z);
+        SpacePoint coords = nodes[i].particle_coordinates;
+        x.push_back(coords.x);
+        y.push_back(coords.y);
+        z.push_back(coords.z);
     }
 
     std::string body = "{";

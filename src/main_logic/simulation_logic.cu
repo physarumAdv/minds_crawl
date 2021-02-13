@@ -129,7 +129,7 @@ __device__ void division_test(MapNode *node)
 }
 
 
-__device__ Polyhedron generate_cube(double edge_length)
+__host__ __device__ Polyhedron generate_cube(double edge_length)
 {
     SpacePoint vertices1[] = {
             {0,           0, 0},

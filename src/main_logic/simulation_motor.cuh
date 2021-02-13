@@ -1,3 +1,15 @@
+/**
+ * The file contains functions initializing a simulation and its environment and functions from the run_iteration kernel
+ * which is a set of functions which together perform an iteration in the simulation. It might contain other functions
+ * related to things main should do when running the simulation. It shouldn't, however, for example, contain any
+ * structures or functions any other file may want: this file should only be included to main.cpp and main.cu and used
+ * for things which are common for these two files, so we take it out here to reduce code duplication
+ *
+ * Each of the run_iteration functions defined here only works with one node by its index, so you'll need to wrap them
+ * and call them for each node
+ */
+
+
 #ifndef MINDS_CRAWL_MAIN_LOGIC_CUH
 #define MINDS_CRAWL_MAIN_LOGIC_CUH
 
@@ -119,10 +131,8 @@ __global__ void destruct_simulation_objects(Polyhedron *const polyhedron, Simula
  *
  * @see run_iteration_diffuse_trail, run_iteration_process_particles, run_iteration_cleanup
  *
- * @note Again, this function only processes just one node. To use it, you'll need
- *
- * @note This function is a part of run_iteration kernels set. Because at some moments while running an iteration we
- *      have to synchronize all the threads (including inside blocks), the "run_iteration" operation is split into
+ * @note This function is a part of run_iteration kernel. Because at some moments while running an iteration we
+ *      have to synchronize all the threads (including among blocks), the "run_iteration" operation is split into
  *      multiple kernel functions. Other functions (hopefully, all of them) are mentioned in the "see" block above
  */
 __device__ inline void run_iteration_project_nutrients(SimulationMap *const simulation_map,
@@ -172,8 +182,8 @@ __device__ inline void run_iteration_project_nutrients(SimulationMap *const simu
  *
  * @see run_iteration_project_nutrients, run_iteration_process_particles, run_iteration_cleanup
  *
- * @note This function is a part of run_iteration kernels set. Because at some moments while running an iteration we
- *      have to synchronize all the threads (including inside blocks), the "run_iteration" operation is split into
+ * @note This function is a part of run_iteration kernel. Because at some moments while running an iteration we
+ *      have to synchronize all the threads (including among blocks), the "run_iteration" operation is split into
  *      multiple kernel functions. Other functions (hopefully, all of them) are mentioned in the "see" block above
  */
 __device__ inline void run_iteration_diffuse_trail(SimulationMap *const simulation_map,
@@ -198,8 +208,8 @@ __device__ inline void run_iteration_diffuse_trail(SimulationMap *const simulati
  *
  * @see run_iteration_project_nutrients, run_iteration_diffuse_trail, run_iteration_cleanup
  *
- * @note This function is a part of run_iteration kernels set. Because at some moments while running an iteration we
- *      have to synchronize all the threads (including inside blocks), the "run_iteration" operation is split into
+ * @note This function is a part of run_iteration kernel. Because at some moments while running an iteration we
+ *      have to synchronize all the threads (including among blocks), the "run_iteration" operation is split into
  *      multiple kernel functions. Other functions (hopefully, all of them) are mentioned in the "see" block above
  */
 __device__ inline void run_iteration_process_particles(SimulationMap *const simulation_map,
@@ -238,8 +248,8 @@ __device__ inline void run_iteration_process_particles(SimulationMap *const simu
  *
  * @see run_iteration_project_nutrients, run_iteration_diffuse_trail, run_iteration_process_particles
  *
- * @note This function is a part of run_iteration kernels set. Because at some moments while running an iteration we
- *      have to synchronize all the threads (including inside blocks), the "run_iteration" operation is split into
+ * @note This function is a part of run_iteration kernel. Because at some moments while running an iteration we
+ *      have to synchronize all the threads (including among blocks), the "run_iteration" operation is split into
  *      multiple kernel functions. Other functions (hopefully, all of them) are mentioned in the "see" block above
  */
 __device__ inline void run_iteration_cleanup(SimulationMap *const simulation_map, int *const iteration_number,
@@ -255,6 +265,27 @@ __device__ inline void run_iteration_cleanup(SimulationMap *const simulation_map
 
     if(node_index == 0)
         ++*iteration_number;
+}
+
+
+/**
+ * Reflects a `MapNode` with the given index and returns a `MapNodeReflection` object
+ *
+ * @param simulation_map `SimulationMap` object to get a node from
+ * @param node_index Index of the `MapNode` to reflect
+ * @returns Reflection of the node
+ */
+__device__ inline MapNodeReflection get_mapnode_reflection(const SimulationMap *const simulation_map,
+                                                           const unsigned int node_index)
+{
+    MapNode &node = simulation_map->nodes[node_index];
+
+    MapNodeReflection reflection{.trail = node.trail, .node_coordinates = node.get_coordinates(),
+            .contains_particle = node.does_contain_particle()};
+    if(reflection.contains_particle)
+        reflection.particle_coordinates = node.get_particle()->coordinates;
+
+    return reflection;
 }
 
 

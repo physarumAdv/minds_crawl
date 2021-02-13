@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "simulation_logic.cuh"
-#include "iterations_wrapper.cuh"
+#include "simulation_motor.cuh"
 #include "../external/visualization_integration.cuh"
 #include "../external/random_generator.cuh"
 
@@ -39,6 +39,16 @@ __global__ void wrapped_run_iteration_cleanup(SimulationMap *const simulation_ma
     unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
 
     run_iteration_cleanup(simulation_map, iteration_number, i);
+}
+
+// The result is stored in the `reflections` array
+__global__ void get_mapnodes_reflections(const SimulationMap *const simulation_map, MapNodeReflection *reflections)
+{
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if(i >= simulation_map->get_n_of_nodes())
+        return;
+
+    reflections[i] = get_mapnode_reflection(simulation_map, i);
 }
 
 
@@ -119,9 +129,7 @@ __host__ int main()
         cudaFree(_temporary);
     }
 
-    // Obtaining `nodes`
-    MapNode *nodes, *nodes_d = simulation_map->nodes; // Will be used for drawing
-    cudaMallocHost((void **)&nodes, sizeof(MapNode) * n_of_nodes);
+    const int cuda_grid_size = (n_of_nodes + cuda_block_size - 1) / cuda_block_size;
 
 
     RunIterationFunc iteration_runners[] = {(RunIterationFunc)wrapped_run_iteration_project_nutrients,
@@ -138,34 +146,46 @@ __host__ int main()
     std::pair<std::string, std::string> visualization_endpoints = get_visualization_endpoints();
 
 
-    const int cuda_grid_size = (n_of_nodes + cuda_block_size - 1) / cuda_block_size;
+    MapNodeReflection *mapnodes_reflections;
+    cudaMallocManaged(&mapnodes_reflections, n_of_nodes * sizeof(MapNodeReflection));
 
     bool modelDispatchFailed = false;
-    if(!send_poly_to_visualization(visualization_endpoints, polyhedron))
     {
-        std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
-        modelDispatchFailed = true;
+        // Please, pay attention! This is a very ugly and temporary solution for
+        // https://github.com/physarumAdv/minds_crawl/issues/47. I know some ways to implement it much better, but
+        // I don't want to loose time on doing this now, because it's still unclear for me how we're going to import
+        // polyhedrons in future, so the way to send polyhedron I might have chosen could be incompatible with the way
+        // we import polyhedrons. That's why now I just create another cube and send it instead of the original one
+        Polyhedron temp_poly = generate_cube();
+        if(!send_poly_to_visualization(visualization_endpoints, &temp_poly))
+        {
+            std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
+            modelDispatchFailed = true;
+        }
     }
 
     if(!modelDispatchFailed)
     {
         while(cudaPeekAtLastError() == cudaSuccess)
         {
-            // (implicit synchronization)
-            // THIS COPIED ARRAY WILL HAVE ALL THE POINTERS INVALIDATED!!!
-            cudaMemcpy((void *)nodes, (void *)nodes_d, sizeof(MapNode) * n_of_nodes, cudaMemcpyDeviceToHost);
+            // Reflect `MapNode`s (in fact, defer to previous stream operations completion)
+            get_mapnodes_reflections<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map,
+                                                                                                mapnodes_reflections);
 
-            if(cudaPeekAtLastError() != cudaSuccess) // After synchronization caused by cudaMemcpy
+            // Wait for all the operations in the stream to finish
+            if(cudaStreamSynchronize(iterations_stream) != cudaSuccess)
             {
                 break;
             }
 
+            // Run an iteration of the simulation (in fact, defer the iteration runners)
             for(RunIterationFunc f : iteration_runners)
             {
                 f<<<cuda_grid_size, cuda_block_size, 0, iterations_stream>>>(simulation_map, iteration_number);
             }
 
-            if(!send_particles_to_visualization(visualization_endpoints, nodes, n_of_nodes))
+            // Send `MapNodeReflection`s retrieved earlier to a visualizer
+            if(!send_particles_to_visualization(visualization_endpoints, mapnodes_reflections, n_of_nodes))
             {
                 std::cerr << "Error sending http request to visualization. Stopping the simulation process\n";
                 break;
@@ -173,7 +193,8 @@ __host__ int main()
         }
     }
 
-    cudaFree(nodes);
+    cudaFree(mapnodes_reflections);
+    cudaStreamDestroy(iterations_stream);
     cudaFree(iteration_number);
     destruct_simulation_objects<<<1, 1>>>(polyhedron, simulation_map);
     cudaFree(polyhedron);
