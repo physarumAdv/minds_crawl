@@ -89,13 +89,17 @@ __host__ bool send_particles_to_visualization(const std::pair<std::string, std::
 
     for(int i = 0; i < n_of_nodes; ++i)
     {
-        if(!nodes[i].contains_particle)
+        /*if(!nodes[i].contains_particle)
             continue;
 
         SpacePoint coords = nodes[i].particle_coordinates;
         x.push_back(coords.x);
         y.push_back(coords.y);
-        z.push_back(coords.z);
+        z.push_back(coords.z);*/
+
+        x.push_back(nodes[i].node_coordinates.x);
+        y.push_back(nodes[i].node_coordinates.y);
+        z.push_back(nodes[i].node_coordinates.z);
     }
 
     std::string body = "{";
