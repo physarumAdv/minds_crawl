@@ -68,7 +68,7 @@ __global__ void init_simulation_objects(Polyhedron *const polyhedron, Simulation
     polyhedron->_reset_destructively();
     simulation_map->_reset_destructively();
 
-    *polyhedron = generate_cube();
+    *polyhedron = generate_cube(20);
     *simulation_map = SimulationMap(polyhedron);
 }
 
