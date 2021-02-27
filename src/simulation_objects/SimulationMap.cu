@@ -35,9 +35,7 @@ __device__ SimulationMap::SimulationMap(Polyhedron *polyhedron) :
     n_of_nodes = 1;
 
     // Direction vector of the first node to the top neighbor
-    SpacePoint direction_vector = relative_point_rotation(start_node_coordinates, start_face->get_vertices()[0],
-                                                          start_face->get_normal(), M_PI * 2 * rand0to1()) -
-                                  start_node_coordinates;
+    SpacePoint direction_vector = {0, 0, 1};
 
     /**
      * Array of direction vectors to top neighbors for each polyhedron face
