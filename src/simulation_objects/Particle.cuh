@@ -82,7 +82,7 @@ public:
      *
      * If the maximum amount of trail is on the left sensor, particle rotates to the left on `jc::ra` radians;
      * if the maximum amount of trail is on the right sensor, particle rotates to the right on `jc::ra` radians;
-     * if the maximum amount of trail is on the middle sensor, particle does not rotate
+     * if the maximum amount of trail is on the middle sensor, particle does not rotate.
      *
      * @see Particle::rotate
      */
@@ -101,6 +101,7 @@ public:
      *
      * Before trying to process a `Particle`, a thread should capture it (if it didn't succeed, this means another
      * thread is processing the `Particle` already). After processing, a `Particle` should be released, see the
+     * `release` method.
      *
      * @returns `true` if the particle was successfully captured and the captured thread is allowed to process it,
      *      otherwise `false`
@@ -114,8 +115,7 @@ public:
     /**
      * Releases a captured particle
      *
-     * Releases a particle to allow capturing it again. The method should <b>only</b> be called when all the threads
-     * which could try to capture the `Particle` are finished
+     * Releases a particle to allow capturing it again.
      *
      * @see Particle::capture
      */
