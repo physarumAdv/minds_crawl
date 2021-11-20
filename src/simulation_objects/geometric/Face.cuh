@@ -33,7 +33,8 @@ public:
      *
      * @param vertices Array of polyhedron vertices that belong to the face.
      *      Must be ordered in a special way (see note below)
-     * @param n_of_vertices Number of vertices on the face
+     * @param n_of_vertices Number of elements in the `vertices` array (i.e. number of vertices, INCLUDING the repeated
+     *      one (see below))
      *
      * @note The vertices order matters: looking on a face <b>from outside</b> the polyhedron, some vertex (let's call
      * it A) must be saved to `vertices[0]`. It's neighbour clockwise - vertex B (B is next to A clockwise) must be

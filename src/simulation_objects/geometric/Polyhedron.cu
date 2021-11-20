@@ -103,14 +103,14 @@ __host__ __device__ double Polyhedron::calculate_square_of_surface()
     double square = 0;
     for(int i = 0; i < n_of_faces; ++i)
     {
-        // Cause first vertex of face repeats again in the end the condition is `j < faces[i].get_n_of_vertices() - 2`
+        // Start with the vertex `1`, not `0`, because the 0th vertex is repeated in the end of the vertices array
         for(int j = 1; j < faces[i].get_n_of_vertices() - 1; ++j)
         {
             SpacePoint a = faces[i].get_vertices()[j + 1] - faces[i].get_vertices()[0];
             SpacePoint b = faces[i].get_vertices()[j] - faces[i].get_vertices()[0];
 
             double sign_of_square = (a % b) * faces[i].get_normal();
-            sign_of_square /= abs(sign_of_square);
+            sign_of_square /= std::abs(sign_of_square);
             square += sign_of_square * (a ^ b) / 2;
         }
     }
@@ -198,6 +198,5 @@ __host__ __device__ SpacePoint get_projected_vector_end(SpacePoint vector_start,
                                                    vector_end, current_face, &intersection_edge_vertex_id);
     }
 
-    // If vector AB does not intersect any edge of face, `vector_end` equals `b`
     return vector_end;
 }

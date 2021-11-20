@@ -72,7 +72,7 @@ int main()
     if(!polyhedronDispatchFailed)
     {
         while (true)
-	{
+	    {
             get_mapnodes_reflections(simulation_map, mapnodes_reflections);
 
             for (RunIterationFunc f : iteration_runners) {
