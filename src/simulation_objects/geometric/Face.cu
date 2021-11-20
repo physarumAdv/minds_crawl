@@ -126,8 +126,9 @@ __host__ __device__ bool Face::contains_point(SpacePoint p)
     {
         SpacePoint a = vertices[i] - vertices[0];
         SpacePoint b = vertices[i + 1] - vertices[0];
-        SpacePoint scalar_product = a % b; // Its length is equal to the area of the parallelogram built on a, b
-        face_area_by_triangles += get_distance(origin, scalar_product) / 2;
+
+        // Magnitude of the cross product `a % b` is the area of the parallelogram, its half is the area of the triangle
+        face_area_by_triangles += get_distance(origin, a % b) / 2;
     }
 
     /*
@@ -139,8 +140,9 @@ __host__ __device__ bool Face::contains_point(SpacePoint p)
     {
         SpacePoint this_vertex = vertices[i], next_vertex = vertices[(i + 1) % n_of_vertices];
         SpacePoint a = this_vertex - p, b = next_vertex - p;
-        double triangle_area = 1. / 2 * sqrt((a * a) * (b * b) - (a * b) * (a * b));
-        face_area_with_point += triangle_area;
+
+        // Magnitude of the cross product `a % b` is the area of the parallelogram, its half is the area of the triangle
+        face_area_with_point += get_distance(origin, a % b) / 2;
     }
 
     // The face contains point if and only if the two areas are equal to each other
