@@ -125,6 +125,9 @@ public:
      */
     __host__ __device__ friend bool operator==(const Face &a, const Face &b);
 
+
+    __host__ __device__ bool contains_point(SpacePoint p);
+
 private:
     /// Pointer to some node laying on the face
     MapNode *node;

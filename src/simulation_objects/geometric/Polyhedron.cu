@@ -72,9 +72,16 @@ __host__ __device__ Face *Polyhedron::find_face_by_point(SpacePoint point) const
     for(int i = 0; i < n_of_faces; ++i)
     {
         Face *face = &faces[i];
+
+        /*
+        // Old version of the check. Probably will be investigated later?
         SpacePoint normal = (point - face->get_vertices()[0]) % (face->get_vertices()[1] - face->get_vertices()[0]);
         normal = normal / get_distance(normal, origin);
         if(normal * face->get_normal() >= 1 - eps)
+            return face;
+        */
+
+        if(face->contains_point(point))
             return face;
     }
     return &faces[0];
