@@ -126,6 +126,18 @@ public:
     __host__ __device__ friend bool operator==(const Face &a, const Face &b);
 
 
+    /**
+     * Checks whether the given point belongs to the face via area calculation.
+     *
+     * Checks if the given point belongs to the face by calculating actual area of the face and area of the face as if
+     * the point was on it. If the areas match (equal +- epsilon), the point is considered to belong to the face.
+     *
+     * @param p Point to be checked
+     *
+     * @returns `true` if the point belongs to the face, `false` otherwise
+     *
+     * @warning The method only works correctly if the face is a **convex** polygon
+     */
     __host__ __device__ bool contains_point(SpacePoint p);
 
 private:
