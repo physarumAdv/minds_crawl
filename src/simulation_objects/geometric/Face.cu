@@ -1,5 +1,4 @@
 #include <utility>
-#include <cassert>
 
 #ifdef COMPILE_FOR_CPU
 #include <cmath>
@@ -117,10 +116,24 @@ __host__ __device__ bool operator==(const Face &a, const Face &b)
 
 __host__ __device__ bool Face::contains_point(SpacePoint p)
 {
-    // For squares only!
-    assert(n_of_vertices == 4);
-    double face_area = get_distance(vertices[1], vertices[0]) * get_distance(vertices[2], vertices[1]);
+    /*
+     * Calculate the area of the face as sum of areas of triangles with vertices `vertices[0]`, `vertices[i]`,
+     * `vertices[i + 1]` for all `i` > 1.
+     * WARNING: only works for convex polyhedrons.
+     */
+    double face_area_by_triangles = 0;
+    for(int i = 1; i < n_of_vertices - 1; ++i)
+    {
+        SpacePoint a = vertices[i] - vertices[0];
+        SpacePoint b = vertices[i + 1] - vertices[0];
+        SpacePoint scalar_product = a % b; // Its length is equal to the area of the parallelogram built on a, b
+        face_area_by_triangles += get_distance(origin, scalar_product) / 2;
+    }
 
+    /*
+     * Calculate the area of the face as sum of areas of triangles with vertices `p` (point to be checked),
+     * `vertices[i]`, `vertices[i + 1]` for all `i`
+     */
     double face_area_with_point = 0;
     for(int i = 0; i < n_of_vertices; ++i)
     {
@@ -131,7 +144,7 @@ __host__ __device__ bool Face::contains_point(SpacePoint p)
     }
 
     // The face contains point if and only if the two areas are equal to each other
-    return std::abs(face_area - face_area_with_point) < eps;
+    return std::abs(face_area_by_triangles - face_area_with_point) < eps;
 }
 
 
