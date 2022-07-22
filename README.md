@@ -47,6 +47,6 @@ To run the application, you have to:
 >
 > [Tatiana Kadykova](http://vk.com/ricopin), [tanya-kta@bk.ru](mailto:tanya-kta@bk.ru)
 >
-> [Pavel Artushkov](http://t.me/pavtiger), [pavTiger@gmail.com](mailto:pavTiger@gmail.com)
+> [Paul Artushkov](http://t.me/pavtiger), [pavTiger@gmail.com](mailto:pavTiger@gmail.com)
 >
-> [Olga Starunova](http://vk.com/id2051067), [bogadelenka@mail.ru](mailto:bogadelenka@mail.ru)
+> [Olga Starunova](http://vk.com/id2051067), [o.a.starunova@gmail.com](mailto:o.a.starunova@gmail.com)
