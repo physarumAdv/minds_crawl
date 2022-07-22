@@ -1,5 +1,9 @@
 #include <utility>
 
+#ifdef COMPILE_FOR_CPU
+#include <cmath>
+#endif //COMPILE_FOR_CPU
+
 #include "Face.cuh"
 #include "../MapNode.cuh"
 #include "Polyhedron.cuh"
@@ -109,6 +113,42 @@ __host__ __device__ bool operator==(const Face &a, const Face &b)
     }
     return true;
 }
+
+__host__ __device__ bool Face::contains_point(SpacePoint p)
+{
+    /*
+     * Calculate the area of the face as sum of areas of triangles with vertices `vertices[0]`, `vertices[i]`,
+     * `vertices[i + 1]` for all `i` > 1.
+     * WARNING: only works for convex polyhedrons.
+     */
+    double face_area_by_triangles = 0;
+    for(int i = 1; i < n_of_vertices - 1; ++i)
+    {
+        SpacePoint a = vertices[i] - vertices[0];
+        SpacePoint b = vertices[i + 1] - vertices[0];
+
+        // Magnitude of the cross product `a % b` is the area of the parallelogram, its half is the area of the triangle
+        face_area_by_triangles += get_distance(origin, a % b) / 2;
+    }
+
+    /*
+     * Calculate the area of the face as sum of areas of triangles with vertices `p` (point to be checked),
+     * `vertices[i]`, `vertices[i + 1]` for all `i`
+     */
+    double face_area_with_point = 0;
+    for(int i = 0; i < n_of_vertices; ++i)
+    {
+        SpacePoint this_vertex = vertices[i], next_vertex = vertices[(i + 1) % n_of_vertices];
+        SpacePoint a = this_vertex - p, b = next_vertex - p;
+
+        // Magnitude of the cross product `a % b` is the area of the parallelogram, its half is the area of the triangle
+        face_area_with_point += get_distance(origin, a % b) / 2;
+    }
+
+    // The face contains point if and only if the two areas are equal to each other
+    return std::abs(face_area_by_triangles - face_area_with_point) < eps;
+}
+
 
 __host__ __device__ bool operator!=(const Face &a, const Face &b)
 {

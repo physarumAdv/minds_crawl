@@ -33,7 +33,8 @@ public:
      *
      * @param vertices Array of polyhedron vertices that belong to the face.
      *      Must be ordered in a special way (see note below)
-     * @param n_of_vertices Number of vertices on the face
+     * @param n_of_vertices Number of elements in the `vertices` array (i.e. number of vertices, INCLUDING the repeated
+     *      one (see below))
      *
      * @note The vertices order matters: looking on a face <b>from outside</b> the polyhedron, some vertex (let's call
      * it A) must be saved to `vertices[0]`. It's neighbour clockwise - vertex B (B is next to A clockwise) must be
@@ -124,6 +125,21 @@ public:
      *      `true` if the vertices have the same vertices order, starting from the same one
      */
     __host__ __device__ friend bool operator==(const Face &a, const Face &b);
+
+
+    /**
+     * Checks whether the given point belongs to the face via area calculation.
+     *
+     * Checks if the given point belongs to the face by calculating actual area of the face and area of the face as if
+     * the point was on it. If the areas match (equal +- epsilon), the point is considered to belong to the face.
+     *
+     * @param p Point to be checked
+     *
+     * @returns `true` if the point belongs to the face, `false` otherwise
+     *
+     * @warning The method only works correctly if the face is a **convex** polygon
+     */
+    __host__ __device__ bool contains_point(SpacePoint p);
 
 private:
     /// Pointer to some node laying on the face
